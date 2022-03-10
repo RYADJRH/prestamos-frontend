@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .r-input {
+    @apply block
+    w-full
+    rounded-md
+    border-transparent
+    shadow-sm
+    bg-gray-100
+    focus:border-sky-800
+    focus:bg-white focus:ring-0
+    disabled:cursor-not-allowed;
+  }
+  .r-checkbox-primary {
+    @apply rounded
+    text-sky-800
+    focus:ring-1
+    focus:ring-offset-2
+    focus:ring-sky-800
+    disabled:cursor-not-allowed;
+  }
+  .r-btn-primary {
+    @apply p-2.5
+    bg-sky-700
+    text-white
+    hover:bg-sky-800
+    active:bg-sky-700
+    rounded-md
+    uppercase
+    text-sm
+    font-bold
+    disabled:bg-gray-100
+    disabled:text-gray-500
+    disabled:cursor-not-allowed
+    focus:outline-none
+    focus:ring;
+  }
+}

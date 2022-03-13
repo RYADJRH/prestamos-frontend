@@ -1,8 +1,6 @@
 <script setup lang="ts">
 defineProps<{
-  color: string,
-  height: Number,
-  width: Number
+  color: string
 }>()
 </script>
 
@@ -12,8 +10,6 @@ defineProps<{
     x="0px"
     y="0px"
     viewBox="25 0.51 107.142 100.51"
-    :height="height + 'px'"
-    :width="width + 'px'"
     xmlns="http://www.w3.org/2000/svg"
     xmlns:bx="https://boxy-svg.com"
   >

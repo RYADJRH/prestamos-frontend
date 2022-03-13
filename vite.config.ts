@@ -9,5 +9,19 @@ export default defineConfig({
       replacement: path.resolve(__dirname, 'src')
     }]
   },
+ /*  build: {
+    rollupOptions: {
+      // https://rollupjs.org/guide/en/#outputmanualchunks
+      output: {
+        manualChunks: {
+          'group-user': [
+            './src/UserDetails',
+            './src/UserDashboard',
+            './src/UserProfileEdit',
+          ],
+        },
+      },
+    },
+  }, */
   plugins: [vue()]
 })

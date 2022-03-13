@@ -1,13 +1,13 @@
 <script setup lang="ts">
 
-import { reactive } from 'vue';
+import { ref } from 'vue';
 
 const props = defineProps<{
-    bgColor: String,
-    particlesColor: String
+    bgColor: string,
+    particlesColor: string
 }>();
 
-const optionsParticles = reactive({
+const optionsParticles = ref({
     background: {
         color: {
             value: props.bgColor
@@ -65,10 +65,10 @@ const optionsParticles = reactive({
             straight: false
         },
         number: {
-            density: {
-                enable: true,
-                area: 900
-            },
+            // density: {
+            //     enable: true,
+            //     area: 1000
+            // },
             value: 70
         },
         opacity: {

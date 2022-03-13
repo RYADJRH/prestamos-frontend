@@ -3,7 +3,7 @@
 import { ref } from 'vue';
 import Isotipo from "@/components/logos/Isotipo.vue";
 import colors from 'tailwindcss/colors';
-const bgColor = ref(colors.sky[900]);
+const color = ref(colors.sky[900]);
 
 </script>
 
@@ -11,7 +11,7 @@ const bgColor = ref(colors.sky[900]);
     <div class="h-screen flex justify-center items-center px-3 md:px-0">
         <form class="w-full px-3 py-7 bg-white border rounded-md md:max-w-sm">
             <div class="mb-6 flex justify-center">
-                <isotipo :color="bgColor" :height="150" :width="150"></isotipo>
+                <isotipo :color="color" class="h-32 w-32"></isotipo>
             </div>
             <label class="block mb-6">
                 <span class="text-gray-500">Correo electrónico:</span>
@@ -37,7 +37,7 @@ const bgColor = ref(colors.sky[900]);
                 <span class="ml-2 text-gray-500">Recordar sesión</span>
             </label>
             <div>
-                <button class="r-btn-primary w-full">Iniciar Sesión</button>
+                <button class="r-btn r-btn-primary w-full">Iniciar Sesión</button>
             </div>
         </form>
     </div>

@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import colors from 'tailwindcss/colors';
-import { itemSidebar } from './interfaces/sidebar';
+import { ItemSidebar } from './interfaces/Sidebar';
 import Navbar from '@/components/shared_components/Navbar.vue';
 import Isotipo from '@/components/logos/Isotipo.vue';
 import SidebarItem from './sidebarElements/SidebarItem.vue';
 
 const color = ref(colors.sky[900]);
 withDefaults(defineProps<{
-    menu: Array<itemSidebar>,
+    menu: Array<ItemSidebar>,
     collapse?: boolean
 }>(), {
     collapse: false

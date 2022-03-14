@@ -1,16 +1,16 @@
 import { FunctionalComponent, HTMLAttributes, VNodeProps } from 'vue';
 
-interface itemSidebarChildSingle {
+interface ItemSidebarChildSingle {
     link: string,
     title: string,
 }
 
-interface itemSidebar {
+interface ItemSidebar {
     link?: string,
     title: string,
     icon?: FunctionalComponent<HTMLAttributes & VNodeProps>,
-    subMenu?: Array<itemSidebarChildSingle>
+    subMenu?: Array<ItemSidebarChildSingle>
 
 }
 
-export { itemSidebar, itemSidebarChildSingle };
+export { ItemSidebar, ItemSidebarChildSingle };

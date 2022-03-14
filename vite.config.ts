@@ -4,24 +4,14 @@ import path from 'path';
 
 export default defineConfig({
   resolve: {
-    alias: [{
-      find: '@',
-      replacement: path.resolve(__dirname, 'src')
-    }]
-  },
- /*  build: {
-    rollupOptions: {
-      // https://rollupjs.org/guide/en/#outputmanualchunks
-      output: {
-        manualChunks: {
-          'group-user': [
-            './src/UserDetails',
-            './src/UserDashboard',
-            './src/UserProfileEdit',
-          ],
-        },
-      },
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
     },
-  }, */
+    // alias: [{
+    //   find: '@',
+    //   replacement: path.resolve(__dirname, 'src')
+    // }]
+  },
+
   plugins: [vue()]
 })

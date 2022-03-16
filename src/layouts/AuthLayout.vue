@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Sidebar from '@/components/shared_components/sidebar/Sidebar.vue';
 import { ref } from 'vue';
-import { CashIcon, HomeIcon, UsersIcon } from '@heroicons/vue/outline'
+import { CashIcon, HomeIcon, UserGroupIcon, UserIcon } from '@heroicons/vue/outline'
 
 const collapse = ref(true);
 
@@ -13,8 +13,12 @@ const menu = ref([
     },
     {
         title: 'Prestatarios',
-        icon: UsersIcon,
+        icon: UserIcon,
         subMenu: [
+            {
+                link: '/prestatarios/lista',
+                title: 'Lista',
+            },
             {
                 link: '/prestatarios/agregar',
                 title: 'Agregar',
@@ -22,8 +26,13 @@ const menu = ref([
         ]
     },
     {
+        link: '/grupos',
+        title: 'Grupos',
+        icon: UserGroupIcon
+    },
+    {
         link: '/prestamos',
-        title: 'prestamos',
+        title: 'Prestamos',
         icon: CashIcon
     },
 

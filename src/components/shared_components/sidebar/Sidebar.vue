@@ -38,7 +38,7 @@ withDefaults(defineProps<{
 
         <main class="flex flex-col flex-1">
             <navbar @toogle-sidebar="$emit('toogleSidebar')"></navbar>
-            <div class="overflow-y-auto h-screen bg-gray-50">
+            <div class="overflow-y-auto p-4 h-screen bg-gray-50">
                 <slot name="content"></slot>
             </div>
         </main>

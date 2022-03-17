@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import colors from 'tailwindcss/colors';
-import { ItemSidebar } from './interfaces/Sidebar';
+import { ItemSidebar } from '@/interfaces/sidebar.interface';
 import Navbar from '@/components/shared_components/Navbar.vue';
 import Isotipo from '@/components/logos/Isotipo.vue';
 import SidebarItem from './sidebarElements/SidebarItem.vue';

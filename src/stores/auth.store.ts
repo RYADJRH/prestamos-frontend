@@ -14,13 +14,13 @@ export const useAuthStore = defineStore('auth', {
     state: (): State => ({
         user: null,
         profileBeneficiaryId: null,
-        isAuthenticated: true,
+        isAuthenticated: false,
     }),
     getters: {
         user_authenticated: (state) => state.user,
     },
     actions: {
-        updateStateUser(user: User) {
+        updateStateUser(user: User | null) {
             this.user = user;
             this.isAuthenticated = Boolean(user);
         },
@@ -41,8 +41,7 @@ export const useAuthStore = defineStore('auth', {
                     this.updateStateUser(user);
                 })
                 .catch(() => {
-                    this.user = null;
-                    this.isAuthenticated = false;
+                    this.updateStateUser(null);
                     this.profileBeneficiaryId = null;
                 });
         }

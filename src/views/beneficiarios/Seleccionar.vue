@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import CardUser from '@/components/shared_components/beneficiarios/CardUser.vue';
-import { Beneficiario } from "@/components/shared_components/beneficiarios/interfaces/Beneficiarios";
+import { Beneficiario } from "@/interfaces/beneficiario.interface";
 const beneficiarios = ref<Beneficiario[]>([]);
 
 

@@ -1,6 +1,6 @@
 
 <script setup lang="ts">
-import { Beneficiario } from "@/components/shared_components/beneficiarios/interfaces/Beneficiarios";
+import { Beneficiario } from "@/interfaces/beneficiario.interface";
 
 withDefaults(defineProps<{
     add: boolean

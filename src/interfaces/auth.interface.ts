@@ -7,7 +7,6 @@ interface User {
 interface Login {
     nick_name_user: string,
     password: string,
-    remember_me: boolean
 }
 
 export {

@@ -2,24 +2,44 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useAuthStore } from '@/stores/auth.store';
-
-import Isotipo from "@/components/logos/Isotipo.vue";
+import { useRouter } from 'vue-router';
 import colors from 'tailwindcss/colors';
-const color = ref(colors.sky[900]);
-const authStore = useAuthStore();
 
-const name_nick_user = ref('rebolledo');
+import { Errors } from '@/interfaces/errors.interface';
+import RSpinner from "@/components/shared_components/rComponents/RSpinner.vue";
+import RBtn from '@/components/shared_components/rComponents/RBtn.vue';
+import RFormGroup from '@/components/shared_components/rComponents/RFormGroup.vue';
+import RInput from "@/components/shared_components/rComponents/RInput.vue";
+import RErrorInput from "@/components/shared_components/rComponents/RErrorInput.vue";
+import Isotipo from "@/components/logos/Isotipo.vue";
+
+const authStore = useAuthStore();
+const router = useRouter();
+
+const color = ref(colors.sky[900]);
+const errors: Errors = ref(null);
+const loading = ref(false);
+const nick_name_user = ref('rebolledo2');
 const password = ref('R162608P');
-const remember_me = ref(false);
 
 async function login() {
     const crendentials = {
-        nick_name_user: name_nick_user.value,
+        nick_name_user: nick_name_user.value,
         password: password.value,
-        remember_me: remember_me.value
     }
-    const userData = await authStore.login(crendentials)
-    console.log(userData);
+
+    loading.value = true;
+    errors.value = null;
+    await authStore.login(crendentials)
+        .then(() => {
+            router.replace({ name: 'seleccionarBeneficiario' });
+        })
+        .catch((err) => {
+            if (err.response.status) {
+                errors.value = err.response.data.errors;
+            }
+        })
+    loading.value = false;
 }
 </script>
 
@@ -32,33 +52,30 @@ async function login() {
             <div class="mb-6 flex justify-center">
                 <isotipo :color="color" class="h-32 w-32"></isotipo>
             </div>
-            <label class="block mb-6">
-                <span class="text-gray-500">Nombre de usuario:</span>
-                <input
-                    v-model="name_nick_user"
+            <r-form-group title="Nombre de usuario:">
+                <r-input
+                    v-model="nick_name_user"
                     type="text"
-                    class="r-input mt-2"
                     placeholder="ReboDev"
-                    required
-                />
-            </label>
-            <label class="block mb-6">
-                <span class="text-gray-500">Contraseña:</span>
-                <input
+                    class="mt-2"
+                    :stateError="errors && errors.nick_name_user"
+                ></r-input>
+                <r-error-input :errors="errors" field="nick_name_user"></r-error-input>
+            </r-form-group>
+
+            <r-form-group title="Contraseña:">
+                <r-input
                     v-model="password"
                     type="password"
-                    class="r-input mt-2"
-                    placeholder="***********"
+                    placeholder="**********"
                     autocomplete="on"
-                    required
-                />
-            </label>
-            <label class="inline-flex items-center mb-6">
-                <input type="checkbox" class="r-checkbox-primary" v-model="remember_me" />
-                <span class="ml-2 text-gray-500">Recordar sesión</span>
-            </label>
+                    class="mt-2"
+                ></r-input>
+            </r-form-group>
             <div>
-                <button class="r-btn r-btn-primary w-full">Iniciar Sesión</button>
+                <r-btn class="w-full" :disabled="loading">
+                    <r-spinner class="mr-3" v-if="loading"></r-spinner>Iniciar sesión
+                </r-btn>
             </div>
         </form>
     </div>

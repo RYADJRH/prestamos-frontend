@@ -1,4 +1,4 @@
-import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
+import { RouteRecordRaw, createRouter, createWebHistory, RouteLocationNormalized, NavigationGuardNext } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.store';
 
 const routes: RouteRecordRaw[] = [
@@ -61,42 +61,26 @@ router.beforeEach(async (to, from, next) => {
     if (errorPage) {
         next();
     } else {
-        /*  si la pagina es guest y esta autenticado */
+        if (reqAuth && !authStore.isAuthenticated)
+            await authStore.getUser();
+
         if (!reqAuth && authStore.isAuthenticated) {
-            /* si se selecciono un beneficiario previamente */
-            if (authStore.profileBeneficiaryId) {
-                return { name: 'home' };
+            if (!authStore.profileBeneficiaryId) {
+                return next({ name: 'seleccionarBeneficiario' });
             } else {
-                return { name: 'seleccionarBeneficiario' };
+                return next({ name: 'home' });
             }
+        } else if (reqAuth && authStore.isAuthenticated) {
+            if (to.name !== 'seleccionarBeneficiario' && !authStore.profileBeneficiaryId) {
+                return next({ name: 'seleccionarBeneficiario' });
+            }
+            return next();
+        } else if (!reqAuth && !authStore.isAuthenticated) {
+            return next();
+        } else if (reqAuth && !authStore.isAuthenticated) {
+            return next({ name: 'login' });
         }
     }
-
-
-
-    // console.log("hast aqui llego");
-    // next();
-    // next();
-    /*
-        if (reqAuth && !authStore.isAuthenticated) {
-            await authStore.getUser();
-            if (!authStore.isAuthenticated) {
-                next({ name: 'login' });
-            } else {
-                next();
-            }
-        } else {
-            if (!reqAuth && !errorPage && authStore.isAuthenticated) {
-                if (authStore.profileBeneficiaryId) {
-                    next({ name: 'home' });
-                } else {
-                    next({ name: 'seleccionarBeneficiario' })
-                }
-            } else {
-                next();
-            }
-        } */
 })
-
 
 export default router;

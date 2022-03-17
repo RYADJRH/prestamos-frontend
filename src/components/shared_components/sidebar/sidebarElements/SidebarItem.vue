@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ItemSidebar } from '../interfaces/Sidebar';
+import { ItemSidebar } from '@/interfaces/sidebar.interface';
 import { ArrowCircleDownIcon } from '@heroicons/vue/outline'
 import { ref } from 'vue';
 

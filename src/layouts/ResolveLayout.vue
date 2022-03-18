@@ -1,23 +1,26 @@
 <script setup lang="ts">
-import { shallowRef, watch, } from 'vue';
+import { shallowRef, watch } from "vue";
 import DefaultLayout from "@/layouts/DefaultLayout.vue";
-import { useRoute } from 'vue-router';
+import { useRoute } from "vue-router";
 
 const layout = shallowRef();
 const route = useRoute();
 
-watch(() => route.meta?.layout as String | undefined, async metalayout => {
+watch(
+  () => route.meta?.layout as String | undefined,
+  async (metalayout) => {
     try {
-        const component = metalayout && await import(/* @vite-ignore */`./${metalayout}.vue`)
-        layout.value = component?.default || DefaultLayout;
+      const component =
+        metalayout && (await import(/* @vite-ignore */ `./${metalayout}.vue`));
+      layout.value = component?.default || DefaultLayout;
     } catch (error) {
-        layout.value = DefaultLayout;
+      layout.value = DefaultLayout;
     }
-})
-
+  }
+);
 </script>
 <template>
-    <component :is="layout">
-        <slot />
-    </component>
+  <component :is="layout">
+    <slot />
+  </component>
 </template>

@@ -19,7 +19,7 @@ const router = useRouter();
 const color = ref(colors.sky[900]);
 const errors: Errors = ref(null);
 const loading = ref(false);
-const nick_name_user = ref('rebolledo2');
+const nick_name_user = ref('rebolledo');
 const password = ref('R162608P');
 
 async function login() {
@@ -58,7 +58,7 @@ async function login() {
                     type="text"
                     placeholder="ReboDev"
                     class="mt-2"
-                    :stateError="errors && errors.nick_name_user"
+                    :stateError="errors != null && errors.hasOwnProperty('nick_name_user')"
                 ></r-input>
                 <r-error-input :errors="errors" field="nick_name_user"></r-error-input>
             </r-form-group>

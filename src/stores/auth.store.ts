@@ -1,28 +1,36 @@
-import { defineStore } from "pinia";
-import { User, Login } from '@/interfaces/auth.interface';
-import { apiLogin, apiUser } from '@/servicesApi/auth.service';
 // import Cookies from 'js-cookie';
 // Cookies.set('foo', 'bar')
+
+import { defineStore } from "pinia";
+import { useStorage } from '@vueuse/core'
+import { User, Login } from '@/interfaces/auth.interface';
+import { apiLogin, apiUser } from '@/servicesApi/auth.service';
+
+const userLocal = useStorage('user', null as User | null).value;
+const isAuthenticatedLocal = Boolean(userLocal);
 
 interface State {
     user: User | null,
     profileBeneficiaryId: string | null,
-    isAuthenticated: boolean
+    isFirstPage: boolean,
+    isAuthenticated: boolean,
 }
 
 export const useAuthStore = defineStore('auth', {
     state: (): State => ({
-        user: null,
-        profileBeneficiaryId: null,
-        isAuthenticated: false,
+        user: userLocal,
+        isAuthenticated: isAuthenticatedLocal,
+        isFirstPage: true,
+        profileBeneficiaryId:null,
     }),
     getters: {
-        user_authenticated: (state) => state.user,
+        userAuthenticated: (state) => state.user,
     },
     actions: {
         updateStateUser(user: User | null) {
             this.user = user;
             this.isAuthenticated = Boolean(user);
+            useStorage('user', user).value = user;
         },
         async login(credentials: Login) {
             return await apiLogin(credentials)

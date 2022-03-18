@@ -1,4 +1,4 @@
-import { RouteRecordRaw, createRouter, createWebHistory, RouteLocationNormalized, NavigationGuardNext } from 'vue-router';
+import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.store';
 
 const routes: RouteRecordRaw[] = [
@@ -53,17 +53,21 @@ const router = createRouter({
     routes
 });
 
+
 router.beforeEach(async (to, from, next) => {
+
     const authStore = useAuthStore();
     const reqAuth = to.matched.some((record) => record.meta.requiresAuth);
     const errorPage = to.matched.some((record) => record.meta.errorPage);
 
+    if (authStore.isFirstPage && authStore.isAuthenticated) {
+        await authStore.getUser();
+    }
+    authStore.isFirstPage = false;
+
     if (errorPage) {
         next();
     } else {
-        if (reqAuth && !authStore.isAuthenticated)
-            await authStore.getUser();
-
         if (!reqAuth && authStore.isAuthenticated) {
             if (!authStore.profileBeneficiaryId) {
                 return next({ name: 'seleccionarBeneficiario' });
@@ -79,6 +83,7 @@ router.beforeEach(async (to, from, next) => {
             return next();
         } else if (reqAuth && !authStore.isAuthenticated) {
             return next({ name: 'login' });
+
         }
     }
 })

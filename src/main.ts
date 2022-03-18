@@ -16,4 +16,3 @@ createApp(App)
     .use(Particles)
     .component('ResolveLayout', ResolveLayout)
     .mount('#app')
-

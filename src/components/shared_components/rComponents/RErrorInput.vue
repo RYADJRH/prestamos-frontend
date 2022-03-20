@@ -8,7 +8,7 @@ const props = defineProps<{
 }>();
 
 const message = computed(() => {
-  return props.errors?.[props.field]?.[0];
+    return props.errors?.[props.field]?.[0];
 });
 </script>
 

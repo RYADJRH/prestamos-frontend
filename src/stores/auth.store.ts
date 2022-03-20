@@ -31,6 +31,9 @@ export const useAuthStore = defineStore('auth', {
             this.user = user;
             this.isAuthenticated = Boolean(user);
             useStorage('user', user).value = user;
+            if (!user)
+                this.profileBeneficiaryId = null;
+
         },
         async login(credentials: Login) {
             return await apiLogin(credentials)
@@ -48,10 +51,7 @@ export const useAuthStore = defineStore('auth', {
                     const user = response.data.user as User;
                     this.updateStateUser(user);
                 })
-                .catch(() => {
-                    this.updateStateUser(null);
-                    this.profileBeneficiaryId = null;
-                });
+                .catch(() => { });
         }
     }
 });

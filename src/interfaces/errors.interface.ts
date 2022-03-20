@@ -1,6 +1,8 @@
-interface Errors {
-    [key: string]: any | null
-}
 
-export { Errors }
-//
+type Message = string | null;
+type Errors = { [key: string]: any };
+
+export {
+    Message,
+    Errors
+}

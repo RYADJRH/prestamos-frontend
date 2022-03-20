@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onBeforeMount } from "vue";
 import { useBeneficiaryStore } from "@/stores/beneficiary.store";
 import RModal from "@/components/shared_components/rComponents/RModal.vue";
 import CardUser from "@/components/shared_components/beneficiarys/CardUser.vue";
@@ -15,19 +15,19 @@ const beneficiarys = beneficiaryStore.getBeneficiarys;
 const modalAddBeneficiary = ref(false);
 const nick_name_user = ref("");
 
-const i = ref(0);
+onBeforeMount(async () => {
+  await beneficiaryStore.getBeneficiary();
+});
 function saveBeneficiary() {
-  beneficiaryStore.$patch((state) => {
-    state.beneficiarys.push({
-      id_beneficiary: i.value++,
-      name_acronym: "AA",
-      name_beneficiary: "HOla mundo",
-      id_user: 1,
-    });
-  });
-  console.log(nick_name_user.value);
+  // beneficiaryStore.$patch((state) => {
+  //   state.beneficiarys.push({
+  //     id_beneficiary: i.value++,
+  //     name_acronym: "AA",
+  //     name_beneficiary: "HOla mundo",
+  //     id_user: 1,
+  //   });
+  // });
 }
-
 </script>
 <template>
   <div class="lg:h-screen flex flex-col justify-center items-center py-4 lg:py-0">

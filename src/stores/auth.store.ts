@@ -21,7 +21,7 @@ export const useAuthStore = defineStore('auth', {
         user: userLocal,
         isAuthenticated: isAuthenticatedLocal,
         isFirstPage: true,
-        profileBeneficiaryId:null,
+        profileBeneficiaryId: null,
     }),
     getters: {
         userAuthenticated: (state) => state.user,

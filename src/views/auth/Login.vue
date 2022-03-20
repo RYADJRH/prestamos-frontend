@@ -52,7 +52,7 @@ async function login() {
             <div class="mb-6 flex justify-center">
                 <isotipo :color="color" class="h-32 w-32"></isotipo>
             </div>
-            <r-form-group title="Nombre de usuario:">
+            <r-form-group title="Nombre de usuario:" class="mb-6">
                 <r-input
                     v-model="nick_name_user"
                     type="text"
@@ -63,7 +63,7 @@ async function login() {
                 <r-error-input :errors="errors" field="nick_name_user"></r-error-input>
             </r-form-group>
 
-            <r-form-group title="Contraseña:">
+            <r-form-group title="Contraseña:" class="mb-6">
                 <r-input
                     v-model="password"
                     type="password"
@@ -73,7 +73,7 @@ async function login() {
                 ></r-input>
             </r-form-group>
             <div>
-                <r-btn class="w-full" :disabled="loading">
+                <r-btn class="w-full" type="submit" :disabled="loading">
                     <r-spinner class="mr-3" v-if="loading"></r-spinner>Iniciar sesión
                 </r-btn>
             </div>

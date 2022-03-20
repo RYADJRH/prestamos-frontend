@@ -13,7 +13,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/seleccionar/beneficiario',
         name: 'seleccionarBeneficiario',
-        component: () => import('@/views/beneficiarios/Seleccionar.vue'),
+        component: () => import('@/views/beneficiarys/Selected.vue'),
         meta: {
             requiresAuth: true,
             layout: 'GuestLayout'
@@ -31,7 +31,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/prestatarios/lista',
         name: 'prestatarios-lista',
-        component: () => import('@/views/prestatarios/Lista.vue'),
+        component: () => import('@/views/borrowers/List.vue'),
         meta: {
             requiresAuth: true,
             layout: 'AuthLayout'

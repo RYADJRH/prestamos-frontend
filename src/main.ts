@@ -3,6 +3,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia';
 import App from './App.vue'
 import router from './router';
+/* @ts-ignore */
 import Particles from "particles.vue3";
 import ResolveLayout from "@/layouts/ResolveLayout.vue";
 import '@/style/index.css'

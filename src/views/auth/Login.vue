@@ -19,7 +19,7 @@ const errorStore = useErrorStore();
 
 const color = ref(colors.sky[900]);
 const loading = ref(false);
-const nick_name_user = ref("rebolledo2");
+const nick_name_user = ref("rebolledo");
 const password = ref("R162608P");
 
 async function login() {

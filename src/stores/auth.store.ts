@@ -8,10 +8,11 @@ import { apiLogin, apiUser } from '@/servicesApi/auth.service';
 
 const userLocal = useStorage('user', null as User | null).value;
 const isAuthenticatedLocal = Boolean(userLocal);
+const profileBeneficiaryIdLocal = useStorage('profile-id', null as number | null).value;
 
 interface State {
     user: User | null,
-    profileBeneficiaryId: string | null,
+    profileBeneficiaryId: number | null,
     isFirstPage: boolean,
     isAuthenticated: boolean,
 }
@@ -21,18 +22,22 @@ export const useAuthStore = defineStore('auth', {
         user: userLocal,
         isAuthenticated: isAuthenticatedLocal,
         isFirstPage: true,
-        profileBeneficiaryId: null,
+        profileBeneficiaryId: profileBeneficiaryIdLocal,
     }),
     getters: {
         userAuthenticated: (state) => state.user,
     },
     actions: {
+        setProfileId(beneficiaryId: number | null) {
+            this.profileBeneficiaryId = beneficiaryId
+            useStorage('profile-id', beneficiaryId).value = beneficiaryId;
+        },
         updateStateUser(user: User | null) {
             this.user = user;
             this.isAuthenticated = Boolean(user);
             useStorage('user', user).value = user;
             if (!user)
-                this.profileBeneficiaryId = null;
+                this.setProfileId(null);
 
         },
         async login(credentials: Login) {

@@ -39,12 +39,17 @@ const routes: RouteRecordRaw[] = [
     },
     {
         path: '/:pathMatch(.*)*',
+        redirect: '/404'
+    },
+    {
+        path: '/404',
+        name: 'NotFound',
         component: () => import('@/views/404.vue'),
         meta: {
             errorPage: true,
             layout: 'GuestLayout'
         }
-    },
+    }
 
 ];
 

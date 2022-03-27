@@ -60,7 +60,6 @@ const router = createRouter({
 
 
 router.beforeEach(async (to, from, next) => {
-
     const authStore = useAuthStore();
     const reqAuth = to.matched.some((record) => record.meta.requiresAuth);
     const errorPage = to.matched.some((record) => record.meta.errorPage);

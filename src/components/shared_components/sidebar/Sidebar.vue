@@ -18,13 +18,13 @@ withDefaults(defineProps<{
 <template>
     <div class="flex h-screen">
         <div
-            class="z-10 fixed bg-black inset-0 opacity-20 block md:hidden transition-opacity"
+            class="z-40 fixed bg-black inset-0 opacity-20 block md:hidden transition-opacity"
             v-show="collapse"
             @click="$emit('toogleSidebar')"
         ></div>
         <div
             :class="{ '-ml-60': !collapse, 'ml-0': collapse }"
-            class="w-60 p-2 z-30 overflow-y-auto absolute md:relative inset-y-0 left-0 bg-white border-r transition-all duration-300 ease-in-out"
+            class="w-60 p-2 z-50 overflow-y-auto absolute md:relative inset-y-0 left-0 bg-white border-r-2 border-sky-800 transition-all duration-300 ease-in-out"
         >
             <div class="flex justify-center">
                 <isotipo :color="color" class="h-32 w-32"></isotipo>
@@ -38,7 +38,7 @@ withDefaults(defineProps<{
 
         <main class="flex flex-col flex-1">
             <navbar @toogle-sidebar="$emit('toogleSidebar')"></navbar>
-            <div class="overflow-y-auto p-4 h-screen bg-gray-50">
+            <div class="p-4 md:px-12 md:py-5 h-screen bg-gray-50">
                 <slot name="content"></slot>
             </div>
         </main>

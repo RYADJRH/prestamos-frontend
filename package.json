@@ -9,11 +9,9 @@
   },
   "dependencies": {
     "@heroicons/vue": "^1.0.6",
-    "@types/js-cookie": "^3.0.1",
     "@types/tailwindcss": "^3.0.9",
     "@vueuse/core": "^8.1.1",
     "axios": "^0.26.1",
-    "js-cookie": "^3.0.1",
     "particles.vue3": "^1.42.0",
     "pinia": "^2.0.11",
     "vue": "^3.2.25",

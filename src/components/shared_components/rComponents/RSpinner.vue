@@ -1,5 +1,5 @@
 <script setup lang="ts">
-type variant = "primary" | "light";
+type variant = "primary" | "light" | "danger";
 
 withDefaults(defineProps<{ variant?: variant; loadingFull?: boolean }>(), {
   variant: "primary",
@@ -11,6 +11,7 @@ withDefaults(defineProps<{ variant?: variant; loadingFull?: boolean }>(), {
   <svg
     class="animate-spin h-6 w-6"
     :class="{
+      'text-red-800': variant == 'danger',
       'text-sky-800': variant == 'primary',
       'text-white': variant == 'light',
       'h-28 w-28': loadingFull,
@@ -19,14 +20,7 @@ withDefaults(defineProps<{ variant?: variant; loadingFull?: boolean }>(), {
     fill="none"
     viewBox="0 0 24 24"
   >
-    <circle
-      class="opacity-25"
-      cx="12"
-      cy="12"
-      r="10"
-      stroke="currentColor"
-      stroke-width="4"
-    />
+    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
     <path
       class="opacity-75"
       fill="currentColor"

@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import { ref } from "vue";
 
-const props = withDefaults(
+withDefaults(
   defineProps<{ modelValue: string; type: string; stateError?: boolean }>(),
   { stateError: false }
 );
-
-const inputValue = ref(props.modelValue);
 
 const emits = defineEmits<{
   (e: "update:modelValue", value: string): void;
@@ -20,10 +17,10 @@ function updateInput(event: Event) {
 
 <template>
   <input
-    v-model="inputValue"
+    v-model="modelValue"
     @input="updateInput"
     :type="type"
-    class="block w-full rounded-md border border-gray-600 shadow-sm focus:border-sky-800 focus:ring-0 disabled:cursor-not-allowed"
+    class="block w-full rounded-md border border-gray-600 shadow-sm focus:border-sky-800 focus:ring-1 focus:ring-sky-800 disabled:cursor-not-allowed disabled:bg-gray-100"
     :class="{ 'border-red-800': stateError }"
   />
 </template>

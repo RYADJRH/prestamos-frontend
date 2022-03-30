@@ -12,18 +12,9 @@ const menu = ref([
     icon: HomeIcon,
   },
   {
+    link: "/prestatarios/lista",
     title: "Prestatarios",
     icon: UserIcon,
-    subMenu: [
-      {
-        link: "/prestatarios/lista",
-        title: "Lista",
-      },
-      {
-        link: "/prestatarios/agregar",
-        title: "Agregar",
-      },
-    ],
   },
   {
     link: "/grupos",

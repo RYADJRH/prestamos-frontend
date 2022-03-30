@@ -16,29 +16,30 @@ withDefaults(defineProps<{
 
 </script>
 <template>
-    <div class="flex h-screen">
-        <div
-            class="z-40 fixed bg-black inset-0 opacity-20 block md:hidden transition-opacity"
-            v-show="collapse"
-            @click="$emit('toogleSidebar')"
-        ></div>
-        <div
-            :class="{ '-ml-60': !collapse, 'ml-0': collapse }"
-            class="w-60 p-2 z-50 overflow-y-auto absolute md:relative inset-y-0 left-0 bg-white border-r-2 border-sky-800 transition-all duration-300 ease-in-out"
-        >
-            <div class="flex justify-center">
-                <isotipo :color="color" class="h-32 w-32"></isotipo>
+    <div class="flex h-screen overflow-hidden bg-sky-800/5 ">
+        <div class="flex h-full">
+            <div
+                class="z-30 fixed bg-black inset-0 opacity-20 block md:hidden transition-opacity"
+                v-show="collapse"
+                @click="$emit('toogleSidebar')"
+            ></div>
+            <div
+                :class="{ '-ml-60': !collapse, 'ml-0': collapse }"
+                class="w-60 p-2 z-40 overflow-y-auto absolute md:relative inset-y-0 left-0 bg-white border-r-2 border-sky-800 transition-all duration-300 ease-in-out"
+            >
+                <div class="flex justify-center">
+                    <isotipo :color="color" class="h-32 w-32"></isotipo>
+                </div>
+                <div class="border-t border-gray-300"></div>
+                <h5 class="p-2 mb-2 text-red-800 font-bold">Menu</h5>
+                <ul>
+                    <sidebar-item v-for="item in menu" :item="item" class="mb-1"></sidebar-item>
+                </ul>
             </div>
-            <div class="border-t border-gray-300"></div>
-            <h5 class="p-2 mb-2 text-red-800 font-bold">Menu</h5>
-            <ul>
-                <sidebar-item v-for="item in menu" :item="item" class="mb-1"></sidebar-item>
-            </ul>
         </div>
-
-        <main class="flex flex-col flex-1">
+        <main class="flex flex-col flex-1 w-full overflow-x-hidden overflow-y-auto">
             <navbar @toogle-sidebar="$emit('toogleSidebar')"></navbar>
-            <div class="p-4 md:px-12 md:py-5 h-screen bg-gray-50">
+            <div class="p-4 md:px-12 md:py-5">
                 <slot name="content"></slot>
             </div>
         </main>

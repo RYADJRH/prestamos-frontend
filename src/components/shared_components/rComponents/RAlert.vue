@@ -5,7 +5,7 @@ const dialogStore = useDialogStore();
 </script>
 
 <template>
-  <div class="z-50 inset-0 fixed" v-if="dialogStore.open">
+  <div class="z-[60] inset-0 fixed" v-if="dialogStore.open">
     <div class="flex items-center justify-center min-h-screen px-4 py-2">
       <div
         class="bg-white border shadow-xl md:w-1/3 w-full p-4 rounded-md flex items-center flex-col gap-y-4"

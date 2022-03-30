@@ -5,7 +5,11 @@ module.exports = {
   ],
   darkMode: 'class',
   theme: {
-    extend: false,
+    extend: {
+      fontFamily: {
+        body:['Nunito']
+      }
+    },
   },
   plugins: [
     require('@tailwindcss/forms'),

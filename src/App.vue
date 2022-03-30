@@ -3,7 +3,7 @@ import RAlert from "@/components/shared_components/rComponents/RAlert.vue";
 import ROverlay from "@/components/shared_components/rComponents/ROverlay.vue";
 </script>
 <template>
-  <ResolveLayout>
+  <ResolveLayout class="font-body">
     <router-view></router-view>
   </ResolveLayout>
   <r-alert></r-alert>

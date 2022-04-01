@@ -27,7 +27,7 @@ const emits = defineEmits<{
     <div class="modal" v-if="modelValue">
       <r-backdrop></r-backdrop>
       <div
-        class="fixed inset-0 z-50 overflow-y-auto overflow-x-hidden transition-all duration-300 ease-in-out"
+        class="fixed inset-0 z-[70] overflow-y-auto overflow-x-hidden transition-all duration-300 ease-in-out"
       >
         <div class="flex justify-center items-center min-h-screen pt-4 px-4 pb-10">
           <!-- modal -->

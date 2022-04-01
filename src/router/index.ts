@@ -29,8 +29,8 @@ const routes: RouteRecordRaw[] = [
         }
     },
     {
-        path: '/prestatarios/lista',
-        name: 'prestatarios-lista',
+        path: '/prestatarios',
+        name: 'prestatarios',
         component: () => import('@/views/borrowers/List.vue'),
         meta: {
             requiresAuth: true,
@@ -73,13 +73,13 @@ router.beforeEach(async (to, from, next) => {
         next();
     } else {
         if (!reqAuth && authStore.isAuthenticated) {
-            if (!authStore.profileBeneficiaryId) {
+            if (!authStore.profileBeneficiary) {
                 return next({ name: 'seleccionarBeneficiario' });
             } else {
                 return next({ name: 'home' });
             }
         } else if (reqAuth && authStore.isAuthenticated) {
-            if (to.name !== 'seleccionarBeneficiario' && !authStore.profileBeneficiaryId) {
+            if (to.name !== 'seleccionarBeneficiario' && !authStore.profileBeneficiary) {
                 return next({ name: 'seleccionarBeneficiario' });
             }
             return next();

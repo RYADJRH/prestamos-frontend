@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, reactive, onBeforeMount, onBeforeUnmount, computed, watch } from 'vue';
+import { useDebounceFn } from '@vueuse/core'
+import { TrashIcon, PencilAltIcon, SearchIcon, DocumentTextIcon } from "@heroicons/vue/solid";
+import { UseBorrowerStore } from "@/stores/borrower.store";
+import { useAuthStore } from "@/stores/auth.store";
+import { useErrorStore } from "@/stores/error.store";
+import { useDialogStore } from '@/stores/dialog.store';
+
+import RCheckbox from '@/components/shared_components/rComponents/RCheckbox.vue';
 import RInput from "@/components/shared_components/rComponents/RInput.vue";
 import RTable from "@/components/shared_components/rComponents/RTable.vue";
 import RPagination from "@/components/shared_components/rComponents/RPagination.vue"
@@ -8,44 +16,170 @@ import RModal from "@/components/shared_components/rComponents/RModal.vue";
 import RFormGroup from '@/components/shared_components/rComponents/RFormGroup.vue';
 import RInputFile from "@/components/shared_components/rComponents/RInputFile.vue";
 import RSpinner from "@/components/shared_components/rComponents/RSpinner.vue";
-import { TrashIcon, PencilAltIcon, SearchIcon } from "@heroicons/vue/solid";
+import RErrorInput from '@/components/shared_components/rComponents/RErrorInput.vue';
+import { Borrower, BorrrowerRequest } from '@/interfaces/borrower.interface';
 
-const input = ref("");
-const currentPage = ref(1);
-const totalPages = ref(100);
-
+const borrowerStore = UseBorrowerStore();
+const authStore = useAuthStore();
+const errorStore = useErrorStore();
+const dialogStore = useDialogStore();
 /* new borrower */
+const modeEdit = ref(false);
 const loadingSave = ref(false);
 const modalAddBorrower = ref(false);
-const initStateNewBorrower = {
+
+const initStateNewBorrower: Borrower = {
   name_borrower: '',
   last_name_borrower: '',
-  name_file_ine: null,
-  name_file_proof_addres: null,
+  name_file_ine_borrower: null,
+  name_file_proof_address_borrower: null,
+  name_file_ine_borrower_path: null,
+  name_file_proof_address_borrower_path: null,
+  remove_file_ine_borrower: false,
+  remove_file_proof_address_borrower: false,
+  id_beneficiary: authStore.profileId as number
 };
+
 const newBorrower = reactive({ ...initStateNewBorrower });
 
-function saveBorrower(event: Event): void {
-  const target = event.target as HTMLFormElement;
+function saveBorrowerModal() {
   Object.assign(newBorrower, { ...initStateNewBorrower })
-  target.reset();
+  errorStore.$reset();
+  modeEdit.value = false
+  modalAddBorrower.value = true;
 }
 
-const fields = ref([
-  { name: 'Nombre', key: 'nombre' },
-  { name: 'Apellidos', key: 'apellidos' },
-  { name: 'INE', key: 'ine' },
-  { name: 'Comprobante de domicilio', key: 'comprobante' },
+async function saveBorrower(target: HTMLFormElement) {
+  loadingSave.value = true;
+  await borrowerStore.saveBorrower(newBorrower)
+    .then(() => {
+      Object.assign(newBorrower, { ...initStateNewBorrower })
+      target.reset();
+      dialogStore.show({ variant: 'success', title: 'Registro exitoso', description: '¡El prestatista ha sido guardado!' })
+    })
+    .catch((err) => {
+      if (err.response.status !== 422) {
+        dialogStore.show({ variant: 'error', title: 'Registro fallo', description: '¡No se pudo completar el registro!' })
+      }
+    });
+  loadingSave.value = false;
+}
+/* searching */
+const inputSearch = ref("");
+const inputSearchDebounce = useDebounceFn(async () => {
+  await fnGetBorrowers();
+}, 500, { maxWait: 1000 })
+
+
+const currentPage = computed({
+  get() {
+    return borrowerStore.currentPage;
+  },
+  async set(page: number) {
+    borrowerStore.setPage(page);
+    await fnGetBorrowers();
+  }
+});
+
+const totalPages = computed({
+  get() {
+    return borrowerStore.totalPages;
+  },
+  set(pages: number) {
+    borrowerStore.setTotalPage(pages);
+  }
+});
+
+const fields = reactive([
+  { name: 'Nombre', key: 'name_borrower' },
+  { name: 'Apellidos', key: 'last_name_borrower' },
+  { name: 'INE', key: 'name_file_ine_borrower_path' },
+  { name: 'Comprobante de domicilio', key: 'name_file_proof_address_borrower_path' },
   { name: 'acciones', key: 'acciones' },
 ]);
 
-const items = ref(
-  [
-    { nombre: "nombre1", apellidos: "apellidos1", ine: "ine1", comprobante: "comprobante1" },
-    { nombre: "nombre2", apellidos: "apellidos2", ine: "ine2", comprobante: "comprobante2" },
-    { nombre: "nombre3", apellidos: "apellidos3", ine: "ine3", comprobante: "comprobante3" },
-  ]
-);
+async function fnGetBorrowers() {
+  await borrowerStore.listBorrowers(authStore.profileId as number, inputSearch.value)
+    .catch(() => { })
+}
+
+function deleteBorrower(id_borrower: number) {
+  dialogStore.show({ variant: 'question', title: '¿Deseas eliminar a este prestatario?', description: '¡La acción es irreversible!', confirm: true })
+    .then((result) => {
+      if (result) {
+        borrowerStore.deleteBorrower(id_borrower)
+          .then(() => {
+            dialogStore.show({ variant: 'success', title: 'Registro exitoso', description: '¡El registro se ha eliminado!' })
+          })
+          .catch(() => {
+            dialogStore.show({ variant: 'error', title: 'Eliminación fallo', description: '¡No se pudo eliminar el registro!' })
+          })
+      }
+    })
+}
+
+const id_borrower = ref(-1);
+function editBorrowerModal({ ...data }: BorrrowerRequest) {
+  errorStore.$reset();
+  modeEdit.value = true;
+  modalAddBorrower.value = true;
+  id_borrower.value = data.id_borrower;
+  Object.assign(newBorrower, {
+    name_borrower: data.name_borrower,
+    last_name_borrower: data.last_name_borrower,
+    name_file_ine_borrower: null,
+    name_file_proof_address_borrower: null,
+    name_file_ine_borrower_path: data.name_file_ine_borrower_path,
+    name_file_proof_address_borrower_path: data.name_file_proof_address_borrower_path,
+    remove_file_ine_borrower: false,
+    remove_file_proof_address_borrower: false,
+    id_beneficiary: data.id_beneficiary
+  });
+}
+
+async function editBorrower(target: HTMLFormElement) {
+  loadingSave.value = true;
+  await borrowerStore.updateBorrower(newBorrower, id_borrower.value)
+    .then(() => {
+      target.reset();
+      modalAddBorrower.value = false;
+      dialogStore.show({ variant: 'success', title: 'Actualización exitosa', description: '¡El prestatista ha sido actualizado!' });
+    }).catch((err) => {
+      if (err.response.status !== 422) {
+        dialogStore.show({ variant: 'error', title: 'Registro fallo', description: '¡No se pudo completar el registro!' })
+      }
+    });
+
+  loadingSave.value = false;
+
+
+}
+
+function submitForm(event: Event) {
+  const target = event.target as HTMLFormElement;
+  if (modeEdit.value) {
+    editBorrower(target);
+  } else {
+    saveBorrower(target);
+  }
+}
+
+watch(() => borrowerStore.getBorrowers.length, async (value) => {
+  if (value == 0) {
+    borrowerStore.setPage(1);
+    await fnGetBorrowers();
+  }
+})
+
+
+onBeforeMount(async () => {
+  errorStore.$reset()
+  await fnGetBorrowers();
+});
+
+onBeforeUnmount(() => {
+  borrowerStore.$reset();
+});
 
 
 
@@ -55,23 +189,52 @@ const items = ref(
     <h1 class="text-2xl flex">Lista prestatarios</h1>
     <div class="flex justify-between">
       <div class="grid place-content-center">
-        <r-btn variant="primary" @click="modalAddBorrower = true">Agregar</r-btn>
+        <r-btn variant="primary" @click="saveBorrowerModal">Agregar</r-btn>
       </div>
       <div class="relative">
         <span class="absolute inset-y-0 left-0 flex items-center pl-2">
           <SearchIcon class="h-6 w-6 text-gray-500"></SearchIcon>
         </span>
-        <r-input v-model="input" class="pl-10" type="search" placeholder="busqueda"></r-input>
+        <r-input
+          v-model="inputSearch"
+          class="pl-10"
+          type="search"
+          placeholder="busqueda"
+          @input="inputSearchDebounce"
+        ></r-input>
       </div>
     </div>
-    <r-table :fields="fields" :items="items">
+    <r-table :fields="fields" :items="borrowerStore.getBorrowers">
       <template #cell(acciones)="{ data }">
-        <r-btn variant="danger" class="mr-3 px-1 py-2">
+        <r-btn variant="danger" class="mr-3 px-1 py-2" @click="deleteBorrower(data.id_borrower)">
           <TrashIcon class="h-6 w-6 text-white"></TrashIcon>
         </r-btn>
-        <r-btn variant="success" class="mr-3 px-1 py-2">
+        <r-btn variant="success" class="mr-3 px-1 py-2" @click="editBorrowerModal(data)">
           <PencilAltIcon class="h-6 w-6 text-white"></PencilAltIcon>
         </r-btn>
+      </template>
+      <template #cell(name_file_ine_borrower_path)="{ data }">
+        <a
+          v-if="data.name_file_ine_borrower_path"
+          class="cursor-pointer hover:text-sky-800"
+          :href="data.name_file_ine_borrower_path"
+          target="_blank"
+        >
+          <DocumentTextIcon class="w-8 h-8"></DocumentTextIcon>
+        </a>
+        <span v-else>No disponible</span>
+      </template>
+
+      <template #cell(name_file_proof_address_borrower_path)="{ data }">
+        <a
+          v-if="data.name_file_proof_address_borrower_path"
+          class="cursor-pointer hover:text-sky-800"
+          :href="data.name_file_proof_address_borrower_path"
+          target="_blank"
+        >
+          <DocumentTextIcon class="w-8 h-8"></DocumentTextIcon>
+        </a>
+        <span v-else>No disponible</span>
       </template>
 
       <template #footer>
@@ -82,56 +245,86 @@ const items = ref(
         </div>
       </template>
     </r-table>
-
-    <r-modal
-      v-model="modalAddBorrower"
-      size="md"
-      title="Agregar prestatario"
-      hidden-footer
-      :loading="loadingSave"
-    >
-      <template #content>
-        <form @submit.prevent="saveBorrower">
-          <r-form-group title="Nombre:" class="mb-6">
-            <r-input
-              v-model="newBorrower.name_borrower"
-              type="text"
-              placeholder="Yaretzin"
-              class="mt-2"
-              required
-            ></r-input>
-          </r-form-group>
-          <r-form-group title="Apellidos:" class="mb-6">
-            <r-input
-              v-model="newBorrower.last_name_borrower"
-              type="text"
-              placeholder="Araujo Delgado"
-              class="mt-2"
-              required
-            ></r-input>
-          </r-form-group>
-          <r-form-group title="INE:" class="mb-6">
-            <r-input-file
-              v-model="newBorrower.name_file_ine"
-              class="mt-2"
-              accept=".pdf, .png, .jpg"
-            ></r-input-file>
-          </r-form-group>
-          <r-form-group title="Comprobante de domicilio:" class="mb-6">
-            <r-input-file
-              v-model="newBorrower.name_file_proof_addres"
-              class="mt-2"
-              accept=".pdf, .png, .jpg"
-            ></r-input-file>
-          </r-form-group>
-
-          <div class="flex justify-end">
-            <r-btn :disabled="loadingSave">
-              <r-spinner v-if="loadingSave" class="mr-3"></r-spinner>guardar
-            </r-btn>
-          </div>
-        </form>
-      </template>
-    </r-modal>
   </div>
+  <r-modal
+    v-model="modalAddBorrower"
+    size="md"
+    :title="(modeEdit ? 'Editar' : 'Agregar') + ' prestatario'"
+    hidden-footer
+    :loading="loadingSave"
+  >
+    <template #content>
+      <form @submit.prevent="submitForm">
+        <r-form-group title="Nombre:" class="mb-6">
+          <r-input
+            v-model="newBorrower.name_borrower"
+            type="text"
+            placeholder="Yaretzin"
+            class="mt-2"
+            :stateError="errorStore.errors && errorStore.errors.hasOwnProperty('name_borrower')"
+            required
+          ></r-input>
+          <r-error-input :errors="errorStore.errors" field="name_borrower"></r-error-input>
+        </r-form-group>
+        <r-form-group title="Apellidos:" class="mb-6">
+          <r-input
+            v-model="newBorrower.last_name_borrower"
+            type="text"
+            placeholder="Araujo Delgado"
+            class="mt-2"
+            :stateError="errorStore.errors && errorStore.errors.hasOwnProperty('last_name_borrower')"
+            required
+          ></r-input>
+          <r-error-input :errors="errorStore.errors" field="last_name_borrower"></r-error-input>
+        </r-form-group>
+        <div class="mb-6">
+          <r-form-group title="INE:">
+            <r-input-file
+              v-model="newBorrower.name_file_ine_borrower"
+              class="mt-2 border border-red-500"
+              accept=".pdf, .png, .jpg"
+              :stateError="errorStore.errors && errorStore.errors.hasOwnProperty('name_file_ine_borrower')"
+              :disabled="newBorrower.remove_file_ine_borrower"
+            ></r-input-file>
+            <r-error-input :errors="errorStore.errors" field="name_file_ine_borrower"></r-error-input>
+          </r-form-group>
+          <r-checkbox
+            v-if="newBorrower.name_file_ine_borrower_path"
+            v-model="(newBorrower.remove_file_ine_borrower as boolean)"
+            id="checkbox_remove_ine"
+            name="checkbox_remove_ine"
+            variant="danger"
+            class="mt-2"
+            label="Eliminar el archivo cargado anteriormente"
+          ></r-checkbox>
+        </div>
+        <div class="mb-6">
+          <r-form-group title="Comprobante de domicilio:">
+            <r-input-file
+              v-model="newBorrower.name_file_proof_address_borrower"
+              class="mt-2"
+              accept=".pdf, .png, .jpg"
+              :stateError="errorStore.errors && errorStore.errors.hasOwnProperty('name_file_proof_address_borrower')"
+              :disabled="newBorrower.remove_file_proof_address_borrower"
+            ></r-input-file>
+            <r-error-input :errors="errorStore.errors" field="name_file_proof_address_borrower"></r-error-input>
+          </r-form-group>
+          <r-checkbox
+            v-if="newBorrower.name_file_proof_address_borrower_path"
+            v-model="(newBorrower.remove_file_proof_address_borrower as boolean)"
+            id="checkbox_remove_proof_address"
+            name="checkbox_remove_proof_address"
+            variant="danger"
+            class="mt-2"
+            label="Eliminar el archivo cargado anteriormente"
+          ></r-checkbox>
+        </div>
+        <div class="flex justify-end">
+          <r-btn :disabled="loadingSave">
+            <r-spinner v-if="loadingSave" class="mr-3"></r-spinner>guardar
+          </r-btn>
+        </div>
+      </form>
+    </template>
+  </r-modal>
 </template>

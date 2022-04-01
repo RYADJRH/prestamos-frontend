@@ -34,7 +34,7 @@ async function login() {
     .then(() => {
       router.replace({ name: "seleccionarBeneficiario" });
     })
-    .catch(() => {});
+    .catch(() => { });
   loading.value = false;
 }
 
@@ -43,10 +43,7 @@ onBeforeMount(() => errorStore.$reset());
 
 <template>
   <div class="h-screen flex justify-center items-center px-3 md:px-0">
-    <form
-      @submit.prevent="login"
-      class="w-full px-3 py-7 bg-white border rounded-md md:max-w-sm"
-    >
+    <form @submit.prevent="login" class="w-full px-3 py-7 bg-white border rounded-md md:max-w-sm">
       <div class="mb-6 flex justify-center">
         <isotipo :color="color" class="h-32 w-32"></isotipo>
       </div>
@@ -56,7 +53,7 @@ onBeforeMount(() => errorStore.$reset());
           type="text"
           placeholder="ReboDev"
           class="mt-2"
-        :stateError="errorStore.errors && errorStore.errors.hasOwnProperty('nick_name_user')"
+          :stateError="errorStore.errors && errorStore.errors.hasOwnProperty('nick_name_user')"
         ></r-input>
         <r-error-input :errors="errorStore.errors" field="nick_name_user"></r-error-input>
       </r-form-group>

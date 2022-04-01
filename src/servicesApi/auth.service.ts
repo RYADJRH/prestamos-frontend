@@ -10,7 +10,12 @@ const apiUser = async () => {
     return axios.get(`${PREFIX_API}user`);
 }
 
+const apiLogout = async () => {
+    return await axios.post(`${PREFIX_API}user/logout`);
+}
+
 export {
     apiLogin,
-    apiUser
+    apiUser,
+    apiLogout
 }

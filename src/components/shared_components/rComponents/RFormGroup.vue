@@ -3,8 +3,8 @@ defineProps<{ title: string }>();
 </script>
 
 <template>
-    <label class="block">
+    <div class="block">
         <span class="text-gray-500">{{ title }}</span>
         <slot></slot>
-    </label>
+    </div>
 </template>

@@ -19,13 +19,13 @@ withDefaults(defineProps<{
     <div class="flex h-screen overflow-hidden bg-sky-800/5 ">
         <div class="flex h-full">
             <div
-                class="z-30 fixed bg-black inset-0 opacity-20 block md:hidden transition-opacity"
+                class="z-[50] fixed bg-black inset-0 opacity-20 block md:hidden transition-opacity"
                 v-show="collapse"
                 @click="$emit('toogleSidebar')"
             ></div>
             <div
                 :class="{ '-ml-60': !collapse, 'ml-0': collapse }"
-                class="w-60 p-2 z-40 overflow-y-auto absolute md:relative inset-y-0 left-0 bg-white border-r-2 border-sky-800 transition-all duration-300 ease-in-out"
+                class="w-60 p-2 z-[60] overflow-y-auto absolute md:relative inset-y-0 left-0 bg-white border-r-2 border-sky-800 transition-all duration-300 ease-in-out"
             >
                 <div class="flex justify-center">
                     <isotipo :color="color" class="h-32 w-32"></isotipo>

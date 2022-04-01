@@ -12,7 +12,7 @@ const menu = ref([
     icon: HomeIcon,
   },
   {
-    link: "/prestatarios/lista",
+    link: "/prestatarios",
     title: "Prestatarios",
     icon: UserIcon,
   },

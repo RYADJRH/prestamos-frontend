@@ -9,7 +9,7 @@ interface Field {
 
 const props = withDefaults(defineProps<{
     fields?: Field[] | string[],
-    items: Record<string, string>[]
+    items: Record<string, any>[]
     loading?: boolean
 }>(), { loading: false });
 
@@ -53,6 +53,13 @@ const fields_keys = computed<Field[]>(() => {
                         <slot :name="`cell(${field.key})`" :data="item">{{ item[field.key] }}</slot>
                     </td>
                 </tr>
+                <tr v-if="!loading && items.length == 0">
+                    <td :colspan="fields_keys.length">
+                        <div class="inline-flex w-full justify-center p-6">
+                            <h1 class="text-xl text-sky-800">No se encontraron items</h1>
+                        </div>
+                    </td>
+                </tr>
                 <tr v-if="loading">
                     <td :colspan="fields_keys.length">
                         <div class="inline-flex w-full justify-center p-6">
@@ -63,7 +70,7 @@ const fields_keys = computed<Field[]>(() => {
                 </tr>
             </tbody>
         </table>
-        <div class="bg-white w-full border-t h-10 px-4" v-if="props.items.length > 0 && !loading">
+        <div class="bg-white w-full border-t h-12 px-4" v-if="props.items.length > 0 && !loading">
             <slot name="footer"></slot>
         </div>
     </div>

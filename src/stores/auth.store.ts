@@ -1,18 +1,17 @@
-// import Cookies from 'js-cookie';
-// Cookies.set('foo', 'bar')
-
 import { defineStore } from "pinia";
 import { useStorage } from '@vueuse/core'
 import { User, Login } from '@/interfaces/auth.interface';
-import { apiLogin, apiUser } from '@/servicesApi/auth.service';
+import { apiLogin, apiUser, apiLogout } from '@/servicesApi/auth.service';
+import { Beneficiary } from '@/interfaces/beneficiary.interface';
 
 const userLocal = useStorage('user', null as User | null).value;
 const isAuthenticatedLocal = Boolean(userLocal);
-const profileBeneficiaryIdLocal = useStorage('profile-id', null as number | null).value;
+const profileBeneficiaryIdLocal = useStorage('profileBeneficiary', null as string | null).value;
+const profileBeneficiaryJson = JSON.parse(profileBeneficiaryIdLocal as string);
 
 interface State {
     user: User | null,
-    profileBeneficiaryId: number | null,
+    profileBeneficiary: Beneficiary | null,
     isFirstPage: boolean,
     isAuthenticated: boolean,
 }
@@ -22,22 +21,23 @@ export const useAuthStore = defineStore('auth', {
         user: userLocal,
         isAuthenticated: isAuthenticatedLocal,
         isFirstPage: true,
-        profileBeneficiaryId: profileBeneficiaryIdLocal,
+        profileBeneficiary: profileBeneficiaryJson,
     }),
     getters: {
         userAuthenticated: (state) => state.user,
+        profileId: (state) => state.profileBeneficiary?.id_beneficiary as number
     },
     actions: {
-        setProfileId(beneficiaryId: number | null) {
-            this.profileBeneficiaryId = beneficiaryId
-            useStorage('profile-id', beneficiaryId).value = beneficiaryId;
+        setProfileBeneficiary(beneficiary: Beneficiary | null) {
+            this.profileBeneficiary = beneficiary
+            useStorage('profileBeneficiary', beneficiary).value = beneficiary;
         },
         updateStateUser(user: User | null) {
             this.user = user;
             this.isAuthenticated = Boolean(user);
             useStorage('user', user).value = user;
             if (!user)
-                this.setProfileId(null);
+                this.setProfileBeneficiary(null);
 
         },
         async login(credentials: Login) {
@@ -57,6 +57,16 @@ export const useAuthStore = defineStore('auth', {
                     this.updateStateUser(user);
                 })
                 .catch(() => { });
+        },
+        async logout() {
+            return await apiLogout()
+                .then((response) => {
+                    return Promise.resolve(response);
+                }).catch((err) => {
+                    return Promise.reject(err);
+                }).finally(() => {
+                    this.updateStateUser(null);
+                })
         }
     }
 });

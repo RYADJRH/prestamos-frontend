@@ -65,7 +65,7 @@ function deleteBeneficiary() {
             .deleteBeneficiary(beneficiaryEditId.value)
             .finally(() => {
               if (beneficiarys.value.length == 0) modeEdit.value = false;
-              authStore.profileBeneficiaryId = null;
+              authStore.profileBeneficiary = null;
               modalBeneficiary.value = false;
               setLoadingFull(false);
             });
@@ -80,7 +80,7 @@ function selectedBeneficiary(beneficiary: Beneficiary) {
     name_beneficiary.value = beneficiary.name_beneficiary;
     modalBeneficiary.value = true;
   } else {
-    authStore.setProfileId(beneficiary.id_beneficiary);
+    authStore.setProfileBeneficiary(beneficiary);
     router.replace({ name: "home" });
   }
 }

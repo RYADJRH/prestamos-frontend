@@ -16,7 +16,7 @@ withDefaults(defineProps<{
 
 </script>
 <template>
-    <div class="flex h-screen overflow-hidden bg-sky-800/5 ">
+    <div class="flex h-screen overflow-hidden bg-sky-900/5">
         <div class="flex h-full">
             <div
                 class="z-[50] fixed bg-black inset-0 opacity-20 block md:hidden transition-opacity"

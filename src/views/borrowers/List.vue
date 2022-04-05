@@ -180,18 +180,16 @@ onBeforeMount(async () => {
 onBeforeUnmount(() => {
   borrowerStore.$reset();
 });
-
-
-
 </script>
+
 <template>
   <div class="flex flex-col gap-5">
     <h1 class="text-2xl flex">Lista prestatarios</h1>
-    <div class="flex justify-between">
-      <div class="grid place-content-center">
+    <div class="md:flex md:justify-between">
+      <div class="md:grid md:place-content-center">
         <r-btn variant="primary" @click="saveBorrowerModal">Agregar</r-btn>
       </div>
-      <div class="relative">
+      <div class="relative md:w-64 w-full mt-2 md:mt-0">
         <span class="absolute inset-y-0 left-0 flex items-center pl-2">
           <SearchIcon class="h-6 w-6 text-gray-500"></SearchIcon>
         </span>
@@ -207,10 +205,10 @@ onBeforeUnmount(() => {
     <r-table :fields="fields" :items="borrowerStore.getBorrowers">
       <template #cell(acciones)="{ data }">
         <r-btn variant="danger" class="mr-3 px-1 py-2" @click="deleteBorrower(data.id_borrower)">
-          <TrashIcon class="h-6 w-6 text-white"></TrashIcon>
+          <TrashIcon class="h-5 w-5 text-white"></TrashIcon>
         </r-btn>
         <r-btn variant="success" class="mr-3 px-1 py-2" @click="editBorrowerModal(data)">
-          <PencilAltIcon class="h-6 w-6 text-white"></PencilAltIcon>
+          <PencilAltIcon class="h-5 w-5 text-white"></PencilAltIcon>
         </r-btn>
       </template>
       <template #cell(name_file_ine_borrower_path)="{ data }">

@@ -12,13 +12,13 @@ const setLoadingFull = inject("set-loading-full") as (value: boolean) => {};
 
 const menu = ref(false);
 const refMenuNavbar = ref(null);
+
 onClickOutside(refMenuNavbar, (event) => {
   menu.value = false;
 })
 
 function openMenu() {
-  console.log(menu.value);
-  menu.value = true
+  menu.value = !menu.value;
 }
 
 async function logout() {
@@ -44,7 +44,7 @@ async function logout() {
 
             <h1 class="text-xl text-white ml-2 hidden md:block">Prestamos RRR</h1>
           </div>
-          <div class="relative">
+          <div class="relative" ref="refMenuNavbar">
             <button
               @click="openMenu"
               class="rounded-full h-10 w-10 bg-white text-sky-800 font-bold"
@@ -60,7 +60,6 @@ async function logout() {
             >
               <div
                 v-if="menu"
-                ref="refMenuNavbar"
                 class="absolute right-0 top-full mt-2 h-auto w-60 border shadow-lg bg-white rounded-md p-3"
               >
                 <ul class="flex flex-col gap-2">

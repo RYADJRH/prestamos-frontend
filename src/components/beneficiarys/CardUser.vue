@@ -17,7 +17,7 @@ withDefaults(
 <template>
   <div class="h-56 flex justify-center">
     <div
-      class="h-32 w-32 relative rounded-md bg-white border hover:border-2 hover:bg-gray-100 hover:border-sky-800 flex justify-center items-center cursor-pointer"
+      class="h-32 w-32 relative rounded-md bg-white border hover:bg-gray-100 hover:border-sky-800 flex justify-center items-center cursor-pointer"
     >
       <div
         class="absolute top-0 bottom-0 left-0 right-0 bg-black bg-opacity-50 rounded-md grid place-content-center"

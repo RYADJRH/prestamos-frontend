@@ -6,7 +6,7 @@ import { useBeneficiaryStore } from "@/stores/beneficiary.store";
 import { useErrorStore } from "@/stores/error.store";
 import { useDialogStore } from "@/stores/dialog.store";
 import { Beneficiary } from "@/interfaces/beneficiary.interface";
-import CardUser from "@/components/shared_components/beneficiarys/CardUser.vue";
+import CardUser from "@/components/beneficiarys/CardUser.vue";
 import RModal from "@/components/shared_components/rComponents/RModal.vue";
 import RBtn from "@/components/shared_components/rComponents/RBtn.vue";
 import RFormGroup from "@/components/shared_components/rComponents/RFormGroup.vue";

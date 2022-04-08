@@ -29,7 +29,7 @@ export const UseBorrowerStore = defineStore('borrower', {
             return await apiSaveBorrower(data)
                 .then((response) => {
                     const data = response.data.borrower as BorrrowerRequest;
-                    if (this.borrowers.length > 5) {
+                    if (this.borrowers.length == 5) {
                         this.borrowers.pop();
                     }
                     this.borrowers.unshift(data);

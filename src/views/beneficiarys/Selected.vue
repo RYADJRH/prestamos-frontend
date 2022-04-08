@@ -176,7 +176,7 @@ watch(modalBeneficiary, (value) => {
             @click="saveUpdateBeneficiary"
             :disabled="loadingSaveUpdateBeneficiary"
           >
-            <r-spinner class="mr-2" v-if="loadingSaveUpdateBeneficiary"></r-spinner>
+            <r-spinner class="mr-2" v-if="loadingSaveUpdateBeneficiary" size="btn"></r-spinner>
             Guardar
           </r-btn>
         </div>

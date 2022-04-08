@@ -56,7 +56,7 @@ const fields_keys = computed<Field[]>(() => {
                 <tr v-if="!loading && items.length == 0">
                     <td :colspan="fields_keys.length">
                         <div class="inline-flex w-full justify-center p-6">
-                            <h1 class="text-xl text-sky-800">No se encontraron items</h1>
+                            <h1 class="text-xl text-sky-800">Sin datos</h1>
                         </div>
                     </td>
                 </tr>

@@ -69,7 +69,7 @@ onBeforeMount(() => errorStore.$reset());
       </r-form-group>
       <div>
         <r-btn class="w-full" type="submit" :disabled="loading">
-          <r-spinner class="mr-3" v-if="loading"></r-spinner>Iniciar sesión
+          <r-spinner class="mr-3" v-if="loading" size="btn"></r-spinner>Iniciar sesión
         </r-btn>
       </div>
     </form>

@@ -1,26 +1,37 @@
 <script setup lang="ts">
 type variant = "primary" | "light" | "danger";
+type Size = "normal" | "btn";
 
-withDefaults(defineProps<{ variant?: variant; loadingFull?: boolean }>(), {
+withDefaults(defineProps<{ variant?: variant; loadingFull?: boolean; size?: Size }>(), {
   variant: "primary",
   loadingFull: false,
+  size: "normal",
 });
 </script>
 
 <template>
   <svg
-    class="animate-spin h-6 w-6"
+    class="animate-spin"
     :class="{
       'text-red-800': variant == 'danger',
       'text-sky-800': variant == 'primary',
       'text-white': variant == 'light',
-      'h-28 w-28': loadingFull,
+      'h-20 w-20': loadingFull,
+      'h-6 w-6': !loadingFull && size == 'normal',
+      'h-4 w-4': !loadingFull && size == 'btn',
     }"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     viewBox="0 0 24 24"
   >
-    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+    <circle
+      class="opacity-25"
+      cx="12"
+      cy="12"
+      r="10"
+      stroke="currentColor"
+      stroke-width="4"
+    />
     <path
       class="opacity-75"
       fill="currentColor"

@@ -47,6 +47,15 @@ const routes: RouteRecordRaw[] = [
         }
     },
     {
+        path: '/grupo/:slug',
+        name: 'grupo',
+        component: () => import('@/views/groups/Grupo.vue'),
+        meta: {
+            requiresAuth: true,
+            layout: 'AuthLayout'
+        }
+    },
+    {
         path: '/:pathMatch(.*)*',
         redirect: '/404'
     },

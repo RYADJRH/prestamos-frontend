@@ -1,19 +1,17 @@
-interface groupResponse {
-    id_group: number,
+import { DayWeek } from '@/interfaces/utils/DayWeek.interface';
+interface Group {
+    id_group?: number,
     name_group: string,
-    created_group: Date,
-    day_payment_name: string,
-    id_beneficiary: number,
-    state_archived_group: boolean
+    created_group: string,
+    day_payment_name?: string,
+    day_payment: DayWeek,
+    slug?: string,
+    id_beneficiary?: number,
+    state_archived_group?: boolean
 }
 
-interface groupSend {
-    name_group: string,
-    created_group: Date,
-    id_beneficiary: number,
-}
 
 export {
-    groupResponse,
-    groupSend
+    Group,
+
 }

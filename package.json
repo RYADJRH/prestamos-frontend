@@ -12,6 +12,7 @@
     "@types/tailwindcss": "^3.0.9",
     "@vueuse/core": "^8.1.1",
     "axios": "^0.26.1",
+    "dayjs": "^1.11.0",
     "particles.vue3": "^1.42.0",
     "pinia": "^2.0.11",
     "vue": "^3.2.25",

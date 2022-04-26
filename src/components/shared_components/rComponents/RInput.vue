@@ -1,25 +1,69 @@
 <script setup lang="ts">
-
-withDefaults(
-  defineProps<{ modelValue: string; type: string; stateError?: boolean }>(),
-  { stateError: false }
+import { current } from "tailwindcss/colors";
+import { computed, ref } from "vue";
+const props = withDefaults(
+  defineProps<{
+    modelValue: string | number;
+    type: string;
+    stateError?: boolean;
+    currency?: boolean;
+  }>(),
+  { stateError: false, currency: false }
 );
 
+const isFocusInput = ref(false);
+type ValueType = String | number;
 const emits = defineEmits<{
-  (e: "update:modelValue", value: string): void;
+  (e: "update:modelValue", value: ValueType): void;
 }>();
 
-function updateInput(event: Event) {
-  const target = event.target as HTMLInputElement;
-  emits("update:modelValue", target.value);
+const value = computed({
+  get() {
+    if (!props.currency) {
+      return props.modelValue;
+    } else {
+      if (isFocusInput.value) {
+        return props.modelValue;
+      } else {
+        const numero = props.modelValue as number;
+        return "$ " + numero.toFixed(2).replace(/(\d)(?=(\d{3})+(?:\.\d+)?$)/g, "$1,");
+      }
+    }
+  },
+  set(value: number | string) {
+    if (!props.currency) {
+      emits("update:modelValue", value);
+    } else {
+      const numero = value.toString();
+      let newValue = parseFloat(numero.replace(/[^\d\.]/g, ""));
+      if (isNaN(newValue)) {
+        newValue = 0;
+      }
+      newValue = parseFloat(newValue.toFixed(2));
+      emits("update:modelValue", newValue);
+    }
+  },
+});
+
+function isNumberKey(event: KeyboardEvent) {
+  if (props.currency || props.type == "number") {
+    var charCode = event.which ? event.which : event.keyCode;
+    if (charCode <= 13 || (charCode >= 48 && charCode <= 57) || charCode == 46) {
+      return true;
+    } else {
+      event.preventDefault();
+    }
+  }
 }
 </script>
 
 <template>
   <input
-    v-model="modelValue"
-    @input="updateInput"
+    v-model="value"
     :type="type"
+    @blur="isFocusInput = false"
+    @focus="isFocusInput = true"
+    @keypress="isNumberKey($event)"
     class="block w-full rounded-md border border-gray-600 shadow-sm focus:border-sky-800 focus:ring-1 focus:ring-sky-800 disabled:cursor-not-allowed disabled:bg-gray-100"
     :class="{ 'border-red-800': stateError }"
   />

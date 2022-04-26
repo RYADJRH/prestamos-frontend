@@ -22,8 +22,8 @@ const apiSaveBorrower = async (data: Borrower) => {
     })
 }
 
-const apiGetBorrowers = async (id_beneficiary: number, page: number, search: string = '') => {
-    return await axios.get(`${PREFIX_API}borrower/beneficiary/${id_beneficiary}?page=${page}&search=${search}`);
+const apiGetBorrowers = async (id_beneficiary: number, page: number, search: string = '', extend: boolean = true) => {
+    return await axios.get(`${PREFIX_API}borrower/beneficiary/${id_beneficiary}?page=${page}&search=${search}&extend=${extend}`);
 }
 
 const apiDeleteBorrower = async (id_borrower: number) => {
@@ -58,9 +58,14 @@ const apiUpdateBorrower = async (data: Borrower, id_borrower: number) => {
     })
 }
 
+const apiGetBorrowersAddGroup = async (page: number, search: string = '', slug_group: string) => {
+    return await axios.get(`${PREFIX_API}borrower/add/group/${slug_group}?page=${page}&search=${search}`);
+}
+
 export {
     apiSaveBorrower,
     apiGetBorrowers,
     apiDeleteBorrower,
-    apiUpdateBorrower
+    apiUpdateBorrower,
+    apiGetBorrowersAddGroup
 }

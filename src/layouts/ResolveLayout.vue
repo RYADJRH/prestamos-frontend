@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { shallowRef, watch, onBeforeMount } from 'vue';
+import { shallowRef, watch } from 'vue';
 import DefaultLayout from "@/layouts/DefaultLayout.vue";
 import { useRoute } from "vue-router";
 

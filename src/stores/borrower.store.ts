@@ -7,13 +7,15 @@ interface State {
     currentPage: number,
     totalPages: number,
     borrowers: BorrrowerRequest[],
+    totalBorrowers: number;
 }
 
 export const UseBorrowerStore = defineStore('borrower', {
     state: (): State => ({
         currentPage: 1,
         totalPages: 1,
-        borrowers: []
+        borrowers: [],
+        totalBorrowers: 0
     }),
     getters: {
         getBorrowers: (state) => state.borrowers
@@ -29,10 +31,12 @@ export const UseBorrowerStore = defineStore('borrower', {
             return await apiSaveBorrower(data)
                 .then((response) => {
                     const data = response.data.borrower as BorrrowerRequest;
+                    this.totalBorrowers++;
                     if (this.borrowers.length == 5) {
                         this.borrowers.pop();
                     }
                     this.borrowers.unshift(data);
+                    this.totalPages = Math.ceil(this.totalBorrowers / 5);
                     return Promise.resolve(response);
                 })
                 .catch((err) => {
@@ -46,6 +50,7 @@ export const UseBorrowerStore = defineStore('borrower', {
                     this.borrowers = data.data as BorrrowerRequest[];
                     this.currentPage = data.current_page as number;
                     this.totalPages = data.last_page as number;
+                    this.totalBorrowers = data.total as number;
                     return Promise.resolve(response);
                 }).catch((err) => {
                     return Promise.reject(err);

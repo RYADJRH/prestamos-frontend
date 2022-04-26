@@ -227,7 +227,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="flex flex-col gap-5">
-    <h1 class="text-2xl flex">Lista prestatarios</h1>
+    <h1 class="text-2xl flex text-gray-600">Lista prestatarios</h1>
     <div class="md:flex md:justify-between">
       <div class="md:grid md:place-content-center">
         <r-btn variant="primary" @click="saveBorrowerModal">Agregar</r-btn>
@@ -282,7 +282,7 @@ onBeforeUnmount(() => {
         <span v-else>No disponible</span>
       </template>
 
-      <template #footer>
+      <template #footer v-if="borrowerStore.getBorrowers.length > 0">
         <div class="flex justify-end items-center h-full">
           <div>
             <r-pagination
@@ -297,7 +297,7 @@ onBeforeUnmount(() => {
   </div>
   <r-modal
     v-model="modalAddBorrower"
-    size="md"
+    size="sm"
     :title="(modeEdit ? 'Editar' : 'Agregar') + ' prestatario'"
     hidden-footer
     :loading="loadingSave"

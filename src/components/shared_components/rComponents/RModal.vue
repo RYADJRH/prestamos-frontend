@@ -34,7 +34,7 @@ const emits = defineEmits<{
           <div
             class="relative bg-white rounded-md w-full"
             :class="{
-              'md:w-1/4': size == 'sm',
+              'md:w-2/6': size == 'sm',
               'md:w-2/4': size == 'md',
               'md:w-3/4': size == 'lg',
               'md:w-full': size == 'xl',

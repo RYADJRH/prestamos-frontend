@@ -222,7 +222,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="flex flex-col gap-2">
-    <h1 class="text-2xl">Lista de grupos</h1>
+    <h1 class="text-2xl text-gray-600">Lista de grupos</h1>
     <div class="md:flex md:justify-between">
       <div class="flex items-end">
         <div class="block">
@@ -277,7 +277,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
       <div
-        class="bg-white px-4 py-1 flex justify-end rounded-md shadow-sm border"
+        class="bg-white px-4 py-1 flex justify-end rounded-md shadow-sm "
         v-if="groupStore.getGroups.length > 0"
       >
         <div class="grid place-content-center">

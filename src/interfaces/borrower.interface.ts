@@ -14,12 +14,29 @@ interface BorrrowerRequest {
     id_borrower: number,
     name_borrower: string,
     last_name_borrower: string,
-    name_file_ine_borrower_path: string | null,
-    name_file_proof_address_borrower_path: string | null,
+    full_name: string,
+    name_file_ine_borrower_path?: string | null,
+    name_file_proof_address_borrower_path?: string | null,
     id_beneficiary: number
+}
+
+interface BorrowerGroupResponse {
+    id_borrower: number,
+    name_borrower: string,
+    last_name_borrower: string,
+    full_name: string,
+    agregado: boolean
+}
+
+interface BorrowerGroup {
+    id_borrower: number,
+    amount_borrow: number,
+    amount_interest: number
 }
 
 export {
     Borrower,
-    BorrrowerRequest
+    BorrrowerRequest,
+    BorrowerGroup,
+    BorrowerGroupResponse
 }

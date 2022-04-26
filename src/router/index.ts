@@ -55,6 +55,7 @@ const routes: RouteRecordRaw[] = [
             layout: 'AuthLayout'
         }
     },
+
     {
         path: '/:pathMatch(.*)*',
         redirect: '/404'

@@ -1,7 +1,7 @@
 
-import { createApp, provide } from 'vue';
+import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import App from './App.vue'
+import Application from './App.vue'
 import router from './router';
 /* @ts-ignore */
 import Particles from "particles.vue3";
@@ -11,12 +11,19 @@ import axios from './plugins/axios';
 import VueAxios from 'vue-axios';
 import { loading } from './plugins/loadingFull';
 
-createApp(App)
-    .use(createPinia())
-    .use(router)
-    .use(VueAxios, axios)
-    .use(Particles)
-    .use(loading)
-    .component('ResolveLayout', ResolveLayout)
-    .mount('#app')
+const app = createApp(Application);
+
+app.directive('focus', {
+    mounted(el) {
+        el.focus();
+    },
+})
+
+app.use(createPinia())
+app.use(router)
+app.use(VueAxios, axios)
+app.use(Particles)
+app.use(loading)
+app.component('ResolveLayout', ResolveLayout)
+app.mount('#app')
 

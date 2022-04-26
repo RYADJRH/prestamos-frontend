@@ -6,7 +6,8 @@ interface State {
     totalPages: number,
     seletecFilter: 0 | 1
     itemsFiltro: Record<'text' | 'value', any>[]
-    groups: Group[]
+    groups: Group[],
+    totalGroups: number,
 }
 
 const useGroupStore = defineStore('group', {
@@ -18,7 +19,8 @@ const useGroupStore = defineStore('group', {
             { text: "En proceso", value: 0 },
             { text: "Archivado", value: 1 },
         ],
-        groups: []
+        groups: [],
+        totalGroups: 0
     }),
     getters: {
         getGroups(state) {
@@ -54,6 +56,7 @@ const useGroupStore = defineStore('group', {
         async saveGroup(data: Group) {
             return await apiRegisterGroup(data)
                 .then((response) => {
+                    this.totalGroups++;
                     const data = response.data.group as Group;
                     if (this.seletecFilter == 0) {
                         if (this.groups.length == 6) {
@@ -61,6 +64,7 @@ const useGroupStore = defineStore('group', {
                         }
                         this.groups.unshift(data);
                     }
+                    this.totalPages = Math.ceil(this.totalGroups / 6);
                     return Promise.resolve(response);
                 }).catch((err) => {
                     return Promise.reject(err);

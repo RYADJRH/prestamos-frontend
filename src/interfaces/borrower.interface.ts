@@ -28,15 +28,9 @@ interface BorrowerGroupResponse {
     agregado: boolean
 }
 
-interface BorrowerGroup {
-    id_borrower: number,
-    amount_borrow: number,
-    amount_interest: number
-}
 
 export {
     Borrower,
     BorrrowerRequest,
-    BorrowerGroup,
     BorrowerGroupResponse
 }

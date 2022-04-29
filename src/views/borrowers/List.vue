@@ -245,7 +245,11 @@ onBeforeUnmount(() => {
         ></r-input>
       </div>
     </div>
-    <r-table :fields="fields" :items="borrowerStore.getBorrowers">
+    <r-table
+      :fields="fields"
+      :items="borrowerStore.getBorrowers"
+      :hidden-footer="borrowerStore.getBorrowers.length == 0"
+    >
       <template #cell(acciones)="{ data }">
         <r-btn
           variant="danger"
@@ -282,7 +286,7 @@ onBeforeUnmount(() => {
         <span v-else>No disponible</span>
       </template>
 
-      <template #footer v-if="borrowerStore.getBorrowers.length > 0">
+      <template #footer>
         <div class="flex justify-end items-center h-full">
           <div>
             <r-pagination

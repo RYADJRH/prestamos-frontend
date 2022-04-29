@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia';
 import { apiGetBorrowersAddGroup } from '@/servicesApi/borrower.service';
+import { apiAddMemberGroup, apiUpdateMemberGroup } from '@/servicesApi/individualGroup.service';
 import { BorrowerGroupResponse } from '@/interfaces/borrower.interface';
+import { AddMember, UpdateMember } from '@/interfaces/groupBorrower.interface';
 
 interface State {
     borrowersListSearch: BorrowerGroupResponse[]
@@ -31,6 +33,27 @@ const useAddMemberGroup = defineStore('add-member-group', {
                     return Promise.reject(err);
                 });
         },
+
+        async addMember(data: AddMember) {
+            return await apiAddMemberGroup(data)
+                .then((response) => {
+                    const member = response.data.member;
+                    return Promise.resolve(member);
+                })
+                .catch((err) => {
+                    return Promise.reject(err);
+                })
+        },
+        async updateMember(data: UpdateMember) {
+            return await apiUpdateMemberGroup(data)
+                .then((response) => {
+                    const member = response.data.member;
+                    return Promise.resolve(member);
+                })
+                .catch((err) => {
+                    return Promise.reject(err);
+                })
+        }
 
     }
 });

@@ -1,33 +1,24 @@
 <script setup lang="ts">
-import { ref, onBeforeMount, inject, onBeforeUnmount, computed } from "vue";
+import { computed, ref, onBeforeMount, onBeforeUnmount, inject } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { onClickOutside } from "@vueuse/core";
-import {
-  CalendarIcon,
-  ArchiveIcon,
-  UserGroupIcon,
-  CogIcon,
-  CurrencyDollarIcon,
-  ArrowSmLeftIcon,
-  SearchIcon,
-} from "@heroicons/vue/solid";
-
-import { formatDate } from "@/utils/dates";
-import { moneyMxn } from "@/utils/currency";
+import { ArchiveIcon, ArrowSmLeftIcon, CogIcon } from "@heroicons/vue/solid";
 import { useIndividualGroupStore } from "@/stores/individualGroup.store";
-import AddOrEditMemberGroup from "@/components/groups/members/addOrEdit.vue";
-import RBtn from "@/components/shared_components/rComponents/RBtn.vue";
-import RModal from "@/components/shared_components/rComponents/RModal.vue";
 import RMenu from "@/components/shared_components/rComponents/RMenu.vue";
-import RTable from "@/components/shared_components/rComponents/RTable.vue";
-import RInput from "@/components/shared_components/rComponents/RInput.vue";
+import RBtn from "@/components/shared_components/rComponents/RBtn.vue";
+import InfoGroup from "@/components/groups/InfoGroup.vue";
+import viewMember from "@/components/groups/members/ViewMember.vue";
+
 import { Group } from "@/interfaces/group.interface";
 
 const setLoadingFull = inject("set-loading-full") as (value: boolean) => {};
 
-const individualGroupStore = useIndividualGroupStore();
 const router = useRouter();
 const route = useRoute();
+const individualGroupStore = useIndividualGroupStore();
+const group = computed(() => {
+  return individualGroupStore.getGroup as Group;
+});
 const settingsMenu = ref(false);
 const settingsGroup = ref(null);
 
@@ -35,36 +26,20 @@ onClickOutside(settingsGroup, (event) => {
   settingsMenu.value = false;
 });
 
-const group = computed(() => {
-  return individualGroupStore.getGroup as Group;
-});
+async function fnApiGroup() {
+  await individualGroupStore.getApiGroup(slug.value).catch(() => {});
+}
 
-const amounts = computed(() => {
-  return individualGroupStore.getAmountsGroup;
-});
-
-const inputSearchMembers = ref("");
-const fieldsMiembros = [
-  { key: "name_borrower", name: "Nombre" },
-  { key: "borrowed", name: "Prestado" },
-  { key: "interest", name: "Intereses" },
-  { key: "to_pay", name: "A pagar" },
-  { key: "acciones", name: "Acciones" },
-];
-
-const modalAddUpdateMember = ref(false);
-const modeEditBorrowerGroup = ref(false);
-
-function addMemberOpenModal() {
-  modeEditBorrowerGroup.value = false;
-  modalAddUpdateMember.value = true;
+async function fnBorrowerGroup() {
+  await individualGroupStore.getApiBorrowersGroup(slug.value, 1, "").catch(() => {});
 }
 
 const slug = ref("");
 onBeforeMount(async () => {
   setLoadingFull(true);
   slug.value = route.params.slug as string;
-  await individualGroupStore.getApiGroup(slug.value).catch(() => {});
+  await fnApiGroup();
+  await fnBorrowerGroup();
   setLoadingFull(false);
 });
 
@@ -103,80 +78,7 @@ onBeforeUnmount(() => {
         </r-menu>
       </div>
     </div>
-
-    <div class="flex flex-wrap bg-white rounded-md p-4 mt-4 shadow-sm text-gray-600">
-      <div class="w-full lg:w-1/3 flex gap-4 my-2">
-        <CalendarIcon class="h-6 w-6"></CalendarIcon>
-        Fecha : <strong>{{ formatDate(group.created_group, "LL") }}</strong>
-      </div>
-      <div class="w-full lg:w-1/3 flex gap-4 my-2">
-        <CalendarIcon class="h-6 w-6"></CalendarIcon>
-        Dia de pago :<strong>{{ group.day_payment_name }}</strong>
-      </div>
-      <div class="w-full lg:w-1/3 flex gap-4 my-2">
-        <ArchiveIcon class="h-6 w-6"></ArchiveIcon>
-        Status :
-        <strong> {{ group.state_archived_group ? "Archivado" : "En proceso" }}</strong>
-      </div>
-      <div class="w-full lg:w-1/3 flex gap-4 my-2">
-        <UserGroupIcon class="h-6 w-6"></UserGroupIcon>
-        No.miembros :<strong>{{ amounts.number_members }}</strong>
-      </div>
-      <div class="w-full lg:w-1/3 flex gap-4 my-2">
-        <CurrencyDollarIcon class="h-6 w-6"></CurrencyDollarIcon>
-        Prestado :<strong>{{ moneyMxn(amounts.amount_borrow) }}</strong>
-      </div>
-      <div class="w-full lg:w-1/3 flex gap-4 my-2">
-        <CurrencyDollarIcon class="h-6 w-6"></CurrencyDollarIcon>
-        Intereses :<strong>{{ moneyMxn(amounts.amount_interest) }}</strong>
-      </div>
-      <div class="w-full lg:w-1/3 flex gap-4 my-2">
-        <CurrencyDollarIcon class="h-6 w-6"></CurrencyDollarIcon>
-        Cobrado :<strong>{{ moneyMxn(amounts.amount_charged) }}</strong>
-      </div>
-      <div class="w-full lg:w-1/3 flex gap-4 my-2">
-        <CurrencyDollarIcon class="h-6 w-6"></CurrencyDollarIcon>
-        Total :<strong>{{ moneyMxn(amounts.amount_total) }}</strong>
-      </div>
-    </div>
-    <div class="my-4">
-      <h1 class="text-gray-600 text-lg">Miembros</h1>
-      <div class="mt-4">
-        <div class="flex flex-col md:flex-row justify-between">
-          <div>
-            <r-btn @click="addMemberOpenModal"> Agregar </r-btn>
-          </div>
-          <div class="block relative md:w-64 w-full mt-2 md:mt-0">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-2">
-              <SearchIcon class="h-6 w-6 text-gray-500"></SearchIcon>
-            </span>
-            <!--@input="inputSearchDebounce" -->
-            <r-input
-              v-model="inputSearchMembers"
-              class="pl-10"
-              type="search"
-              placeholder="busqueda"
-            ></r-input>
-          </div>
-        </div>
-        <div class="mt-4">
-          <r-table :fields="fieldsMiembros" :items="[]" hidden-footer></r-table>
-        </div>
-      </div>
-    </div>
+    <info-group class="mt-4"></info-group>
+    <view-member class="mt-4"></view-member>
   </div>
-  <r-modal
-    v-model="modalAddUpdateMember"
-    :title="(modeEditBorrowerGroup ? 'Editar' : 'Agregar') + ' miembro'"
-    hidden-footer
-  >
-    <template #content>
-      <add-or-edit-member-group
-        :slug-group="slug"
-        :mode-edit="modeEditBorrowerGroup"
-        :selected-borrower="null"
-        :amounts-borrower="null"
-      ></add-or-edit-member-group>
-    </template>
-  </r-modal>
 </template>

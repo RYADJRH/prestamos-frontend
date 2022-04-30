@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { apiGetGroup, apiGetBorrowerGroup, apiDeleteMemberGroup, apiGetPayslips } from '@/servicesApi/individualGroup.service';
+import { apiGetGroup, apiGetBorrowerGroup, apiDeleteMemberGroup, apiGetPayslips, apiDeletePayslip } from '@/servicesApi/individualGroup.service';
 import { Group } from '@/interfaces/group.interface';
 import { BorrowerAmounts } from '@/interfaces/groupBorrower.interface';
 import { Payslip } from '@/interfaces/payslipGroup.interface';
@@ -23,7 +23,7 @@ interface State {
         data: Payslip[],
         currentPage: number,
         totalPages: number,
-        totalBorrowers: number;
+        totalPayslips: number;
     }
 }
 
@@ -47,7 +47,7 @@ const useIndividualGroupStore = defineStore('individual-group', {
             data: [],
             currentPage: 1,
             totalPages: 1,
-            totalBorrowers: 0
+            totalPayslips: 0
         },
     }),
     getters: {
@@ -93,7 +93,9 @@ const useIndividualGroupStore = defineStore('individual-group', {
                 state_borrow: member.group_borrower.state_borrow,
             }
             const index = this.borrowers.data.findIndex((item) => item.id_group_borrower == newData.id_group_borrower);
-            this.borrowers.data[index] = newData;
+            if (index != -1) {
+                this.borrowers.data[index] = newData;
+            }
         },
         setMember(member: any) {
             const newData: BorrowerAmounts = {
@@ -171,8 +173,10 @@ const useIndividualGroupStore = defineStore('individual-group', {
                 .then((response) => {
                     const isDeleted = response.data.isDeleted;
                     if (isDeleted) {
+                        this.borrowers.totalBorrowers--;
                         const newData = [...this.borrowers.data].filter((item) => item.id_group_borrower !== id_group_borrower)
                         this.borrowers.data = newData;
+
                         if (this.borrowers.data.length == 0 && this.borrowers.totalPages > 1) {
                             this.setPageBorrower(1);
                         }
@@ -190,20 +194,54 @@ const useIndividualGroupStore = defineStore('individual-group', {
         setTotalPagePayslips(pages: number) {
             this.payslips.totalPages = pages;
         },
+        setPayslip(payslip: Payslip) {
+            this.payslips.totalPayslips++;
+            if (this.payslips.data.length == 5) {
+                this.payslips.data.pop();
+            }
+            this.payslips.data.unshift(payslip);
+            this.payslips.totalPages = Math.ceil(this.payslips.totalPayslips / 5);
+        },
+        setUpdatePayslip(payslip: Payslip) {
+
+            const index = this.payslips.data.findIndex((item) => item.id_payslip == payslip.id_payslip);
+            if (index != -1) {
+                this.payslips.data[index] = payslip;
+            }
+
+        },
         async getApiPayslip(slug_group: string, page: number = 1, search: string = '') {
             return await apiGetPayslips(slug_group, page, search)
                 .then((response) => {
                     const payslips = response.data.payslips;
                     this.payslips.currentPage = payslips.current_page;
                     this.payslips.totalPages = payslips.last_page;
-                    this.payslips.totalBorrowers = payslips.total;
+                    this.payslips.totalPayslips = payslips.total;
                     this.payslips.data = payslips.data;
                     return Promise.resolve();
                 })
                 .catch((err) => {
                     return Promise.reject(err);
                 })
-        }
+        },
+        async deletePayslipGroup(id_payslip: number) {
+            return await apiDeletePayslip(id_payslip)
+                .then((response) => {
+                    const isDeleted = response.data.isDeleted;
+                    if (isDeleted) {
+                        this.payslips.totalPayslips--;
+                        const newData = [...this.payslips.data].filter((item) => item.id_payslip !== id_payslip)
+                        this.payslips.data = newData;
+                        if (this.payslips.data.length == 0 && this.payslips.totalPages > 1) {
+                            this.setPagePayslips(1);
+                        }
+                    }
+                    return Promise.resolve(isDeleted);
+                })
+                .catch((err) => {
+                    return Promise.reject(err);
+                })
+        },
 
 
 

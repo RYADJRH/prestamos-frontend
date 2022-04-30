@@ -135,6 +135,9 @@ function deleteMember(id_group_borrower: number) {
                 title: "Elimanación exitosa",
                 description: "¡El miembro ha sido eliminado!",
               });
+              if (borrowers.value.length == 0 && totalPages.value > 1) {
+                fnBorrowerGroup();
+              }
             } else {
               dialogStore.show({
                 variant: "error",

@@ -1,4 +1,5 @@
 import { AddMember, UpdateMember } from '@/interfaces/groupBorrower.interface';
+import { AddPayslip, Payslip } from '@/interfaces/payslipGroup.interface';
 
 import axios from 'axios';
 const PREFIX_API = import.meta.env.VITE_PREFIX_API;
@@ -26,11 +27,28 @@ const apiDeleteMemberGroup = async (id_group_borrower: number) => {
 const apiGetPayslips = async (slug_group: string, page = 1, search = '') => {
     return await axios.get(`${PREFIX_API}group/payslip/${slug_group}?page=${page}&search=${search}`);
 }
+
+const apiAddPayslip = async (data: AddPayslip) => {
+    return await axios.post(`${PREFIX_API}group/payslip`, data);
+}
+
+const apiUpdatePayslip = async (data: Payslip) => {
+    const { name_payslip, created_payslip } = data;
+    return await axios.put(`${PREFIX_API}group/payslip/${data.id_payslip}`, { name_payslip, created_payslip });
+}
+
+const apiDeletePayslip = async (id_payslip: number) => {
+    return await axios.delete(`${PREFIX_API}group/payslip/${id_payslip}`);
+}
+
 export {
     apiGetGroup,
     apiGetBorrowerGroup,
     apiAddMemberGroup,
     apiUpdateMemberGroup,
     apiDeleteMemberGroup,
-    apiGetPayslips
+    apiGetPayslips,
+    apiAddPayslip,
+    apiUpdatePayslip,
+    apiDeletePayslip
 }

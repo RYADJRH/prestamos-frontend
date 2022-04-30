@@ -55,7 +55,15 @@ const routes: RouteRecordRaw[] = [
             layout: 'AuthLayout'
         }
     },
-
+    {
+        path: '/hoja-pagos/:slug',
+        name: 'hoja-pagos',
+        component: () => import('@/views/payslip/Index.vue'),
+        meta: {
+            requiresAuth: true,
+            layout: 'AuthLayout'
+        }
+    },
     {
         path: '/:pathMatch(.*)*',
         redirect: '/404'

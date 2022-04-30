@@ -87,7 +87,6 @@ async function guardar() {
     await addMemberGroupStore
       .updateMember({ id_group_borrower, amount_borrow, amount_interest })
       .then(async (member) => {
-
         individualGroupStore.setUpdateMember(member);
         await individualGroupStore.getApiGroup(props.slugGroup).catch(() => {});
 
@@ -96,7 +95,6 @@ async function guardar() {
           title: "Actualización exitosa",
           description: "¡El miembro ha sido actualizado!",
         });
-
       })
       .catch((err) => {
         dialogStore.show({
@@ -118,7 +116,10 @@ async function guardar() {
             description: "¡El nuevo miembro ha sido agregado!",
           })
           .then(() => {
-            emits("close:modal");
+            addMemberGroupStore.$reset();
+            searchBorrower.value = "";
+            selectedBorrower.value = null;
+            Object.assign(borrower, { ...initBorrower });
           });
       })
       .catch((err) => {

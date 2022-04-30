@@ -23,10 +23,14 @@ const apiDeleteMemberGroup = async (id_group_borrower: number) => {
     return await axios.delete(`${PREFIX_API}group/member/${id_group_borrower}`);
 }
 
+const apiGetPayslips = async (slug_group: string, page = 1, search = '') => {
+    return await axios.get(`${PREFIX_API}group/payslip/${slug_group}?page=${page}&search=${search}`);
+}
 export {
     apiGetGroup,
     apiGetBorrowerGroup,
     apiAddMemberGroup,
     apiUpdateMemberGroup,
-    apiDeleteMemberGroup
+    apiDeleteMemberGroup,
+    apiGetPayslips
 }

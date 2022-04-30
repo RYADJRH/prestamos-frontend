@@ -8,6 +8,7 @@ import RMenu from "@/components/shared_components/rComponents/RMenu.vue";
 import RBtn from "@/components/shared_components/rComponents/RBtn.vue";
 import InfoGroup from "@/components/groups/InfoGroup.vue";
 import viewMember from "@/components/groups/members/ViewMember.vue";
+import PaySlip from "@/components/groups/payslip/PaySlip.vue";
 
 import { Group } from "@/interfaces/group.interface";
 
@@ -33,6 +34,9 @@ async function fnApiGroup() {
 async function fnBorrowerGroup() {
   await individualGroupStore.getApiBorrowersGroup(slug.value, 1, "").catch(() => {});
 }
+async function fnPayslipsGroup() {
+  await individualGroupStore.getApiPayslip(slug.value).catch(() => {});
+}
 
 const slug = ref("");
 onBeforeMount(async () => {
@@ -40,6 +44,7 @@ onBeforeMount(async () => {
   slug.value = route.params.slug as string;
   await fnApiGroup();
   await fnBorrowerGroup();
+  await fnPayslipsGroup();
   setLoadingFull(false);
 });
 
@@ -79,6 +84,7 @@ onBeforeUnmount(() => {
       </div>
     </div>
     <info-group class="mt-4"></info-group>
-    <view-member class="mt-4"></view-member>
+    <view-member class="mt-8"></view-member>
+    <pay-slip class="mt-8"></pay-slip>
   </div>
 </template>

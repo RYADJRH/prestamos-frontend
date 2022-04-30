@@ -181,6 +181,9 @@ function deleteMember(id_group_borrower: number) {
           :items="borrowers"
           :hidden-footer="borrowers.length == 0"
         >
+          <template #cell(full_name)="{ data }">
+            <span class="font-bold">{{ data.full_name }}</span>
+          </template>
           <template #cell(amount_borrow)="{ data }">
             {{ moneyMxn(data.amount_borrow) }}
           </template>
@@ -188,7 +191,7 @@ function deleteMember(id_group_borrower: number) {
             {{ moneyMxn(data.amount_interest) }}
           </template>
           <template #cell(amount_pay)="{ data }">
-              {{ moneyMxn(data.amount_pay) }}
+            {{ moneyMxn(data.amount_pay) }}
           </template>
           <template #cell(amount_payment_total)="{ data }">
             {{ moneyMxn(data.amount_payment_total) }}

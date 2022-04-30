@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia';
-import { apiGetGroup, apiGetBorrowerGroup, apiDeleteMemberGroup } from '@/servicesApi/individualGroup.service';
+import { apiGetGroup, apiGetBorrowerGroup, apiDeleteMemberGroup, apiGetPayslips } from '@/servicesApi/individualGroup.service';
 import { Group } from '@/interfaces/group.interface';
 import { BorrowerAmounts } from '@/interfaces/groupBorrower.interface';
+import { Payslip } from '@/interfaces/payslipGroup.interface';
 
 interface State {
     group: Group | {},
@@ -14,6 +15,12 @@ interface State {
     }
     borrowers: {
         data: BorrowerAmounts[],
+        currentPage: number,
+        totalPages: number,
+        totalBorrowers: number;
+    },
+    payslips: {
+        data: Payslip[],
         currentPage: number,
         totalPages: number,
         totalBorrowers: number;
@@ -35,12 +42,19 @@ const useIndividualGroupStore = defineStore('individual-group', {
             currentPage: 1,
             totalPages: 1,
             totalBorrowers: 0
-        }
+        },
+        payslips: {
+            data: [],
+            currentPage: 1,
+            totalPages: 1,
+            totalBorrowers: 0
+        },
     }),
     getters: {
         getGroup(state) {
             return state.group;
         },
+        /* members */
         getBorrowersAmount(state) {
             return state.borrowers.data;
         },
@@ -52,9 +66,20 @@ const useIndividualGroupStore = defineStore('individual-group', {
         },
         getCurrentPageBorrower(state) {
             return state.borrowers.currentPage;
+        },
+        /* payslip */
+        getPayslips(state) {
+            return state.payslips.data;
+        },
+        getTotalPagesPaylips(state) {
+            return state.payslips.totalPages;
+        },
+        getCurrentPagePaylips(state) {
+            return state.payslips.currentPage;
         }
     },
     actions: {
+        /* members */
         setUpdateMember(member: any) {
             const newData: BorrowerAmounts = {
                 id_borrower: member.id_borrower,
@@ -113,6 +138,7 @@ const useIndividualGroupStore = defineStore('individual-group', {
                     return Promise.reject(err);
                 });
         },
+
         async getApiBorrowersGroup(slug_group: string, page: number, search: string) {
             return await apiGetBorrowerGroup(slug_group, page, search)
                 .then((response) => {
@@ -156,7 +182,30 @@ const useIndividualGroupStore = defineStore('individual-group', {
                 .catch((err) => {
                     return Promise.reject(err);
                 })
+        },
+        /* payslips */
+        setPagePayslips(page: number) {
+            this.payslips.currentPage = page;
+        },
+        setTotalPagePayslips(pages: number) {
+            this.payslips.totalPages = pages;
+        },
+        async getApiPayslip(slug_group: string, page: number = 1, search: string = '') {
+            return await apiGetPayslips(slug_group, page, search)
+                .then((response) => {
+                    const payslips = response.data.payslips;
+                    this.payslips.currentPage = payslips.current_page;
+                    this.payslips.totalPages = payslips.last_page;
+                    this.payslips.totalBorrowers = payslips.total;
+                    this.payslips.data = payslips.data;
+                    return Promise.resolve();
+                })
+                .catch((err) => {
+                    return Promise.reject(err);
+                })
         }
+
+
 
     }
 });

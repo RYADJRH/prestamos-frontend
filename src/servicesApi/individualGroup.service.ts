@@ -1,4 +1,5 @@
 import { AddMember, UpdateMember } from '@/interfaces/groupBorrower.interface';
+import { AddPayment } from '@/interfaces/payments.interface';
 import { AddPayslip, Payslip } from '@/interfaces/payslipGroup.interface';
 
 import axios from 'axios';
@@ -41,6 +42,23 @@ const apiDeletePayslip = async (id_payslip: number) => {
     return await axios.delete(`${PREFIX_API}group/payslip/${id_payslip}`);
 }
 
+const apiGetPayslip = async (slug_payslip: string) => {
+    return await axios.get(`${PREFIX_API}payslip/${slug_payslip}`);
+}
+
+const apiGetPaymentsPayslip = async (slug_payslip: string, page: number = 1, search: string = '') => {
+    return await axios.get(`${PREFIX_API}payslip/payments/${slug_payslip}?page=${page}&search=${search}`);
+
+}
+
+const apiGetaddPaymentsMemberPayslip = async (slug_payslip: string) => {
+    return await axios.get(`${PREFIX_API}payslip/payments/member/${slug_payslip}`)
+}
+
+const apiRegisterPaymentsMembers = async (slug_payslip: string, payments: AddPayment[]) => {
+    return await axios.post(`${PREFIX_API}payslip/payments/member`, { payments, slug_payslip });
+}
+
 export {
     apiGetGroup,
     apiGetBorrowerGroup,
@@ -50,5 +68,9 @@ export {
     apiGetPayslips,
     apiAddPayslip,
     apiUpdatePayslip,
-    apiDeletePayslip
+    apiDeletePayslip,
+    apiGetPayslip,
+    apiGetPaymentsPayslip,
+    apiGetaddPaymentsMemberPayslip,
+    apiRegisterPaymentsMembers
 }

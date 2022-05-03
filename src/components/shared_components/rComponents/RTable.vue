@@ -12,9 +12,10 @@ const props = withDefaults(
     fields?: Field[] | string[];
     items: Record<string, any>[];
     loading?: boolean;
+    shadowNone?: boolean;
     hiddenFooter?: boolean;
   }>(),
-  { loading: false, hiddenFooter: false }
+  { loading: false, hiddenFooter: false, shadowNone: false }
 );
 
 function fieldType(fields: Field | string): fields is Field {
@@ -39,10 +40,8 @@ const fields_keys = computed<Field[]>(() => {
 </script>
 
 <template>
-  <div
-    class="relative overflow-x-auto rounded-md shadow-lg md:max-h-94"
-    :class="{ 'opacity-50': loading }"
-  >
+  <div class="relative overflow-x-auto rounded-md md:max-h-94"
+    :class="{ 'opacity-50': loading, 'shadow-none': shadowNone, 'shadow-lg': !shadowNone }">
     <table class="w-full bg-white text-sm text-left text-gray-600">
       <thead class="uppercase border-b sticky top-0">
         <tr>
@@ -60,7 +59,9 @@ const fields_keys = computed<Field[]>(() => {
         <tr v-if="!loading && items.length == 0">
           <td :colspan="fields_keys.length">
             <div class="inline-flex w-full justify-center p-6">
-              <h1 class="text-xl text-sky-800">Sin datos</h1>
+              <h1 class="text-xl text-sky-800">
+                <slot name="label-empty">Sin datos</slot>
+              </h1>
             </div>
           </td>
         </tr>

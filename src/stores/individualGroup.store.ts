@@ -218,7 +218,7 @@ const useIndividualGroupStore = defineStore('individual-group', {
                     this.payslips.totalPages = payslips.last_page;
                     this.payslips.totalPayslips = payslips.total;
                     this.payslips.data = payslips.data;
-                    return Promise.resolve();
+                    return Promise.resolve(payslips);
                 })
                 .catch((err) => {
                     return Promise.reject(err);

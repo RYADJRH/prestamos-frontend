@@ -46,7 +46,7 @@ const fields_keys = computed<Field[]>(() => {
       <thead class="uppercase border-b sticky top-0">
         <tr>
           <th v-for="item in fields_keys" scope="col" class="px-6 py-3">
-            {{ item.name }}
+            <slot :name="`header(${item.key})`" :data="item"> {{ item.name }}</slot>
           </th>
         </tr>
       </thead>

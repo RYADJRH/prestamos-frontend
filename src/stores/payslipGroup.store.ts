@@ -1,7 +1,18 @@
 import { defineStore } from 'pinia';
-import { apiAddPayslip, apiUpdatePayslip, apiGetPayslip, apiGetPaymentsPayslip, apiGetaddPaymentsMemberPayslip, apiRegisterPaymentsMembers } from '@/servicesApi/individualGroup.service';
+import {
+    apiAddPayslip,
+    apiUpdatePayslip,
+    apiGetPayslip,
+    apiGetPaymentsPayslip,
+    apiGetaddPaymentsMemberPayslip,
+    apiRegisterPaymentsMembers,
+    apiDeletePayment,
+    apiUpdateAmountPayment,
+    apiUpdateStatePayment
+} from '@/servicesApi/individualGroup.service';
 import { AddPayslip, PayslipPayments, Payslip } from '@/interfaces/payslipGroup.interface';
 import { AddPayment, PaymentsPayslip } from '@/interfaces/payments.interface';
+import { Payment } from '@/interfaces/utils/Payment.interface';
 
 interface State {
     payslip: PayslipPayments,
@@ -49,6 +60,9 @@ const usePayslipGroupStore = defineStore('payslip', {
         },
         getAddPaymentsMembers(state) {
             return state.addPayments;
+        },
+        getPaymentsMembersSelected(state) {
+            return [...state.addPayments].filter((item) => item.isSelected);
         }
 
     },
@@ -110,6 +124,12 @@ const usePayslipGroupStore = defineStore('payslip', {
         setAddPaymentsMembers(value: AddPayment[]) {
             this.addPayments = value;
         },
+        setSelectedAllPaymentsMembers(value: boolean) {
+            this.addPayments = [...this.addPayments].map((payment) => {
+                payment.isSelected = value;
+                return payment;
+            })
+        },
         async getaddPaymentsMemberPayslip(slug_payslip: string) {
             return await apiGetaddPaymentsMemberPayslip(slug_payslip)
                 .then((response) => {
@@ -140,8 +160,52 @@ const usePayslipGroupStore = defineStore('payslip', {
                 .catch((err) => {
                     return Promise.reject(err);
                 })
+        },
+        async deletePayment(id_payment: number) {
+            return await apiDeletePayment(id_payment)
+                .then((response) => {
+                    const isDeleted = response.data.isDeleted;
+                    if (isDeleted) {
+                        this.payments.totalPayments--;
+                        const newData = [...this.payments.data].filter((item) => item.id_payment !== id_payment)
+                        this.payments.data = newData;
+                        if (this.payments.data.length == 0 && this.payments.totalPages > 1) {
+                            this.setPagePayments(1);
+                        }
+                    }
+                    return Promise.resolve(isDeleted);
+                })
+                .catch((err) => {
+                    return Promise.reject(err);
+                })
+        },
+        async updateAmountPayment(id_payment: number, amount_payment: number) {
+            return await apiUpdateAmountPayment(id_payment, amount_payment)
+                .then((response) => {
+                    const { amount_payment, amount_payment_decimal } = response.data;
+                    const index = [...this.payments.data].findIndex((item) => item.id_payment == id_payment);
+                    if (index != -1) {
+                        this.payments.data[index].amount_payment = amount_payment;
+                        this.payments.data[index].amount_payment_decimal = amount_payment_decimal;
+                    }
+                })
+                .catch((err) => {
+                    return Promise.reject(err);
+                })
+        },
+        async updateStatePayment(id_payment: number, status: Payment) {
+            return await apiUpdateStatePayment(id_payment, status)
+                .then((response) => {
+                    const state_payment = response.data.state_payment;
+                    const index = [...this.payments.data].findIndex((item) => item.id_payment == id_payment);
+                    if (index != -1) {
+                        this.payments.data[index].state_payment = state_payment;
+                    }
+                })
+                .catch((err) => {
+                    return Promise.reject(err);
+                })
         }
-
 
     }
 })

@@ -3,6 +3,7 @@ import { AddPayment } from '@/interfaces/payments.interface';
 import { AddPayslip, Payslip } from '@/interfaces/payslipGroup.interface';
 
 import axios from 'axios';
+import { Payment } from '@/interfaces/utils/Payment.interface';
 const PREFIX_API = import.meta.env.VITE_PREFIX_API;
 
 const apiGetGroup = async (slug_group: string, simple = false) => {
@@ -59,6 +60,18 @@ const apiRegisterPaymentsMembers = async (slug_payslip: string, payments: AddPay
     return await axios.post(`${PREFIX_API}payslip/payments/member`, { payments, slug_payslip });
 }
 
+const apiDeletePayment = async (id_payment: number) => {
+    return await axios.delete(`${PREFIX_API}payslip/payments/member/${id_payment}`);
+}
+
+const apiUpdateAmountPayment = async (id_payment: number, amount_payment: number) => {
+    return await axios.put(`${PREFIX_API}payslip/payments/member/${id_payment}`, { amount_payment });
+}
+
+const apiUpdateStatePayment = async (id_payment: number, status: Payment) => {
+    return await axios.post(`${PREFIX_API}payslip/payments/status`, { id_payment, status })
+}
+
 export {
     apiGetGroup,
     apiGetBorrowerGroup,
@@ -72,5 +85,8 @@ export {
     apiGetPayslip,
     apiGetPaymentsPayslip,
     apiGetaddPaymentsMemberPayslip,
-    apiRegisterPaymentsMembers
+    apiRegisterPaymentsMembers,
+    apiDeletePayment,
+    apiUpdateAmountPayment,
+    apiUpdateStatePayment
 }

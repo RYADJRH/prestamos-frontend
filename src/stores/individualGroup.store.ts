@@ -1,8 +1,7 @@
 import { defineStore } from 'pinia';
-import { apiGetGroup, apiGetBorrowerGroup, apiDeleteMemberGroup, apiGetPayslips, apiDeletePayslip } from '@/servicesApi/individualGroup.service';
+import { apiGetGroup, apiGetBorrowerGroup, apiDeleteMemberGroup } from '@/servicesApi/individualGroup.service';
 import { Group } from '@/interfaces/group.interface';
 import { BorrowerAmounts } from '@/interfaces/groupBorrower.interface';
-import { Payslip } from '@/interfaces/payslipGroup.interface';
 
 interface State {
     group: Group | {},
@@ -19,12 +18,7 @@ interface State {
         totalPages: number,
         totalBorrowers: number;
     },
-    payslips: {
-        data: Payslip[],
-        currentPage: number,
-        totalPages: number,
-        totalPayslips: number;
-    }
+
 }
 
 const useIndividualGroupStore = defineStore('individual-group', {
@@ -43,12 +37,7 @@ const useIndividualGroupStore = defineStore('individual-group', {
             totalPages: 1,
             totalBorrowers: 0
         },
-        payslips: {
-            data: [],
-            currentPage: 1,
-            totalPages: 1,
-            totalPayslips: 0
-        },
+
     }),
     getters: {
         getGroup(state) {
@@ -67,47 +56,22 @@ const useIndividualGroupStore = defineStore('individual-group', {
         getCurrentPageBorrower(state) {
             return state.borrowers.currentPage;
         },
-        /* payslip */
-        getPayslips(state) {
-            return state.payslips.data;
-        },
-        getTotalPagesPaylips(state) {
-            return state.payslips.totalPages;
-        },
-        getCurrentPagePaylips(state) {
-            return state.payslips.currentPage;
-        }
+
     },
     actions: {
         /* members */
-        setUpdateMember(member: any) {
+        setMember(borrower: any) {
             const newData: BorrowerAmounts = {
-                id_borrower: member.id_borrower,
-                id_group: member.group_borrower.id_group,
-                id_group_borrower: member.group_borrower.id_group_borrower,
-                full_name: member.full_name,
-                amount_borrow: member.group_borrower.amount_borrow_decimal,
-                amount_interest: member.group_borrower.amount_interest_decimal,
-                amount_pay: member.group_borrower.amount_pay_decimal,
-                amount_payment_total: member.group_borrower.amount_payment_total_decimal,
-                state_borrow: member.group_borrower.state_borrow,
-            }
-            const index = this.borrowers.data.findIndex((item) => item.id_group_borrower == newData.id_group_borrower);
-            if (index != -1) {
-                this.borrowers.data[index] = newData;
-            }
-        },
-        setMember(member: any) {
-            const newData: BorrowerAmounts = {
-                id_borrower: member.id_borrower,
-                id_group: member.group_borrower.id_group,
-                id_group_borrower: member.group_borrower.id_group_borrower,
-                full_name: member.full_name,
-                amount_borrow: member.group_borrower.amount_borrow_decimal,
-                amount_interest: member.group_borrower.amount_interest_decimal,
-                amount_pay: member.group_borrower.amount_pay_decimal,
-                amount_payment_total: member.group_borrower.amount_payment_total_decimal,
-                state_borrow: member.group_borrower.state_borrow,
+                id_borrower: borrower.id_borrower,
+                id_group: borrower.group_borrower.id_group,
+                id_group_borrower: borrower.group_borrower.id_group_borrower,
+                full_name: borrower.full_name,
+                amount_borrow: borrower.group_borrower.amount_borrow_decimal,
+                amount_interest: borrower.group_borrower.amount_interest_decimal,
+                amount_pay: borrower.group_borrower.amount_pay_decimal,
+                amount_payment_total: borrower.group_borrower.amount_payment_total_decimal,
+                number_payments: borrower.group_borrower.number_payments,
+                state_borrow: borrower.group_borrower.state_borrow,
             }
             this.borrowers.totalBorrowers++;
             if (this.borrowers.data.length == 5) {
@@ -159,6 +123,7 @@ const useIndividualGroupStore = defineStore('individual-group', {
                             amount_interest: borrower.group_borrower.amount_interest_decimal,
                             amount_pay: borrower.group_borrower.amount_pay_decimal,
                             amount_payment_total: borrower.group_borrower.amount_payment_total_decimal,
+                            number_payments: borrower.group_borrower.number_payments,
                             state_borrow: borrower.group_borrower.state_borrow,
                         }
                         return newData;
@@ -187,62 +152,6 @@ const useIndividualGroupStore = defineStore('individual-group', {
                     return Promise.reject(err);
                 })
         },
-        /* payslips */
-        setPagePayslips(page: number) {
-            this.payslips.currentPage = page;
-        },
-        setTotalPagePayslips(pages: number) {
-            this.payslips.totalPages = pages;
-        },
-        setPayslip(payslip: Payslip) {
-            this.payslips.totalPayslips++;
-            if (this.payslips.data.length == 5) {
-                this.payslips.data.pop();
-            }
-            this.payslips.data.unshift(payslip);
-            this.payslips.totalPages = Math.ceil(this.payslips.totalPayslips / 5);
-        },
-        setUpdatePayslip(payslip: Payslip) {
-
-            const index = this.payslips.data.findIndex((item) => item.id_payslip == payslip.id_payslip);
-            if (index != -1) {
-                this.payslips.data[index] = payslip;
-            }
-
-        },
-        async getApiPayslip(slug_group: string, page: number = 1, search: string = '') {
-            return await apiGetPayslips(slug_group, page, search)
-                .then((response) => {
-                    const payslips = response.data.payslips;
-                    this.payslips.currentPage = payslips.current_page;
-                    this.payslips.totalPages = payslips.last_page;
-                    this.payslips.totalPayslips = payslips.total;
-                    this.payslips.data = payslips.data;
-                    return Promise.resolve(payslips);
-                })
-                .catch((err) => {
-                    return Promise.reject(err);
-                })
-        },
-        async deletePayslipGroup(id_payslip: number) {
-            return await apiDeletePayslip(id_payslip)
-                .then((response) => {
-                    const isDeleted = response.data.isDeleted;
-                    if (isDeleted) {
-                        this.payslips.totalPayslips--;
-                        const newData = [...this.payslips.data].filter((item) => item.id_payslip !== id_payslip)
-                        this.payslips.data = newData;
-                        if (this.payslips.data.length == 0 && this.payslips.totalPages > 1) {
-                            this.setPagePayslips(1);
-                        }
-                    }
-                    return Promise.resolve(isDeleted);
-                })
-                .catch((err) => {
-                    return Promise.reject(err);
-                })
-        },
-
 
 
     }

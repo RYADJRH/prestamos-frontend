@@ -44,7 +44,7 @@ function clickItem(item: any) {
 </script>
 <template>
   <div
-    class="relative"
+    class="relative z-[60]"
     :ref="
       (el) => {
         target = el;

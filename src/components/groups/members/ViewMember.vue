@@ -7,15 +7,15 @@ import { moneyMxn } from "@/utils/currency";
 import { useDialogStore } from "@/stores/dialog.store";
 import { useIndividualGroupStore } from "@/stores/individualGroup.store";
 import { Group } from "@/interfaces/group.interface";
-import { BorrowerAmounts } from "@/interfaces/groupBorrower.interface";
 
-import { SearchIcon, TrashIcon, PencilAltIcon } from "@heroicons/vue/solid";
+import { SearchIcon, TrashIcon } from "@heroicons/vue/solid";
 import RInput from "@/components/shared_components/rComponents/RInput.vue";
 import RBtn from "@/components/shared_components/rComponents/RBtn.vue";
 import RModal from "@/components/shared_components/rComponents/RModal.vue";
 import RPagination from "@/components/shared_components/rComponents/RPagination.vue";
 import RTable from "@/components/shared_components/rComponents/RTable.vue";
-import AddOrEditMemberGroup from "@/components/groups/members/addOrEdit.vue";
+import AddMemberGroup from "@/components/groups/members/AddMemberGroup.vue";
+
 
 const dialogStore = useDialogStore();
 const individualGroupStore = useIndividualGroupStore();
@@ -58,6 +58,7 @@ const fieldsMiembros = [
   { key: "amount_interest", name: "Intereses" },
   { key: "amount_pay", name: "A pagar" },
   { key: "amount_payment_total", name: "Pagado" },
+  { key: "number_payments", name: "Pagos" },
   { key: "acciones", name: "Acciones" },
 ];
 const borrowers = computed(() => individualGroupStore.getBorrowersAmount);
@@ -69,11 +70,10 @@ async function fnBorrowerGroup() {
       currentPage.value,
       inputSearchMembers.value
     )
-    .catch(() => {});
+    .catch(() => { });
 }
 
 const modalAddUpdateMember = ref(false);
-const modeEditBorrowerGroup = ref(false);
 const selectedBorrower = ref<null | {
   id_group_borrower: number;
   id_borrower: number;
@@ -86,33 +86,18 @@ const amountsBorrower = ref<null | { amount_borrow: number; amount_interest: num
 function addMemberOpenModal() {
   selectedBorrower.value = null;
   amountsBorrower.value = null;
-  modeEditBorrowerGroup.value = false;
-  modalAddUpdateMember.value = true;
-}
-function editMemberOpenModal(data: BorrowerAmounts) {
-  const {
-    id_group_borrower,
-    id_borrower,
-    full_name,
-    amount_borrow,
-    amount_interest,
-  } = data;
-  selectedBorrower.value = { id_group_borrower, id_borrower, full_name };
-  amountsBorrower.value = { amount_borrow, amount_interest };
-  modeEditBorrowerGroup.value = true;
   modalAddUpdateMember.value = true;
 }
 
+
 const loadingAddEditMember = ref(false);
-function updateLoadingAddEditMember(value: boolean) {
+
+function updateLoadingAddMember(value: boolean) {
   loadingAddEditMember.value = value;
 }
-function closeModal() {
-  modalAddUpdateMember.value = false;
-  updateLoadingAddEditMember(false);
-}
+
 async function fnApiGroup() {
-  await individualGroupStore.getApiGroup(group.value.slug as string).catch(() => {});
+  await individualGroupStore.getApiGroup(group.value.slug as string).catch(() => { });
 }
 
 function deleteMember(id_group_borrower: number) {
@@ -156,6 +141,10 @@ function deleteMember(id_group_borrower: number) {
       }
     });
 }
+
+function closeModal() {
+  modalAddUpdateMember.value = false;
+}
 </script>
 <template>
   <div>
@@ -169,21 +158,12 @@ function deleteMember(id_group_borrower: number) {
           <span class="absolute inset-y-0 left-0 flex items-center pl-2">
             <SearchIcon class="h-6 w-6 text-gray-500"></SearchIcon>
           </span>
-          <r-input
-            v-model="inputSearchMembers"
-            class="pl-10"
-            @input="inputSearchDebounce"
-            type="search"
-            placeholder="busqueda"
-          ></r-input>
+          <r-input v-model="inputSearchMembers" class="pl-10" @input="inputSearchDebounce" type="search"
+            placeholder="busqueda"></r-input>
         </div>
       </div>
       <div class="mt-4">
-        <r-table
-          :fields="fieldsMiembros"
-          :items="borrowers"
-          :hidden-footer="borrowers.length == 0"
-        >
+        <r-table :fields="fieldsMiembros" :items="borrowers" :hidden-footer="borrowers.length == 0">
           <template #cell(full_name)="{ data }">
             <span class="font-bold">{{ data.full_name }}</span>
           </template>
@@ -200,51 +180,26 @@ function deleteMember(id_group_borrower: number) {
             {{ moneyMxn(data.amount_payment_total) }}
           </template>
           <template #cell(acciones)="{ data }">
-            <r-btn
-              variant="danger"
-              class="mr-3 px-1 py-2"
-              @click="deleteMember(data.id_group_borrower)"
-            >
+            <r-btn variant="danger" class="mr-3 px-1 py-2" @click="deleteMember(data.id_group_borrower)">
               <TrashIcon class="h-5 w-5 text-white"></TrashIcon>
             </r-btn>
-            <r-btn
-              variant="success"
-              class="mr-3 px-1 py-2"
-              @click="editMemberOpenModal(data)"
-            >
-              <PencilAltIcon class="h-5 w-5 text-white"></PencilAltIcon>
-            </r-btn>
+
           </template>
           <template #footer>
             <div class="flex justify-end items-center h-full">
               <div>
-                <r-pagination
-                  v-model="currentPage"
-                  :total-pages="totalPages"
-                  variant="dark"
-                ></r-pagination>
+                <r-pagination v-model="currentPage" :total-pages="totalPages" variant="dark"></r-pagination>
               </div>
             </div>
           </template>
         </r-table>
       </div>
     </div>
-    <r-modal
-      v-model="modalAddUpdateMember"
-      :loading="loadingAddEditMember"
-      :title="(modeEditBorrowerGroup ? 'Editar' : 'Agregar') + ' miembro'"
-      hidden-footer
-    >
+    <r-modal v-model="modalAddUpdateMember" :loading="loadingAddEditMember" title="Agregar miembro" size="lg"
+      hidden-footer>
       <template #content>
-        <add-or-edit-member-group
-          @close:modal="closeModal"
-          @update:loading-save="updateLoadingAddEditMember"
-          :loading-save="loadingAddEditMember"
-          :slug-group="(group.slug as string)"
-          :mode-edit="modeEditBorrowerGroup"
-          :selected-borrower="selectedBorrower"
-          :amounts-borrower="amountsBorrower"
-        ></add-or-edit-member-group>
+        <add-member-group :loading-save="loadingAddEditMember" @update:loading-save="updateLoadingAddMember"
+          @close:modal="closeModal"></add-member-group>
       </template>
     </r-modal>
   </div>

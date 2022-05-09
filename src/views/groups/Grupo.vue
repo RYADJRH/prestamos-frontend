@@ -2,7 +2,7 @@
 import { computed, ref, onBeforeMount, onBeforeUnmount, inject } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { onClickOutside } from "@vueuse/core";
-import { ArchiveIcon, ArrowSmLeftIcon, CogIcon } from "@heroicons/vue/solid";
+import { ArchiveIcon, ArrowSmLeftIcon, CogIcon, CurrencyDollarIcon } from "@heroicons/vue/solid";
 import { useIndividualGroupStore } from "@/stores/individualGroup.store";
 import RMenu from "@/components/shared_components/rComponents/RMenu.vue";
 import RBtn from "@/components/shared_components/rComponents/RBtn.vue";
@@ -27,11 +27,11 @@ onClickOutside(settingsGroup, (event) => {
 });
 
 async function fnApiGroup() {
-  await individualGroupStore.getApiGroup(slug.value).catch(() => {});
+  await individualGroupStore.getApiGroup(slug.value).catch(() => { });
 }
 
 async function fnBorrowerGroup() {
-  await individualGroupStore.getApiBorrowersGroup(slug.value, 1, "").catch(() => {});
+  await individualGroupStore.getApiBorrowersGroup(slug.value, 1, "").catch(() => { });
 }
 
 const slug = ref("");
@@ -52,10 +52,7 @@ onBeforeUnmount(() => {
   <div>
     <div class="flex justify-between">
       <div class="flex items-center gap-2">
-        <a
-          class="text-gray-600 hover:text-red-800 cursor-pointer"
-          @click="router.push('/grupos')"
-        >
+        <a class="text-gray-600 hover:text-red-800 cursor-pointer" @click="router.push('/grupos')">
           <ArrowSmLeftIcon class="w-8 h-8"></ArrowSmLeftIcon>
         </a>
         <h1 class="text-2xl text-gray-600">{{ group.name_group }}</h1>
@@ -67,10 +64,15 @@ onBeforeUnmount(() => {
         <r-menu v-model="settingsMenu" align="bottom-right">
           <template #list>
             <li>
-              <button
-                class="w-full flex gap-1 p-2 text-gray-500 hover:bg-sky-800/10 hover:text-sky-800 rounded-md"
-              >
-                <ArchiveIcon class="h-6 w-6"></ArchiveIcon>
+              <router-link :to="`/grupo/pagos-vencidos/${group.slug}`"
+                class="w-full flex gap-1 p-2 text-gray-500 hover:bg-sky-800/10 hover:text-sky-800 rounded-md">
+                <CurrencyDollarIcon class="h-6 w-6 mr-2"></CurrencyDollarIcon>
+                Pagos vencidos
+              </router-link>
+            </li>
+            <li>
+              <button class="w-full flex gap-1 p-2 text-gray-500 hover:bg-sky-800/10 hover:text-sky-800 rounded-md">
+                <ArchiveIcon class="h-6 w-6 mr-2"></ArchiveIcon>
                 {{ group.state_archived_group ? "Proces" : "Archivar" }}
               </button>
             </li>

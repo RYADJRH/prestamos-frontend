@@ -21,7 +21,7 @@ defineProps<{ modelValue: boolean; align: Aling }>();
         'left-0 top-full': align == 'bottom-left',
         'left-0 bottom-full': align == 'top-left',
       }"
-      class="z-40 absolute h-auto w-60 border shadow-lg bg-white rounded-md p-3"
+      class="absolute h-auto w-60 border shadow-lg bg-white rounded-md p-3"
     >
       <ul class="flex flex-col gap-2">
         <slot name="list"></slot>

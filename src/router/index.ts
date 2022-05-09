@@ -56,6 +56,15 @@ const routes: RouteRecordRaw[] = [
         }
     },
     {
+        path: '/grupo/pagos-vencidos/:slug',
+        name: 'grupo-pagos-vencidos',
+        component: () => import('@/views/groups/payments/PastDue.vue'),
+        meta: {
+            requiresAuth: true,
+            layout: 'AuthLayout'
+        }
+    },
+    {
         path: '/:pathMatch(.*)*',
         redirect: '/404'
     },

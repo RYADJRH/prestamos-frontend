@@ -1,5 +1,13 @@
 import { defineStore } from 'pinia';
-import { apiPaymentsPastDue, apiUpdateStatePayment, apiReportePaymentsPastDueGroup } from '@/servicesApi/payments.service';
+import {
+    apiPaymentsPastDue,
+    apiUpdateStatePayment,
+    apiReportePaymentsPastDueGroup,
+    apiPaymentsNextDue,
+    apiReportePaymentsNextDueGroup,
+    apiPaymentsBorrower,
+    apiReportePaymentsBorrowerGroup
+} from '@/servicesApi/payments.service';
 import { Payments } from '@/interfaces/payments.interface';
 import { Payment } from '@/interfaces/utils/Payment.interface';
 
@@ -15,6 +23,10 @@ interface State {
         slug: string,
         name: String
     },
+    borrower: {
+        slug: string,
+        full_name: string
+    }
 }
 const usePaymentStore = defineStore('payments', {
     state: (): State => ({
@@ -28,6 +40,10 @@ const usePaymentStore = defineStore('payments', {
         group: {
             slug: '',
             name: ''
+        },
+        borrower: {
+            slug: '',
+            full_name: ''
         }
 
     }),
@@ -49,9 +65,15 @@ const usePaymentStore = defineStore('payments', {
         },
         getGroup(state) {
             return state.group;
+        },
+        getBorrower(state) {
+            return state.borrower;
         }
     },
     actions: {
+        setBorrower(borrower: { slug: string, full_name: string }) {
+            this.borrower = borrower;
+        },
         setCurrentPagePayment(page: number) {
             this.payments.currentPage = page;
         },
@@ -61,6 +83,7 @@ const usePaymentStore = defineStore('payments', {
         setGroup(group: { slug: string, name: string }) {
             this.group = group;
         },
+        /* payments past due */
         async getApiPaymentsPastDue(slug_group: string, page: number, search: string) {
             return await apiPaymentsPastDue(slug_group, page, search)
                 .then((response) => {
@@ -78,25 +101,6 @@ const usePaymentStore = defineStore('payments', {
                     return Promise.reject(err);
                 });
         },
-        async updateStatePayment(id_payment: number, status: Payment) {
-            return await apiUpdateStatePayment(id_payment, status)
-                .then((response) => {
-                    const state_payment = response.data.state_payment;
-                    const index = [...this.payments.data].findIndex((item) => item.id_payment == id_payment);
-                    if (index != -1) {
-                        if (state_payment == Payment.paid) {
-                            this.payments.data.splice(index, 1);
-                        } else {
-                            this.payments.data[index].state_payment = state_payment;
-                        }
-
-                    }
-                })
-                .catch((err) => {
-                    return Promise.reject(err);
-                })
-        },
-
         async reportePaymentsPastDueGroup(slug_group: string) {
             return await apiReportePaymentsPastDueGroup(slug_group)
                 .then((response) => {
@@ -110,7 +114,101 @@ const usePaymentStore = defineStore('payments', {
                 .catch((err) => {
                     return Promise.reject(err);
                 })
-        }
+        },
+        /* payments next due */
+        async getApiPaymentsNextDue(slug_group: string, page: number, search: string) {
+            return await apiPaymentsNextDue(slug_group, page, search)
+                .then((response) => {
+                    const paymentsResponse = response.data.payments;
+                    const totalOwe = response.data.total;
+                    const nameGroup = response.data.name_group;
+                    this.payments.currentPage = paymentsResponse.current_page;
+                    this.payments.totalPages = paymentsResponse.last_page;
+                    this.payments.totalPayments = paymentsResponse.total;
+                    this.payments.data = paymentsResponse.data;
+                    this.total_owe = totalOwe;
+                    this.group.name = nameGroup;
+                    return Promise.resolve(paymentsResponse);
+                }).catch((err) => {
+                    return Promise.reject(err);
+                });
+        },
+        async reportePaymentsNextDueGroup(slug_group: string) {
+            return await apiReportePaymentsNextDueGroup(slug_group)
+                .then((response) => {
+                    const pdf = response.data;
+                    let blob = new Blob([pdf], {
+                        type: 'application/pdf'
+                    });
+                    const url = window.URL.createObjectURL(blob);
+                    return Promise.resolve(url);
+                })
+                .catch((err) => {
+                    return Promise.reject(err);
+                })
+        },
+        /* payments for borrower */
+        async getApiPaymentsBorrower(slug_group: string, slug_borrower: string, page: number) {
+            return await apiPaymentsBorrower(slug_group, slug_borrower, page)
+                .then((response) => {
+                    const paymentsResponse = response.data.payments;
+                    const totalOwe = response.data.total;
+                    const nameBorrower = response.data.name_borrower;
+                    const nameGroup = response.data.name_group;
+                    this.payments.currentPage = paymentsResponse.current_page;
+                    this.payments.totalPages = paymentsResponse.last_page;
+                    this.payments.totalPayments = paymentsResponse.total;
+                    this.payments.data = paymentsResponse.data;
+                    this.total_owe = totalOwe;
+                    this.borrower.full_name = nameBorrower;
+                    this.group.name = nameGroup;
+                    return Promise.resolve(paymentsResponse);
+                }).catch((err) => {
+                    return Promise.reject(err);
+                });
+        },
+        async reportePaymentsBorrowerGroup(slug_group: string, slug_borrower: string) {
+            return await apiReportePaymentsBorrowerGroup(slug_group, slug_borrower)
+                .then((response) => {
+                    const pdf = response.data;
+                    let blob = new Blob([pdf], {
+                        type: 'application/pdf'
+                    });
+                    const url = window.URL.createObjectURL(blob);
+                    return Promise.resolve(url);
+                })
+                .catch((err) => {
+                    return Promise.reject(err);
+                })
+        },
+        async updateStatePayment(type: string, id_payment: number, status: Payment) {
+            return await apiUpdateStatePayment(id_payment, status)
+                .then((response) => {
+                    const state_payment = response.data.state_payment;
+                    const index = [...this.payments.data].findIndex((item) => item.id_payment == id_payment);
+                    if (type == 'borrower-payments') {
+                        this.payments.data[index].state_payment = state_payment;
+                        if (state_payment == Payment.paid) {
+                            this.total_owe -= this.payments.data[index].amount_payment_period_decimal;
+                        }
+                        if ((state_payment == Payment.unpaid || state_payment == Payment.inprocess)) {
+                            this.total_owe += this.payments.data[index].amount_payment_period_decimal;
+                        }
+                    } else {
+                        if (index != -1) {
+                            if (state_payment == Payment.paid) {
+                                this.payments.data.splice(index, 1);
+                            } else {
+                                this.payments.data[index].state_payment = state_payment;
+                            }
+
+                        }
+                    }
+                })
+                .catch((err) => {
+                    return Promise.reject(err);
+                })
+        },
     }
 });
 

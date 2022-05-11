@@ -22,11 +22,16 @@ const apiCalculatedAmortization = async (data: CalculatedAmortization) => {
     return await axios.post(`${PREFIX_API}amortization/group/calculated`, data);
 }
 
+const apiUpdateStateGroup = async (slug_group: string, state_archived_group: boolean) => {
+    return await axios.put(`${PREFIX_API}group/update-state/${slug_group}`, { state_archived_group });
+}
+
 
 export {
     apiGetGroup,
     apiGetBorrowerGroup,
     apiAddMemberGroup,
     apiDeleteMemberGroup,
-    apiCalculatedAmortization
+    apiCalculatedAmortization,
+    apiUpdateStateGroup
 }

@@ -3,6 +3,7 @@ interface BorrowerAmounts {
     id_group: number,
     id_group_borrower: number,
     full_name: string,
+    slug_borrower: string,
     amount_borrow: number,
     amount_interest: number,
     amount_pay: number,

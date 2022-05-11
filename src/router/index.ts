@@ -65,6 +65,24 @@ const routes: RouteRecordRaw[] = [
         }
     },
     {
+        path: '/grupo/pagos-siguientes/:slug',
+        name: 'grupo-pagos-siguientes',
+        component: () => import('@/views/groups/payments/NextDue.vue'),
+        meta: {
+            requiresAuth: true,
+            layout: 'AuthLayout'
+        }
+    },
+    {
+        path: '/pagos/grupo/:slug_group/prestatista/:slug_borrower',
+        name: 'pagos-borrower',
+        component: () => import('@/views/borrowers/payments/PaymentsGroup.vue'),
+        meta: {
+            requiresAuth: true,
+            layout: 'AuthLayout'
+        }
+    },
+    {
         path: '/:pathMatch(.*)*',
         redirect: '/404'
     },

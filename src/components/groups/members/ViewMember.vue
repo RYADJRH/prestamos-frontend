@@ -7,6 +7,7 @@ import { moneyMxn } from "@/utils/currency";
 import { useDialogStore } from "@/stores/dialog.store";
 import { useIndividualGroupStore } from "@/stores/individualGroup.store";
 import { Group } from "@/interfaces/group.interface";
+import { getValuePayment, Payment } from '@/interfaces/utils/Payment.interface';
 
 import { SearchIcon, TrashIcon } from "@heroicons/vue/solid";
 import RInput from "@/components/shared_components/rComponents/RInput.vue";
@@ -59,6 +60,7 @@ const fieldsMiembros = [
   { key: "amount_pay", name: "A pagar" },
   { key: "amount_payment_total", name: "Pagado" },
   { key: "number_payments", name: "Pagos" },
+  { key: "state_borrow", name: "Status" },
   { key: "acciones", name: "Acciones" },
 ];
 const borrowers = computed(() => individualGroupStore.getBorrowersAmount);
@@ -165,7 +167,7 @@ function closeModal() {
       <div class="mt-4">
         <r-table :fields="fieldsMiembros" :items="borrowers" :hidden-footer="borrowers.length == 0">
           <template #cell(full_name)="{ data }">
-            <span class="font-bold">{{ data.full_name }}</span>
+            <router-link :to="`/pagos/grupo/${group.slug}/prestatista/${data.slug_borrower}`" class="font-bold hover:underline hover:underline-offset-4 hover:cursor-pointer">{{ data.full_name }}</router-link>
           </template>
           <template #cell(amount_borrow)="{ data }">
             {{ moneyMxn(data.amount_borrow) }}
@@ -178,6 +180,17 @@ function closeModal() {
           </template>
           <template #cell(amount_payment_total)="{ data }">
             {{ moneyMxn(data.amount_payment_total) }}
+          </template>
+          <template #cell(state_borrow)="{ data }">
+            <div
+              class="px-3 py-1 rounded-md font-bold text-center"
+              :class="{
+                'bg-emerald-100 text-emerald-800': data.state_borrow == Payment.paid,
+                'bg-red-100 text-red-800': data.state_borrow == Payment.unpaid,
+                'bg-yellow-100 text-yellow-800': data.state_borrow == Payment.inprocess,
+              }">
+              {{ getValuePayment(data.state_borrow) }}
+            </div>
           </template>
           <template #cell(acciones)="{ data }">
             <r-btn variant="danger" class="mr-3 px-1 py-2" @click="deleteMember(data.id_group_borrower)">

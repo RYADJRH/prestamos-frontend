@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { apiGetGroup, apiGetBorrowerGroup, apiDeleteMemberGroup } from '@/servicesApi/individualGroup.service';
+import { apiGetGroup, apiGetBorrowerGroup, apiDeleteMemberGroup,apiUpdateStateGroup } from '@/servicesApi/individualGroup.service';
 import { Group } from '@/interfaces/group.interface';
 import { BorrowerAmounts } from '@/interfaces/groupBorrower.interface';
 
@@ -66,6 +66,7 @@ const useIndividualGroupStore = defineStore('individual-group', {
                 id_group: borrower.group_borrower.id_group,
                 id_group_borrower: borrower.group_borrower.id_group_borrower,
                 full_name: borrower.full_name,
+                slug_borrower: borrower.slug,
                 amount_borrow: borrower.group_borrower.amount_borrow_decimal,
                 amount_interest: borrower.group_borrower.amount_interest_decimal,
                 amount_pay: borrower.group_borrower.amount_pay_decimal,
@@ -119,6 +120,7 @@ const useIndividualGroupStore = defineStore('individual-group', {
                             id_group: borrower.group_borrower.id_group,
                             id_group_borrower: borrower.group_borrower.id_group_borrower,
                             full_name: borrower.full_name,
+                            slug_borrower: borrower.slug,
                             amount_borrow: borrower.group_borrower.amount_borrow_decimal,
                             amount_interest: borrower.group_borrower.amount_interest_decimal,
                             amount_pay: borrower.group_borrower.amount_pay_decimal,
@@ -147,6 +149,16 @@ const useIndividualGroupStore = defineStore('individual-group', {
                         }
                     }
                     return Promise.resolve(isDeleted);
+                })
+                .catch((err) => {
+                    return Promise.reject(err);
+                })
+        },
+
+        async setArchivarDes(slug_group: string, state_archived_group: boolean) {
+            return await apiUpdateStateGroup(slug_group, state_archived_group)
+                .then((response) => {
+                    return Promise.resolve(response);
                 })
                 .catch((err) => {
                     return Promise.reject(err);

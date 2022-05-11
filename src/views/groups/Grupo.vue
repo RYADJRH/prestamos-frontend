@@ -33,6 +33,15 @@ async function fnApiGroup() {
 async function fnBorrowerGroup() {
   await individualGroupStore.getApiBorrowersGroup(slug.value, 1, "").catch(() => { });
 }
+async function archivarDes() {
+  await individualGroupStore.setArchivarDes(slug.value, !group.value.state_archived_group)
+    .then(async () => {
+      await fnApiGroup();
+    }).catch((err) => {
+
+    });
+
+}
 
 const slug = ref("");
 onBeforeMount(async () => {
@@ -71,9 +80,17 @@ onBeforeUnmount(() => {
               </router-link>
             </li>
             <li>
-              <button class="w-full flex gap-1 p-2 text-gray-500 hover:bg-sky-800/10 hover:text-sky-800 rounded-md">
+              <router-link :to="`/grupo/pagos-siguientes/${group.slug}`"
+                class="w-full flex gap-1 p-2 text-gray-500 hover:bg-sky-800/10 hover:text-sky-800 rounded-md">
+                <CurrencyDollarIcon class="h-6 w-6 mr-2"></CurrencyDollarIcon>
+                Pagos siguientes
+              </router-link>
+            </li>
+            <li>
+              <button class="w-full flex gap-1 p-2 text-gray-500 hover:bg-sky-800/10 hover:text-sky-800 rounded-md"
+                @click="archivarDes">
                 <ArchiveIcon class="h-6 w-6 mr-2"></ArchiveIcon>
-                {{ group.state_archived_group ? "Proces" : "Archivar" }}
+                {{ group.state_archived_group ? "Marcar : En proceso" : "Marcar : Archivar" }}
               </button>
             </li>
           </template>

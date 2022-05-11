@@ -18,7 +18,7 @@ import RModal from '@/components/shared_components/rComponents/RModal.vue';
 import RBtn from '@/components/shared_components/rComponents/RBtn.vue';
 import RSpinner from '@/components/shared_components/rComponents/RSpinner.vue';
 
-type Type = 'past-due-group';
+type Type = 'past-due-group' | 'next-due-group' | 'borrower-payments';
 
 const props = defineProps<{
     type: Type
@@ -27,11 +27,21 @@ const props = defineProps<{
 const paymentStore = usePaymentStore();
 const dialogStore = useDialogStore();
 const group = computed(() => paymentStore.getGroup);
+const borrower = computed(() => paymentStore.getBorrower);
 
 
 async function fnPayments() {
     if (props.type == 'past-due-group') {
         await paymentStore.getApiPaymentsPastDue(group.value.slug, currentPage.value, inputSearchPayments.value)
+            .catch(() => { });
+    }
+
+    if (props.type == 'next-due-group') {
+        await paymentStore.getApiPaymentsNextDue(group.value.slug, currentPage.value, inputSearchPayments.value)
+            .catch(() => { });
+    }
+    if (props.type == 'borrower-payments') {
+        await paymentStore.getApiPaymentsBorrower(group.value.slug, borrower.value.slug, currentPage.value)
             .catch(() => { });
     }
 }
@@ -69,13 +79,17 @@ const totalPages = computed({
 
 
 const fieldsPayments = [
-    { key: "full_name", name: "Nombre" },
     { key: "num_payment", name: "No.pago" },
     { key: "date_payment", name: "Fecha abono" },
     { key: "amount_payment_period_decimal", name: "Monto abono" },
     { key: "remaining_balance_decimal", name: "Saldo restante" },
     { key: "state_payment", name: "Status" },
 ]
+
+if (props.type != 'borrower-payments') {
+    fieldsPayments.unshift({ key: "full_name", name: "Nombre" });
+}
+
 const payments = computed(() => paymentStore.getPayments);
 
 const modalUpdateStatePayment = ref(false);
@@ -95,7 +109,7 @@ function updateStatusPayment(full_name: string, id_payment: number, state_paymen
 }
 async function saveStatePayment() {
     loadingUpdateStatePayment.value = true;
-    await paymentStore.updateStatePayment(selectedPayment.value.id_payment, selectedPayment.value.state_payment)
+    await paymentStore.updateStatePayment(props.type, selectedPayment.value.id_payment, selectedPayment.value.state_payment)
         .then(() => {
             dialogStore.show({
                 variant: "success",
@@ -130,18 +144,48 @@ const pdf = ref('');
 async function fnViewPdf() {
     pdf.value = '';
     loadingPdf.value = true;
-    await paymentStore.reportePaymentsPastDueGroup(group.value.slug)
-        .then((url_pdf) => {
-            pdf.value = url_pdf;
-            viewPdf.value = true;
-        })
-        .catch(() => {
-            dialogStore.show({
-                variant: "error",
-                title: "Ha ocurrido un error",
-                description: "¡No se pudo visualizar el reporte!",
-            });
-        })
+    if (props.type == 'past-due-group') {
+        await paymentStore.reportePaymentsPastDueGroup(group.value.slug)
+            .then((url_pdf) => {
+                pdf.value = url_pdf;
+                viewPdf.value = true;
+            })
+            .catch(() => {
+                dialogStore.show({
+                    variant: "error",
+                    title: "Ha ocurrido un error",
+                    description: "¡No se pudo visualizar el reporte!",
+                });
+            })
+    }
+    if (props.type == 'next-due-group') {
+        await paymentStore.reportePaymentsNextDueGroup(group.value.slug)
+            .then((url_pdf) => {
+                pdf.value = url_pdf;
+                viewPdf.value = true;
+            })
+            .catch(() => {
+                dialogStore.show({
+                    variant: "error",
+                    title: "Ha ocurrido un error",
+                    description: "¡No se pudo visualizar el reporte!",
+                });
+            })
+    }
+    if (props.type == 'borrower-payments') {
+        await paymentStore.reportePaymentsBorrowerGroup(group.value.slug, borrower.value.slug)
+            .then((url_pdf) => {
+                pdf.value = url_pdf;
+                viewPdf.value = true;
+            })
+            .catch(() => {
+                dialogStore.show({
+                    variant: "error",
+                    title: "Ha ocurrido un error",
+                    description: "¡No se pudo visualizar el reporte!",
+                });
+            })
+    }
     loadingPdf.value = false;
 }
 
@@ -157,7 +201,7 @@ async function fnViewPdf() {
                         Reporte
                     </r-btn>
                 </div>
-                <div class="block relative md:w-64 w-full mt-2 md:mt-0">
+                <div class="block relative md:w-64 w-full mt-2 md:mt-0" v-if="props.type != 'borrower-payments'">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-2">
                         <SearchIcon class="h-6 w-6 text-gray-500"></SearchIcon>
                     </span>
@@ -170,7 +214,7 @@ async function fnViewPdf() {
         <div class="mt-4">
             <r-table :fields="fieldsPayments" :items="payments" :hidden-footer="payments.length == 0">
 
-                <template #cell(full_name)="{ data }">
+                <template #cell(full_name)="{ data }" v-if="props.type != 'borrower-payments'">
                     <span class="font-bold">{{ data.borrower.full_name }}</span>
                 </template>
                 <template #cell(date_payment)="{ data }">
@@ -184,7 +228,7 @@ async function fnViewPdf() {
                 </template>
 
                 <template #cell(state_payment)="{ data }">
-                    <div @click="updateStatusPayment(data.borrower.full_name, data.id_payment, data.state_payment)"
+                    <div @click="updateStatusPayment(props.type != 'borrower-payments' ? data.borrower.full_name : `No.pago ${data.num_payment}`, data.id_payment, data.state_payment)"
                         class="px-3 py-1 rounded-md font-bold text-center hover:underline hover:underline-offset-4 hover:cursor-pointer"
                         :class="{
                             'bg-emerald-100 text-emerald-800': data.state_payment == Payment.paid,
@@ -235,6 +279,6 @@ async function fnViewPdf() {
                 </div>
             </template>
         </r-modal>
-        <modal-pdf v-model="viewPdf" title="Pagos vencidos" :pdf="pdf" :loading="loadingPdf"></modal-pdf>
+        <modal-pdf v-model="viewPdf" title="Reporte de pagos" :pdf="pdf" :loading="loadingPdf"></modal-pdf>
     </div>
 </template>

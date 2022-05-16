@@ -5,7 +5,7 @@ withDefaults(defineProps<{ variant?: variant }>(), { variant: "primary" });
 
 <template>
   <button
-    class="inline-flex items-center justify-center p-2 rounded-md uppercase text-sm font-bold disabled:cursor-not-allowed focus:outline-none focus:ring-2 disabled:border disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-500"
+    class="inline-flex items-center justify-center px-4 py-2 rounded-md uppercase text-sm font-bold disabled:cursor-not-allowed focus:outline-none focus:ring-2 disabled:border disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-500"
     :class="{
       'bg-sky-700 text-white hover:bg-sky-800 active:bg-sky-700 focus:ring-sky-200':
         variant == 'primary',

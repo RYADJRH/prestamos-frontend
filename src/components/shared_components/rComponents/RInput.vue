@@ -7,8 +7,10 @@ const props = withDefaults(
     type: string;
     stateError?: boolean;
     currency?: boolean;
+    prependCurrency?: string,
+    minCurrency?: number
   }>(),
-  { stateError: false, currency: false }
+  { stateError: false, currency: false, prependCurrency: "$", minCurrency: 0 }
 );
 
 const isFocusInput = ref(false);
@@ -26,7 +28,7 @@ const value = computed({
         return props.modelValue;
       } else {
         const numero = props.modelValue as number;
-        return "$ " + numero.toFixed(2).replace(/(\d)(?=(\d{3})+(?:\.\d+)?$)/g, "$1,");
+        return props.prependCurrency + " " + numero.toFixed(2).replace(/(\d)(?=(\d{3})+(?:\.\d+)?$)/g, "$1,");
       }
     }
   },
@@ -36,8 +38,10 @@ const value = computed({
     } else {
       const numero = value.toString();
       let newValue = parseFloat(numero.replace(/[^\d\.]/g, ""));
-      if (isNaN(newValue)) {
-        newValue = 0;
+
+
+      if (isNaN(newValue) || (newValue < props.minCurrency)) {
+        newValue = props.minCurrency;
       }
       newValue = parseFloat(newValue.toFixed(2));
       emits("update:modelValue", newValue);
@@ -58,13 +62,8 @@ function isNumberKey(event: KeyboardEvent) {
 </script>
 
 <template>
-  <input
-    v-model="value"
-    :type="type"
-    @blur="isFocusInput = false"
-    @focus="isFocusInput = true"
+  <input v-model="value" :type="type" @blur="isFocusInput = false" @focus="isFocusInput = true"
     @keypress="isNumberKey($event)"
     class="block w-full rounded-md border border-gray-600 shadow-sm focus:border-sky-800 focus:ring-1 focus:ring-sky-800 disabled:cursor-not-allowed disabled:bg-gray-100"
-    :class="{ 'border-red-800': stateError }"
-  />
+    :class="{ 'border-red-800': stateError }" />
 </template>

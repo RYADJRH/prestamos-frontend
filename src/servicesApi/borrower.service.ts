@@ -62,10 +62,15 @@ const apiGetBorrowersAddGroup = async (page: number, search: string = '', slug_g
     return await axios.get(`${PREFIX_API}borrower/add/group/${slug_group}?page=${page}&search=${search}`);
 }
 
+const apiGetBorrowersAddLoans = async (page: number, search: string = '', id_beneficiary: number) => {
+    return await axios.get(`${PREFIX_API}borrower/add/loans/${id_beneficiary}?page=${page}&search=${search}`);
+}
+
 export {
     apiSaveBorrower,
     apiGetBorrowers,
     apiDeleteBorrower,
     apiUpdateBorrower,
-    apiGetBorrowersAddGroup
+    apiGetBorrowersAddGroup,
+    apiGetBorrowersAddLoans
 }

@@ -4,8 +4,8 @@ import { inject, onBeforeMount, ref, onBeforeUnmount, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { ArrowSmLeftIcon } from '@heroicons/vue/solid';
 import { usePaymentStore } from '@/stores/payments.store';
-import InfoPaymentsPastDue from '@/components/groups/payments/InfoPaymentsPastDue.vue';
-import ViewPayments from '@/components/groups/payments/ViewPayments.vue';
+import InfoPayments from '@/components/payments/InfoPayments.vue';
+import ViewPayments from '@/components/payments/ViewPayments.vue';
 
 const setLoadingFull = inject("set-loading-full") as (value: boolean) => {};
 
@@ -48,7 +48,7 @@ onBeforeUnmount(() => {
             </div>
 
         </div>
-        <info-payments-past-due class="mt-4"></info-payments-past-due>
+        <info-payments class="mt-4"></info-payments>
         <view-payments class="mt-8" type="borrower-payments"></view-payments>
     </div>
 </template>

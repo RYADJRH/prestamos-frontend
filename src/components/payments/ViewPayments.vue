@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { SearchIcon, CheckCircleIcon, DocumentDownloadIcon } from '@heroicons/vue/solid';
+import { SearchIcon, CheckCircleIcon } from '@heroicons/vue/solid';
 import { formatDate } from "@/utils/dates";
 import { moneyMxn } from "@/utils/currency";
 import { getValuePayment, Payment } from '@/interfaces/utils/Payment.interface';
@@ -18,7 +18,7 @@ import RModal from '@/components/shared_components/rComponents/RModal.vue';
 import RBtn from '@/components/shared_components/rComponents/RBtn.vue';
 import RSpinner from '@/components/shared_components/rComponents/RSpinner.vue';
 
-type Type = 'past-due-group' | 'next-due-group' | 'borrower-payments';
+type Type = 'past-due-group' | 'next-due-group' | 'borrower-payments' | 'personal-loans';
 
 const props = defineProps<{
     type: Type
@@ -43,6 +43,11 @@ async function fnPayments() {
     if (props.type == 'borrower-payments') {
         await paymentStore.getApiPaymentsBorrower(group.value.slug, borrower.value.slug, currentPage.value)
             .catch(() => { });
+    }
+    if (props.type == 'personal-loans') {
+        await paymentStore.getApiPaymentsBorrowerPersonal(borrower.value.slug, borrower.value.id_borrow as number, currentPage.value)
+            .catch(() => { });
+
     }
 }
 
@@ -86,9 +91,10 @@ const fieldsPayments = [
     { key: "state_payment", name: "Status" },
 ]
 
-if (props.type != 'borrower-payments') {
+if (!['borrower-payments', 'personal-loans'].includes(props.type)) {
     fieldsPayments.unshift({ key: "full_name", name: "Nombre" });
 }
+
 
 const payments = computed(() => paymentStore.getPayments);
 
@@ -186,6 +192,20 @@ async function fnViewPdf() {
                 });
             })
     }
+    if (props.type == 'personal-loans') {
+        await paymentStore.reportePaymentsBorrowerPersonalLoan(borrower.value.slug, borrower.value.id_borrow as number)
+            .then((url_pdf) => {
+                pdf.value = url_pdf;
+                viewPdf.value = true;
+            })
+            .catch(() => {
+                dialogStore.show({
+                    variant: "error",
+                    title: "Ha ocurrido un error",
+                    description: "¡No se pudo visualizar el reporte!",
+                });
+            })
+    }
     loadingPdf.value = false;
 }
 
@@ -197,11 +217,11 @@ async function fnViewPdf() {
             <div class="flex flex-col md:flex-row justify-between">
                 <div>
                     <r-btn @click="fnViewPdf">
-                        <DocumentDownloadIcon class="h-6 w-6 text-white mr-2"></DocumentDownloadIcon>
                         Reporte
                     </r-btn>
                 </div>
-                <div class="block relative md:w-64 w-full mt-2 md:mt-0" v-if="props.type != 'borrower-payments'">
+                <div class="block relative md:w-64 w-full mt-2 md:mt-0"
+                    v-if="!['borrower-payments', 'personal-loans'].includes(props.type)">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-2">
                         <SearchIcon class="h-6 w-6 text-gray-500"></SearchIcon>
                     </span>
@@ -214,7 +234,8 @@ async function fnViewPdf() {
         <div class="mt-4">
             <r-table :fields="fieldsPayments" :items="payments" :hidden-footer="payments.length == 0">
 
-                <template #cell(full_name)="{ data }" v-if="props.type != 'borrower-payments'">
+                <template #cell(full_name)="{ data }"
+                    v-if="!['borrower-payments', 'personal-loans'].includes(props.type)">
                     <span class="font-bold">{{ data.borrower.full_name }}</span>
                 </template>
                 <template #cell(date_payment)="{ data }">
@@ -228,7 +249,7 @@ async function fnViewPdf() {
                 </template>
 
                 <template #cell(state_payment)="{ data }">
-                    <div @click="updateStatusPayment(props.type != 'borrower-payments' ? data.borrower.full_name : `No.pago ${data.num_payment}`, data.id_payment, data.state_payment)"
+                    <div @click="updateStatusPayment(!['borrower-payments', 'personal-loans'].includes(props.type) ? data.borrower.full_name : `No.pago ${data.num_payment}`, data.id_payment, data.state_payment)"
                         class="px-3 py-1 rounded-md font-bold text-center hover:underline hover:underline-offset-4 hover:cursor-pointer"
                         :class="{
                             'bg-emerald-100 text-emerald-800': data.state_payment == Payment.paid,

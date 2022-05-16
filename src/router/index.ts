@@ -83,6 +83,24 @@ const routes: RouteRecordRaw[] = [
         }
     },
     {
+        path: '/prestamos-personales',
+        name: 'prestamos-personales',
+        component: () => import('@/views/personalLoans/List.vue'),
+        meta: {
+            requiresAuth: true,
+            layout: 'AuthLayout'
+        }
+    },
+    {
+        path: '/prestamos-personales/pagos/:slug/:id_borrow',
+        name: 'prestamos-personales-pagos',
+        component: () => import('@/views/personalLoans/payments/PaymentsBorrow.vue'),
+        meta: {
+            requiresAuth: true,
+            layout: 'AuthLayout'
+        }
+    },
+    {
         path: '/:pathMatch(.*)*',
         redirect: '/404'
     },

@@ -1,39 +1,35 @@
+
+
 <script setup lang="ts">
 import { computed, ref, markRaw, reactive, onBeforeUnmount } from 'vue';
 import { useDebounceFn } from '@vueuse/core';
 import { XCircleIcon } from '@heroicons/vue/solid';
-import { lockDays } from '@/interfaces/utils/DayWeek.interface';
 
-import { moneyMxn } from "@/utils/currency";
+import ItemListCardBorrowers from "@/components/groups/members/ItemListCardBorrowers.vue";
 import { formatDate } from '@/utils/dates';
-import { useAddMemberGroup } from '@/stores/addMemberGroup.store';
-import { useIndividualGroupStore } from '@/stores/individualGroup.store';
+import { moneyMxn } from "@/utils/currency";
+
+import { TypePeriod } from '@/interfaces/utils/TypePeriodsLoans.interface';
+import { BorrowerAddLoans } from '@/interfaces/individualLoans.interface';
+import { Payment } from '@/interfaces/utils/Payment.interface';
+
+import { useInvidualLoansStore } from '@/stores/individualLoans.store';
 import { useDialogStore } from "@/stores/dialog.store";
-
-import { Group } from '@/interfaces/group.interface';
-import { BorrowerGroupResponse } from '@/interfaces/borrower.interface';
-
+import { useAddLoansStore } from '@/stores/addLoans.store';
+import { useAuthStore } from "@/stores/auth.store";
 import RFormGroup from '@/components/shared_components/rComponents/RFormGroup.vue';
-import RInput from '@/components/shared_components/rComponents/RInput.vue';
 import RSelectList from '@/components/shared_components/rComponents/RSelectList.vue';
 import RSelect from '@/components/shared_components/rComponents/RSelect.vue';
-import ItemListCardBorrowers from "@/components/groups/members/ItemListCardBorrowers.vue";
-import RTable from '@/components/shared_components/rComponents/RTable.vue';
+import RInput from '@/components/shared_components/rComponents/RInput.vue';
 import RBtn from '@/components/shared_components/rComponents/RBtn.vue';
+import RTable from '@/components/shared_components/rComponents/RTable.vue';
 import RSpinner from '@/components/shared_components/rComponents/RSpinner.vue';
 
-const itemList = markRaw(ItemListCardBorrowers);
-
-const addMemberGroupStore = useAddMemberGroup();
-const individualGroupStore = useIndividualGroupStore();
+const individualLoansStore = useInvidualLoansStore();
 const dialogStore = useDialogStore();
-
-const loadingDataBorrower = ref(false);
-const searchBorrower = ref("");
-
-const group = computed(() => {
-    return individualGroupStore.getGroup as Group;
-});
+const authStore = useAuthStore();
+const addLoansStore = useAddLoansStore();
+const itemList = markRaw(ItemListCardBorrowers);
 
 const emits = defineEmits<{
     (e: 'update:loadingSave', value: boolean): void,
@@ -47,88 +43,54 @@ const props = withDefaults(
     }
 );
 
-const inputSearchDebounce = useDebounceFn(
-    async () => {
-        loadingDataBorrower.value = true;
-        await addMemberGroupStore.listBorrowers(searchBorrower.value, group.value.slug as string);
-        loadingDataBorrower.value = false;
-    },
-    500,
-    { maxWait: 1000 }
-);
-const dataSyncSearch = computed(() => addMemberGroupStore.getBorrowerList);
-
 const initBorrower = {
     id_borrower: -1,
-    slug_group: group.value.slug as string,
     amount_borrow: 0,
     amount_interest: 0,
     amount_payment_period: 0,
     date_init_payment: null,
-    payment_every_n_weeks: 1
+    type_period: TypePeriod.nweeks,
+    payment_every_n: 1
 }
 
 const borrower = reactive({ ...initBorrower });
-
 const selectedBorrower = ref<null | {
     id_borrower: number;
     full_name: string;
 }>(null);
 
+const searchBorrower = ref("");
+const loadingDataBorrower = ref(false);
+const inputSearchDebounce = useDebounceFn(
+    async () => {
+        loadingDataBorrower.value = true;
+        await addLoansStore.listBorrowers(searchBorrower.value, authStore.profileBeneficiary?.id_beneficiary as number);
+        loadingDataBorrower.value = false;
+    },
+    500,
+    { maxWait: 1000 }
+);
 
-function selectBorrower(borrowerR: BorrowerGroupResponse) {
+const dataSyncSearch = computed(() => addLoansStore.getBorrowerList);
+
+
+function selectBorrower(borrowerR: BorrowerAddLoans) {
     const { id_borrower, full_name } = borrowerR;
     borrower.id_borrower = id_borrower;
     selectedBorrower.value = { id_borrower, full_name };
 }
 
 function removeSelectedBorrower() {
-    addMemberGroupStore.setAmortization([]);
+    addLoansStore.setAmortization([]);
     Object.assign(borrower, { ...initBorrower });
-    borrower.id_borrower = -1;
     selectedBorrower.value = null;
 }
 
-const itemsEveryWeeks = [
-    { value: 1, text: "1" },
-    { value: 2, text: "2" },
-    { value: 3, text: "3" },
-    { value: 4, text: "4" },
+const itemsTypePeriod = [
+    { value: TypePeriod.nmonths, text: 'En N meses' },
+    { value: TypePeriod.nweeks, text: "En N semanas" },
+    { value: TypePeriod.ndays, text: "En N dias" },
 ]
-
-const fieldsAmortization = [
-    { key: 'num_payment', name: 'No.pago' },
-    { key: 'date_payment', name: 'Fecha pago' },
-    { key: 'amount_payment_period', name: 'Monto de abono' },
-    { key: 'remaining_balance', name: 'Saldo restante' }
-]
-
-const itemsAmortization = computed(() => addMemberGroupStore.getAmortization);
-
-async function fnTablaAmortization() {
-    addMemberGroupStore.setAmortization([]);
-    const amount_borrow = borrower.amount_borrow;
-    const amount_interest = borrower.amount_interest;
-    const amount_pay = amount_borrow + amount_interest;
-    const amount_payment_period = borrower.amount_payment_period;
-    const date_init_payment = borrower.date_init_payment;
-    const payment_every_n_weeks = borrower.payment_every_n_weeks;
-
-
-    if ((amount_pay > 0 && amount_payment_period > 0) && (amount_pay >= amount_payment_period) && date_init_payment != null) {
-        const date_init_payment_format = formatDate(date_init_payment, 'YYYY-MM-DD');
-        await addMemberGroupStore.calculatedAmortization(
-            {
-                amount_borrow,
-                amount_interest,
-                amount_payment_period,
-                date_init_payment: date_init_payment_format,
-                payment_every_n_weeks
-            }
-        ).catch(() => { })
-    }
-
-}
 
 const inputAmortionCalculedDebounce = useDebounceFn(
     async () => {
@@ -138,70 +100,108 @@ const inputAmortionCalculedDebounce = useDebounceFn(
     { maxWait: 1000 }
 );
 
-async function saveBorrower() {
-    const slug_group = group.value.slug as string;
+const fieldsAmortization = [
+    { key: 'num_payment', name: 'No.pago' },
+    { key: 'date_payment', name: 'Fecha pago' },
+    { key: 'amount_payment_period', name: 'Monto de abono' },
+    { key: 'remaining_balance', name: 'Saldo restante' }
+];
+
+const itemsAmortization = computed(() => addLoansStore.getAmortization);
+
+async function fnTablaAmortization() {
+    addLoansStore.setAmortization([]);
+    const amount_borrow = borrower.amount_borrow;
+    const amount_interest = borrower.amount_interest;
+    const amount_pay = amount_borrow + amount_interest;
+    const amount_payment_period = borrower.amount_payment_period;
+    const date_init_payment = borrower.date_init_payment;
+    const type_period = borrower.type_period;
+    const payment_every_n = borrower.payment_every_n;
+
+
+    if ((amount_pay > 0 && amount_payment_period > 0) && (amount_pay >= amount_payment_period) && date_init_payment != null) {
+        const date_init_payment_format = formatDate(date_init_payment, 'YYYY-MM-DD');
+        await addLoansStore.calculatedAmortizationLoans(
+            {
+                amount_borrow,
+                amount_interest,
+                amount_payment_period,
+                date_init_payment: date_init_payment_format,
+                type_period,
+                payment_every_n
+            }
+        ).catch(() => { })
+    }
+
+}
+
+async function saveLoans() {
+
     const id_borrower = borrower.id_borrower;
     const amount_borrow = borrower.amount_borrow;
     const amount_interest = borrower.amount_interest;
     const amount_payment_period = borrower.amount_payment_period;
     const date_init_payment = borrower.date_init_payment + "";
     const date_init_payment_format = formatDate(date_init_payment, 'YYYY-MM-DD');
-    const payment_every_n_weeks = borrower.payment_every_n_weeks;
+    const type_period = borrower.type_period;
+    const payment_every_n = borrower.payment_every_n;
 
     emits('update:loadingSave', true);
-    await addMemberGroupStore.addMember({
+
+    await addLoansStore.addLoans({
         id_borrower,
-        slug_group,
         amount_borrow,
         amount_interest,
         amount_payment_period,
         date_init_payment: date_init_payment_format,
-        payment_every_n_weeks
+        type_period,
+        payment_every_n
     })
-        .then(async (member) => {
-            individualGroupStore.setMember(member);
-            await individualGroupStore.getApiGroup(group.value.slug as string).catch(() => { });
+        .then(async (loan) => {
+            if (individualLoansStore.getStatusLoans == Payment.inprocess) {
+                individualLoansStore.setLoan(loan);
+            }
 
+            await fnAmountsLoans();
             dialogStore
                 .show({
                     variant: "success",
                     title: "Registro exitoso",
-                    description: "¡El nuevo miembro ha sido agregado!",
+                    description: "¡El nuevo prestamo ha sido agregado!",
                 })
                 .then(() => {
-                    addMemberGroupStore.$reset();
+                    addLoansStore.$reset();
                     searchBorrower.value = "";
                     selectedBorrower.value = null;
                     Object.assign(borrower, { ...initBorrower });
                 });
         })
         .catch((err) => {
-            if (err.response.status == 302) {
-                dialogStore
-                    .show({
-                        variant: "error",
-                        title: "Registro duplicado",
-                        description: "¡No se pudo completar el registro!",
-                    })
-                    .then(() => {
-                        emits("close:modal");
-                    });
-            }
+            dialogStore
+                .show({
+                    variant: "error",
+                    title: "Registro Fallo",
+                    description: "¡No se pudo completar el registro!",
+                })
         })
     emits('update:loadingSave', false);
 }
 
+async function fnAmountsLoans() {
+    await individualLoansStore.getApiAmountsLoans(authStore.profileBeneficiary?.id_beneficiary as number)
+        .catch(() => { });
+}
 
 onBeforeUnmount(() => {
     emits('update:loadingSave', false);
     dialogStore.$reset();
-    addMemberGroupStore.$reset();
+    addLoansStore.$reset();
 })
-
 </script>
 
 <template>
-    <form @submit.prevent="saveBorrower">
+    <form @submit.prevent="saveLoans">
         <div class="w-full md:mb-4 mb-0">
             <div class="flex flex-wrap -mx-2">
                 <div class="w-full md:w-1/3 px-2 flex items-center">
@@ -222,16 +222,28 @@ onBeforeUnmount(() => {
                 <div class="w-full md:w-1/3 px-2">
                     <r-form-group title="Fecha del primer pago:" class="mb-3">
                         <Datepicker v-model="borrower.date_init_payment" @update:modelValue="fnTablaAmortization"
-                            :disabledWeekDays="lockDays(group.day_payment)" locale="es" autoApply
-                            :enableTimePicker="false" position="center" teleport="#app"
+                            locale="es" autoApply :enableTimePicker="false" position="center" teleport="#app"
                             placeholder="selecciona una fecha" :disabled="!selectedBorrower" required />
                     </r-form-group>
                 </div>
                 <div class="w-full md:w-1/3 px-2">
-                    <r-form-group title="Periodo de pagos (semana):" class="mb-3">
-                        <r-select v-model="borrower.payment_every_n_weeks" :items="itemsEveryWeeks"
-                            :disabled="!selectedBorrower" @change="fnTablaAmortization" required></r-select>
-                    </r-form-group>
+                    <div class="flex flex-wrap -mx-2">
+                        <div class="w-full md:w-2/3 px-2">
+                            <r-form-group title="Tipo de periodo:" class="mb-3">
+                                <r-select v-model="borrower.type_period" :items="itemsTypePeriod"
+                                    :disabled="!selectedBorrower" @change="fnTablaAmortization" required></r-select>
+                            </r-form-group>
+                        </div>
+                        <div class="w-full md:w-1/3 px-2">
+                            <r-form-group title="Periodo:" class="mb-3">
+                                <r-input v-model="borrower.payment_every_n" @input="inputAmortionCalculedDebounce"
+                                    type="text" class="text-right" :disabled="!selectedBorrower" currency
+                                    :prependCurrency="''" :min-currency="1" required>
+                                </r-input>
+                            </r-form-group>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -260,7 +272,6 @@ onBeforeUnmount(() => {
         </div>
         <div class="w-full">
             <r-table :fields="fieldsAmortization" :items="itemsAmortization" hidden-footer shadow-none>
-
                 <template #cell(date_payment)="{ data }">
                     {{ formatDate(data.date_payment, 'LL') }}
                 </template>

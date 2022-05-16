@@ -6,7 +6,9 @@ import {
     apiPaymentsNextDue,
     apiReportePaymentsNextDueGroup,
     apiPaymentsBorrower,
-    apiReportePaymentsBorrowerGroup
+    apiReportePaymentsBorrowerGroup,
+    apiPaymentsBorrowerPersonalLoan,
+    apiReportePaymentsBorrowerPersonalLoan
 } from '@/servicesApi/payments.service';
 import { Payments } from '@/interfaces/payments.interface';
 import { Payment } from '@/interfaces/utils/Payment.interface';
@@ -25,7 +27,8 @@ interface State {
     },
     borrower: {
         slug: string,
-        full_name: string
+        full_name: string,
+        id_borrow?: number
     }
 }
 const usePaymentStore = defineStore('payments', {
@@ -43,7 +46,8 @@ const usePaymentStore = defineStore('payments', {
         },
         borrower: {
             slug: '',
-            full_name: ''
+            full_name: '',
+            id_borrow: -1
         }
 
     }),
@@ -71,7 +75,7 @@ const usePaymentStore = defineStore('payments', {
         }
     },
     actions: {
-        setBorrower(borrower: { slug: string, full_name: string }) {
+        setBorrower(borrower: { slug: string, full_name: string, id_borrow?: number }) {
             this.borrower = borrower;
         },
         setCurrentPagePayment(page: number) {
@@ -181,12 +185,50 @@ const usePaymentStore = defineStore('payments', {
                     return Promise.reject(err);
                 })
         },
+
+        /* Payments for borrower personal loans */
+
+        async getApiPaymentsBorrowerPersonal(slug_borrower: string, id_borrow: number, page: number) {
+            return await apiPaymentsBorrowerPersonalLoan(slug_borrower, id_borrow, page)
+                .then((response) => {
+                    const paymentsResponse = response.data.payments;
+                    const totalOwe = response.data.total;
+                    const nameBorrower = response.data.name_borrower;
+
+                    this.payments.currentPage = paymentsResponse.current_page;
+                    this.payments.totalPages = paymentsResponse.last_page;
+                    this.payments.totalPayments = paymentsResponse.total;
+                    this.payments.data = paymentsResponse.data;
+                    this.total_owe = totalOwe;
+                    this.borrower.full_name = nameBorrower;
+                    return Promise.resolve(paymentsResponse);
+                }).catch((err) => {
+                    return Promise.reject(err);
+                });
+        },
+
+        async reportePaymentsBorrowerPersonalLoan(slug_borrower: string, id_borrow: number) {
+            return await apiReportePaymentsBorrowerPersonalLoan(slug_borrower, id_borrow)
+                .then((response) => {
+                    const pdf = response.data;
+                    let blob = new Blob([pdf], {
+                        type: 'application/pdf'
+                    });
+                    const url = window.URL.createObjectURL(blob);
+                    return Promise.resolve(url);
+                })
+                .catch((err) => {
+                    return Promise.reject(err);
+                })
+        },
+
+
         async updateStatePayment(type: string, id_payment: number, status: Payment) {
-            return await apiUpdateStatePayment(id_payment, status)
+            return await apiUpdateStatePayment(type, id_payment, status)
                 .then((response) => {
                     const state_payment = response.data.state_payment;
                     const index = [...this.payments.data].findIndex((item) => item.id_payment == id_payment);
-                    if (type == 'borrower-payments') {
+                    if (type == 'borrower-payments' || type == 'personal-loans') {
                         this.payments.data[index].state_payment = state_payment;
                         if (state_payment == Payment.paid) {
                             this.total_owe -= this.payments.data[index].amount_payment_period_decimal;

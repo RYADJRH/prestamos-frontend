@@ -22,8 +22,8 @@ const menu = ref([
     icon: UserGroupIcon,
   },
   {
-    link: "/prestamos",
-    title: "Prestamos",
+    link: "/prestamos-personales",
+    title: "Prestamos personales",
     icon: CashIcon,
   },
 ]);

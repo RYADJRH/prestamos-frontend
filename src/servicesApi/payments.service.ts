@@ -45,6 +45,10 @@ const apiPaymentsBorrower = async (slug_group: string, slug_borrower: string, pa
     return await axios.get(`${PREFIX_API}payments/group/${slug_group}/borrower/${slug_borrower}?page=${page}`);
 }
 
+const apiPaymentsBorrowerPersonalLoan = async (slug_borrower: string, id_borrow: number, page: number = 1) => {
+    return await axios.get(`${PREFIX_API}payments/personal-loans/${slug_borrower}/${id_borrow}?page=${page}`);
+}
+
 const apiReportePaymentsBorrowerGroup = async (slug_group: string, slug_borrower: string) => {
     const url = `${PREFIX_API}reports/payments/group/${slug_group}/borrower/${slug_borrower}`
     return await axios({
@@ -60,10 +64,24 @@ const apiReportePaymentsBorrowerGroup = async (slug_group: string, slug_borrower
     })
 }
 
+const apiReportePaymentsBorrowerPersonalLoan = async (slug_borrower: string, id_borrow: number) => {
+    const url = `${PREFIX_API}reports/payments/personal-loans/borrower/${slug_borrower}/${id_borrow}`
+    return await axios({
+        method: 'GET',
+        url,
+        responseType: 'blob',
+        headers: {
+            Accept: 'application/pdf',
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+        }
+    })
+}
 
 
-const apiUpdateStatePayment = async (id_payment: number, status: Payment) => {
-    return await axios.post(`${PREFIX_API}payments/update-state`, { id_payment, status })
+const apiUpdateStatePayment = async (type: string, id_payment: number, status: Payment) => {
+    return await axios.post(`${PREFIX_API}payments/update-state`, { type, id_payment, status })
 }
 
 
@@ -75,5 +93,7 @@ export {
     apiPaymentsNextDue,
     apiReportePaymentsNextDueGroup,
     apiPaymentsBorrower,
-    apiReportePaymentsBorrowerGroup
+    apiReportePaymentsBorrowerGroup,
+    apiPaymentsBorrowerPersonalLoan,
+    apiReportePaymentsBorrowerPersonalLoan
 }

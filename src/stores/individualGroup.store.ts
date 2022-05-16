@@ -44,11 +44,11 @@ const useIndividualGroupStore = defineStore('individual-group', {
             return state.group;
         },
         /* members */
-        getBorrowersAmount(state) {
-            return state.borrowers.data;
-        },
         getAmountsGroup(state) {
             return state.amounts;
+        },
+        getBorrowersAmount(state) {
+            return state.borrowers.data;
         },
         getTotalPagesBorrower(state) {
             return state.borrowers.totalPages;

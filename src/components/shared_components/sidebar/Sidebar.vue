@@ -25,7 +25,7 @@ withDefaults(defineProps<{
             ></div>
             <div
                 :class="{ '-ml-60': !collapse, 'ml-0': collapse }"
-                class="w-60 p-2 z-[60] overflow-y-auto absolute md:relative inset-y-0 left-0 bg-white border-r-2 border-sky-800 transition-all duration-300 ease-in-out"
+                class="w-60 p-2 z-[60] overflow-y-auto absolute md:relative inset-y-0 left-0 bg-white border transition-all duration-300 ease-in-out"
             >
                 <div class="flex justify-center">
                     <isotipo :color="color" class="h-32 w-32"></isotipo>

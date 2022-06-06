@@ -30,11 +30,12 @@ function handleInput(event: Event) {
   showOptions.value = true;
 }
 
-const target = ref(null);
+const target = ref();
 onClickOutside(target, (event) => {
   emits("close");
   showOptions.value = false;
 });
+
 
 function clickItem(item: any) {
   if (!item.agregado) {

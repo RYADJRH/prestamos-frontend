@@ -13,7 +13,7 @@ watch(
     layout.value = undefined;
     try {
       const component =
-        metalayout && (await import(/* @vite-ignore */ `./${metalayout}.vue`));
+        metalayout && (await import(/* @vite-ignore */ `../layouts/${metalayout}.vue`));
       layout.value = component?.default || DefaultLayout;
     } catch (error) {
       layout.value = DefaultLayout;

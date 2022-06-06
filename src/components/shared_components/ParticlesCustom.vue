@@ -16,10 +16,10 @@ const optionsParticles = ref({
     fpsLimit: 90,
     interactivity: {
         events: {
-            // onClick: {
-            //     enable: true,
-            //     mode: 'push'
-            // },
+            onClick: {
+                enable: true,
+                mode: 'push'
+            },
             onHover: {
                 enable: true,
                 mode: 'repulse'
@@ -65,10 +65,10 @@ const optionsParticles = ref({
             straight: false
         },
         number: {
-            // density: {
-            //     enable: true,
-            //     area: 1000
-            // },
+            density: {
+                enable: true,
+                area: 1000
+            },
             value: 70
         },
         opacity: {
@@ -88,7 +88,7 @@ const optionsParticles = ref({
 </script>
 
 <template>
-    <Particles id="tsparticles" :options="optionsParticles" />
+    <Particles id="tsparticles" :options="optionsParticles"  ></Particles>
 </template>
 
 <style lang="css" scoped>

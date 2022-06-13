@@ -8,13 +8,18 @@ const props = defineProps<{
     pdf: string
 }>();
 
-// const show = ref(props.modelValue);
 
 const emits = defineEmits<{
     (e: 'update:modelValue', value: boolean): void
 }>();
 
+const show = ref(props.modelValue);
+
 watch(() => props.modelValue, (value) => {
+    show.value = value;
+})
+
+watch(() => show.value, (value) => {
     emits('update:modelValue', value);
 })
 
@@ -22,7 +27,7 @@ watch(() => props.modelValue, (value) => {
 </script>
 
 <template>
-    <r-modal v-model="modelValue" :title="title" size="lg" hidden-footer>
+    <r-modal v-model="show" :title="title" size="lg" hidden-footer>
         <template #content>
             <iframe class="w-full h-screen" :src="pdf"></iframe>
         </template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watchEffect } from "vue";
+import { ref, onMounted, watchEffect, watch } from 'vue';
 import { onClickOutside } from "@vueuse/core";
 import { SearchIcon } from "@heroicons/vue/solid";
 import RSpinner from "@/components/shared_components/rComponents/RSpinner.vue";
@@ -36,12 +36,17 @@ onClickOutside(target, (event) => {
   showOptions.value = false;
 });
 
-
 function clickItem(item: any) {
   if (!item.agregado) {
     emits("click:item", item);
   }
 }
+
+const inputValue =ref('')
+watch(() => props.modelValue, (value) => {
+   inputValue.value = value;
+})
+
 </script>
 <template>
   <div
@@ -57,7 +62,7 @@ function clickItem(item: any) {
         <SearchIcon class="h-6 w-6 text-gray-500"></SearchIcon>
       </span>
       <r-input
-        v-model="modelValue"
+        v-model="inputValue"
         @input="handleInput"
         type="search"
         placeholder="busqueda"
@@ -67,7 +72,7 @@ function clickItem(item: any) {
     </div>
     <div
       class="bg-white p-4 h-auto shadow-lg rounded-md absolute w-full mt-1"
-      v-show="modelValue && showOptions"
+      v-show="inputValue && showOptions"
       tabindex="0"
     >
       <div v-for="item in props.data" @click="clickItem(item)" v-if="!props.loading">

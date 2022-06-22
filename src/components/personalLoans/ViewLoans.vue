@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onBeforeUnmount } from 'vue';
 import { useDebounceFn } from '@vueuse/core';
 
+import { usePaymentStore } from '@/stores/payments.store';
 import { useAuthStore } from '@/stores/auth.store';
 import { useInvidualLoansStore } from '@/stores/individualLoans.store';
 import { useDialogStore } from "@/stores/dialog.store";
 
 import { moneyMxn } from "@/utils/currency";
+import { formatDate } from '@/utils/dates';
 
 import { getValuePayment, Payment } from '@/interfaces/utils/Payment.interface';
 
@@ -19,7 +21,10 @@ import RModal from '@/components/shared_components/rComponents/RModal.vue';
 import AddLoans from '@/components/personalLoans/AddLoans.vue';
 import RFormGroup from '@/components/shared_components/rComponents/RFormGroup.vue';
 import RSelect from '@/components/shared_components/rComponents/RSelect.vue';
+import RSpinner from '@/components/shared_components/rComponents/RSpinner.vue';
+import ModalPdf from '@/components/shared_components/pdf/ModalPdf.vue';
 
+const paymentStore = usePaymentStore();
 const authStore = useAuthStore();
 const individualLoansStore = useInvidualLoansStore();
 const dialogStore = useDialogStore();
@@ -148,6 +153,42 @@ function detelePersonalLoans(id_borrow: number) {
         })
 
 }
+
+const modalReport = ref(false);
+const loadingReport = ref(false);
+const dateReport = ref(null);
+const viewPdf = ref(false);
+const pdf = ref('');
+
+async function viewReport() {
+    loadingReport.value = true;
+    const id_beneficiary = authStore.profileBeneficiary?.id_beneficiary as number;
+    const date_payments = dateReport.value + "";
+    const date_payments_format = formatDate(date_payments, 'YYYY-MM-DD');
+
+    await paymentStore.reportePaymentsBeneficiaryPersonalLoan(id_beneficiary, date_payments_format, filterPersonaLoans.value)
+        .then((url_pdf) => {
+            modalReport.value = false;
+            dateReport.value = null;
+
+            pdf.value = url_pdf;
+            viewPdf.value = true;
+        })
+        .catch(() => {
+            dialogStore.show({
+                variant: "error",
+                title: "Ha ocurrido un error",
+                description: "¡No se pudo visualizar el reporte!",
+            });
+        })
+
+    loadingReport.value = false;
+}
+
+onBeforeUnmount(() => {
+    paymentStore.$reset();
+})
+
 </script>
 <template>
     <div>
@@ -156,6 +197,9 @@ function detelePersonalLoans(id_borrow: number) {
                 <div class="block">
                     <r-btn class="mr-2" @click="modalAddLoans = true">
                         Nuevo prestamo
+                    </r-btn>
+                    <r-btn class="mr-2" @click="modalReport = true">
+                        Reporte
                     </r-btn>
                 </div>
             </div>
@@ -228,5 +272,25 @@ function detelePersonalLoans(id_borrow: number) {
                     @close:modal="closeModal"></add-loans>
             </template>
         </r-modal>
+
+        <r-modal v-model="modalReport" :loading="loadingReport" title="Parametros del reporte" size="sm" hidden-footer
+            center-modal>
+            <template #content>
+                <div class="w-full">
+                    <r-form-group title="Fecha del reporte:">
+                        <Datepicker v-model="dateReport" teleport="#app" altPosition position="left" locale="es"
+                            autoApply :enableTimePicker="false" placeholder="selecciona una fecha" required />
+                    </r-form-group>
+                </div>
+                <div class="pt-3 text-right">
+                    <r-btn :disabled="!dateReport || loadingReport" @click="viewReport">
+                        <r-spinner class="mr-2" v-if="loadingReport"></r-spinner>
+                        Visualizar
+                    </r-btn>
+                </div>
+            </template>
+        </r-modal>
+        <modal-pdf v-model="viewPdf" title="Reporte de pagos" :pdf="pdf" :loading="loadingReport"></modal-pdf>
+
     </div>
 </template>

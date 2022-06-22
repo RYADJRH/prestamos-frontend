@@ -8,7 +8,8 @@ import {
     apiPaymentsBorrower,
     apiReportePaymentsBorrowerGroup,
     apiPaymentsBorrowerPersonalLoan,
-    apiReportePaymentsBorrowerPersonalLoan
+    apiReportePaymentsBorrowerPersonalLoan,
+    apiReportePaymentsBeneficiaryPersonalLoan
 } from '@/servicesApi/payments.service';
 import { Payments } from '@/interfaces/payments.interface';
 import { Payment } from '@/interfaces/utils/Payment.interface';
@@ -209,6 +210,21 @@ const usePaymentStore = defineStore('payments', {
 
         async reportePaymentsBorrowerPersonalLoan(slug_borrower: string, id_borrow: number) {
             return await apiReportePaymentsBorrowerPersonalLoan(slug_borrower, id_borrow)
+                .then((response) => {
+                    const pdf = response.data;
+                    let blob = new Blob([pdf], {
+                        type: 'application/pdf'
+                    });
+                    const url = window.URL.createObjectURL(blob);
+                    return Promise.resolve(url);
+                })
+                .catch((err) => {
+                    return Promise.reject(err);
+                })
+        },
+
+        async reportePaymentsBeneficiaryPersonalLoan(beneficiary: number, date: string, status: Payment = Payment.inprocess) {
+            return await apiReportePaymentsBeneficiaryPersonalLoan(beneficiary, date, status)
                 .then((response) => {
                     const pdf = response.data;
                     let blob = new Blob([pdf], {

@@ -79,6 +79,21 @@ const apiReportePaymentsBorrowerPersonalLoan = async (slug_borrower: string, id_
     })
 }
 
+const apiReportePaymentsBeneficiaryPersonalLoan = async (beneficiary: number, date: string, status: Payment) => {
+    const url = `${PREFIX_API}reports/payments/personal-loans/beneficiary/${beneficiary}?date=${date}&status=${status}`
+    return await axios({
+        method: 'GET',
+        url,
+        responseType: 'blob',
+        headers: {
+            Accept: 'application/pdf',
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+        }
+    })
+}
+
 
 const apiUpdateStatePayment = async (type: string, id_payment: number, status: Payment) => {
     return await axios.post(`${PREFIX_API}payments/update-state`, { type, id_payment, status })
@@ -95,5 +110,6 @@ export {
     apiPaymentsBorrower,
     apiReportePaymentsBorrowerGroup,
     apiPaymentsBorrowerPersonalLoan,
-    apiReportePaymentsBorrowerPersonalLoan
+    apiReportePaymentsBorrowerPersonalLoan,
+    apiReportePaymentsBeneficiaryPersonalLoan
 }

@@ -29,7 +29,7 @@ watch(() => show.value, (value) => {
 <template>
     <r-modal v-model="show" :title="title" size="lg" hidden-footer>
         <template #content>
-            <iframe class="w-full h-screen" :src="pdf"></iframe>
+            <embed class="w-full h-screen" :src="pdf" type="application/pdf" />
         </template>
     </r-modal>
 </template>

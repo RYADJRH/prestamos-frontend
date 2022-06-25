@@ -1,7 +1,7 @@
 
 
 <script setup lang="ts">
-import { computed, ref, markRaw, reactive, onBeforeUnmount } from 'vue';
+import { computed, ref, markRaw, reactive, onBeforeUnmount, watch } from 'vue';
 import { useDebounceFn } from '@vueuse/core';
 import { XCircleIcon } from '@heroicons/vue/solid';
 
@@ -24,6 +24,7 @@ import RInput from '@/components/shared_components/rComponents/RInput.vue';
 import RBtn from '@/components/shared_components/rComponents/RBtn.vue';
 import RTable from '@/components/shared_components/rComponents/RTable.vue';
 import RSpinner from '@/components/shared_components/rComponents/RSpinner.vue';
+import RErrorInput from '@/components/shared_components/rComponents/RErrorInput.vue';
 
 const individualLoansStore = useInvidualLoansStore();
 const dialogStore = useDialogStore();
@@ -193,6 +194,12 @@ async function fnAmountsLoans() {
         .catch(() => { });
 }
 
+const validatorAmountPeriod = ref(false);
+watch(borrower, (value) => {
+    const total = value.amount_borrow + value.amount_interest;
+    validatorAmountPeriod.value = value.amount_payment_period > total
+})
+
 onBeforeUnmount(() => {
     emits('update:loadingSave', false);
     dialogStore.$reset();
@@ -265,8 +272,16 @@ onBeforeUnmount(() => {
                 <div class="w-full md:w-1/3 px-2">
                     <r-form-group title="Monto de abono:" class="mb-3">
                         <r-input v-model="borrower.amount_payment_period" @input="inputAmortionCalculedDebounce"
-                            type="text" class="text-right" :disabled="!selectedBorrower" currency required></r-input>
+                            type="text" class="text-right" :disabled="!selectedBorrower"
+                            :stateError="validatorAmountPeriod" currency required>
+                        </r-input>
+
+                        <r-error-input :show="validatorAmountPeriod"
+                            :errors="{ total_amount: ['El monto del abono debe ser menor'] }" field="total_amount">
+                        </r-error-input>
+
                     </r-form-group>
+
                 </div>
             </div>
         </div>

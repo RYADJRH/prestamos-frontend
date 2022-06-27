@@ -156,7 +156,7 @@ function detelePersonalLoans(id_borrow: number) {
 
 const modalReport = ref(false);
 const loadingReport = ref(false);
-const dateReport = ref(null);
+const dateReport = ref(new Date());
 const viewPdf = ref(false);
 const pdf = ref('');
 
@@ -169,8 +169,7 @@ async function viewReport() {
     await paymentStore.reportePaymentsBeneficiaryPersonalLoan(id_beneficiary, date_payments_format, filterPersonaLoans.value)
         .then((url_pdf) => {
             modalReport.value = false;
-            dateReport.value = null;
-
+            dateReport.value = new Date();
             pdf.value = url_pdf;
             viewPdf.value = true;
         })
@@ -276,6 +275,12 @@ onBeforeUnmount(() => {
         <r-modal v-model="modalReport" :loading="loadingReport" title="Parametros del reporte" size="sm" hidden-footer
             center-modal>
             <template #content>
+                <p v-if="filterPersonaLoans == Payment.unpaid" class="mb-4 text-red-800 font-bold">
+                    Nota: solo se mostraran
+                    los pagos de 5
+                    meses atras a partir de la
+                    fecha
+                    seleccionada</p>
                 <div class="w-full">
                     <r-form-group title="Fecha del reporte:">
                         <Datepicker v-model="dateReport" teleport="#app" altPosition position="left" locale="es"

@@ -43,10 +43,7 @@ async function logout() {
             <h1 class="text-xl text-white ml-2 hidden md:block">Prestamos RRR</h1>
           </div>
           <div class="relative" ref="refMenuNavbar">
-            <button
-              @click="openMenu"
-              class="rounded-full h-10 w-10 bg-white text-sky-800 font-bold"
-            >
+            <button @click="openMenu" class="rounded-full h-10 w-10 bg-white text-sky-800 font-bold">
               {{ authStore.profileBeneficiary?.name_acronym }}
             </button>
 
@@ -61,10 +58,8 @@ async function logout() {
                   <hr class="border-gray-400/15" />
                 </li>
                 <li>
-                  <router-link
-                    to="/seleccionar/beneficiario"
-                    class="flex gap-1 p-2 text-gray-500 hover:bg-sky-800/10 hover:text-sky-800 rounded-md"
-                  >
+                  <router-link to="/seleccionar/beneficiario"
+                    class="flex gap-1 p-2 text-gray-500 hover:bg-sky-800/10 hover:text-sky-800 rounded-md">
                     <UsersIcon class="h-6 w-6"></UsersIcon>Cambiar beneficiario
                   </router-link>
                 </li>

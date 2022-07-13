@@ -42,7 +42,7 @@ const fields_keys = computed<Field[]>(() => {
 <template>
   <div class="relative overflow-x-auto rounded-md md:max-h-94"
     :class="{ 'opacity-50': loading, 'shadow-none': shadowNone, 'shadow-lg': !shadowNone }">
-    <table class="w-full bg-white text-sm text-left text-gray-600">
+    <table class="w-full bg-white text-sm text-left text-gray-600 dark:bg-gray-700 dark:text-gray-300">
       <thead class="uppercase border-b sticky top-0">
         <tr>
           <th v-for="item in fields_keys" scope="col" class="px-6 py-3">
@@ -58,8 +58,8 @@ const fields_keys = computed<Field[]>(() => {
         </tr>
         <tr v-if="!loading && items.length == 0">
           <td :colspan="fields_keys.length">
-            <div class="inline-flex w-full justify-center p-6">
-              <h1 class="text-xl text-sky-800">
+            <div class="inline-flex w-full justify-center p-6 ">
+              <h1 class="text-xl text-sky-800 dark:text-gray-400">
                 <slot name="label-empty">Sin datos</slot>
               </h1>
             </div>
@@ -76,7 +76,7 @@ const fields_keys = computed<Field[]>(() => {
       </tbody>
     </table>
     <!-- props.items.length > 0 -->
-    <div class="bg-white w-full border-t h-12 px-4" v-if="!loading && !props.hiddenFooter">
+    <div class="bg-white w-full border-t h-12 px-4 dark:bg-gray-700 " v-if="!loading && !props.hiddenFooter">
       <slot name="footer"></slot>
     </div>
   </div>

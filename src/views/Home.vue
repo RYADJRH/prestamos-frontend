@@ -16,7 +16,7 @@ onBeforeMount(() => [
 </script>
 <template>
   <div class="w-full">
-    <h1 class="text-2xl text-gray-600 mb-4">Estadisticas:</h1>
+    <h1 class="text-2xl text-gray-600 mb-4 dark:text-white">Estadisticas:</h1>
     <div class="flex flex-wrap -mx-2">
       <div class="w-full md:w-1/3 px-2 mb-2 md:mb-0">
         <card-amount :amount="amounts.amount_borrow" label="prestado:"></card-amount>

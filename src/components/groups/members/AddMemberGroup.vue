@@ -217,10 +217,11 @@ onBeforeUnmount(() => {
                             :item-layout="itemList" @click:item="selectBorrower" :loading="loadingDataBorrower">
                         </r-select-list>
                     </r-form-group>
-                    <div class="w-full p-3 flex items-center justify-between rounded-md bg-gray-600/5 mb-3" v-else>
+                    <div class="w-full p-3 flex items-center justify-between rounded-md bg-gray-600/5 mb-3 dark:bg-gray-800 dark:text-white"
+                        v-else>
                         <p class="w-80 font-bold">{{ selectedBorrower?.full_name }}</p>
                         <div class="w-20 flex justify-end" v-if="selectedBorrower && !loadingSave">
-                            <XCircleIcon class="h-8 w-8 text-red-800 cursor-pointer" @click="removeSelectedBorrower">
+                            <XCircleIcon class="h-8 w-8 text-red-800 cursor-pointer " @click="removeSelectedBorrower">
                             </XCircleIcon>
                         </div>
                     </div>

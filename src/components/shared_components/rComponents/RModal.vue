@@ -35,18 +35,20 @@ const emits = defineEmits<{
           'pt-10': centerModal
         }">
           <!-- modal -->
-          <div class="relative bg-white rounded-md w-full" :class="{
+          <div class="relative bg-white rounded-md w-full dark:bg-gray-700 dark:border dark:border-gray-400" :class="{
             'md:w-2/6': size == 'sm',
             'md:w-2/4': size == 'md',
             'md:w-3/4': size == 'lg',
             'md:w-full': size == 'xl',
           }">
             <!-- modal header -->
-            <div class="modal-header h-14 flex items-center justify-between px-4 rounded-t-md border">
-              <h1 class="text-black font-bold text-xl">{{ title }}</h1>
-              <r-btn variant="outline-light" class="focus:ring-black hover:bg-gray-900"
+            <div
+              class="modal-header h-14 flex items-center justify-between px-4 rounded-t-md border dark:border-gray-400">
+              <h1 class="text-black font-bold text-xl dark:text-white">{{ title }}</h1>
+              <r-btn variant="outline-light"
+                class="focus:ring-black hover:bg-gray-900 dark:focus:ring-gray-400 dark:hover:bg-gray-400"
                 @click="emits('update:modelValue', false)" :disabled="loading">
-                <XIcon class="h-4 w-4 text-gray-600"></XIcon>
+                <XIcon class="h-4 w-4 text-gray-600 dark:text-white"></XIcon>
               </r-btn>
             </div>
             <!-- modal content -->

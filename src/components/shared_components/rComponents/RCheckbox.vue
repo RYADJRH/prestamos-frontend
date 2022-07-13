@@ -26,14 +26,9 @@ const model = computed({
 </script>
 <template>
     <label class="inline-flex items-center" :for="id">
-        <input
-            v-model="model"
-            :id="id"
-            type="checkbox"
-            :name="name"
+        <input v-model="model" :id="id" type="checkbox" :name="name"
             class="rounded focus:ring-1 focus:ring-offset-2 disabled:cursor-not-allowed"
-            :class="{ 'text-sky-800 focus:ring-sky-800': variant == 'primary', 'text-red-800 focus:ring-red-800': variant == 'danger' }"
-        />
-        <span class="ml-2 text-gray-500">{{ label }}</span>
+            :class="{ 'text-sky-800 focus:ring-sky-800 dark:text-gray-500 dark:focus:ring-gray-500': variant == 'primary', 'text-red-800 focus:ring-red-800 dark:text-gray-500 dark:focus:ring-gray-500': variant == 'danger' }" />
+        <span class="ml-2 text-gray-500 dark:text-white">{{ label }}</span>
     </label>
 </template>

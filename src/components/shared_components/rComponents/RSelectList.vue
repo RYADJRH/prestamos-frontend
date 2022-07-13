@@ -42,47 +42,33 @@ function clickItem(item: any) {
   }
 }
 
-const inputValue =ref('')
+const inputValue = ref('')
 watch(() => props.modelValue, (value) => {
-   inputValue.value = value;
+  inputValue.value = value;
 })
 
 </script>
 <template>
-  <div
-    class="relative z-[60]"
-    :ref="
-      (el) => {
-        target = el;
-      }
-    "
-  >
+  <div class="relative z-[60]" :ref="
+    (el) => {
+      target = el;
+    }
+  ">
     <div class="block relative w-full" @click="showOptions = true">
       <span class="absolute inset-y-0 left-0 flex items-center pl-2">
         <SearchIcon class="h-6 w-6 text-gray-500"></SearchIcon>
       </span>
-      <r-input
-        v-model="inputValue"
-        @input="handleInput"
-        type="search"
-        placeholder="busqueda"
-        class="pl-10"
-        v-focus
-      ></r-input>
+      <r-input v-model="inputValue" @input="handleInput" type="search" placeholder="busqueda" class="pl-10" v-focus>
+      </r-input>
     </div>
-    <div
-      class="bg-white p-4 h-auto shadow-lg rounded-md absolute w-full mt-1"
-      v-show="inputValue && showOptions"
-      tabindex="0"
-    >
+    <div class="bg-white p-4 h-auto shadow-lg rounded-md absolute w-full mt-1 dark:bg-gray-700 dark:border"
+      v-show="inputValue && showOptions" tabindex="0">
       <div v-for="item in props.data" @click="clickItem(item)" v-if="!props.loading">
         <component :is="props.itemLayout" :item="item"></component>
       </div>
 
-      <div
-        v-if="data.length == 0 && !props.loading"
-        class="h-12 text-sky-800 flex items-center justify-center px-2 gap-2"
-      >
+      <div v-if="data.length == 0 && !props.loading"
+        class="h-12 text-sky-800 flex items-center justify-center px-2 gap-2 dark:text-white ">
         <slot name="no-data"> Sin datos </slot>
       </div>
 

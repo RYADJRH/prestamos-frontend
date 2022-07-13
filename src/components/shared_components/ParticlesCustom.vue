@@ -7,6 +7,8 @@ const props = defineProps<{
     particlesColor: string
 }>();
 
+
+
 const optionsParticles = ref({
     background: {
         color: {
@@ -88,7 +90,7 @@ const optionsParticles = ref({
 </script>
 
 <template>
-    <Particles id="tsparticles" :options="optionsParticles"  ></Particles>
+    <Particles id="tsparticles" :options="optionsParticles"></Particles>
 </template>
 
 <style lang="css" scoped>

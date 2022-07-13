@@ -14,34 +14,24 @@ const emits = defineEmits<{
 </script>
 
 <template>
-  <div class="bg-white p-3 shadow-sm rounded-md">
-    <a
-      class="font-bold text-lg text-gray-600 truncate hover:underline decoration-solid underline-offset-4 cursor-pointer"
-      @click="emits('selected:group', group.slug as string)"
-    >
+  <div class="bg-white p-3 shadow-sm rounded-md dark:bg-gray-700">
+    <a class="font-bold text-lg text-gray-600 truncate hover:underline decoration-solid underline-offset-4 cursor-pointer dark:text-white"
+      @click="emits('selected:group', group.slug as string)">
       {{ group.name_group }}
     </a>
     <div class="flex flex-col gap-1 mt-2">
-      <span class="text-gray-500 text-sm">
+      <span class="text-gray-500 text-sm dark:text-white">
         Fecha de inicio: {{ formatDate(group.created_group, "LL") }}
       </span>
-      <span class="text-gray-500 text-sm">
+      <span class="text-gray-500 text-sm dark:text-white">
         Dia de pago : {{ group.day_payment_name as string }}
       </span>
     </div>
     <div class="flex justify-end" v-if="!group.state_archived_group">
-      <r-btn
-        variant="danger"
-        class="px-1 py-2 mr-3"
-        @click="emits('delete:group', group.id_group as number)"
-      >
+      <r-btn variant="danger" class="px-1 py-2 mr-3" @click="emits('delete:group', group.id_group as number)">
         <TrashIcon class="h-5 w-5"></TrashIcon>
       </r-btn>
-      <r-btn
-        variant="success"
-        class="px-1 py-2"
-        @click="emits('update:group', group)"
-      >
+      <r-btn variant="success" class="px-1 py-2" @click="emits('update:group', group)">
         <PencilAltIcon class="h-5 w-5"></PencilAltIcon>
       </r-btn>
     </div>

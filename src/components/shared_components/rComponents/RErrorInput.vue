@@ -18,5 +18,5 @@ const message = computed(() => {
 </script>
 
 <template>
-  <p v-if="show" class="w-full text-red-800 text-sm">{{ message }}</p>
+  <p v-if="show" class="w-full text-red-800 text-sm dark:text-red-400">{{ message }}</p>
 </template>

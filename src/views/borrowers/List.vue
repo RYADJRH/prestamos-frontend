@@ -118,7 +118,7 @@ const fields = reactive([
 async function fnGetBorrowers() {
   await borrowerStore
     .listBorrowers(authStore.profileId as number, inputSearch.value)
-    .catch(() => {});
+    .catch(() => { });
 }
 
 function deleteBorrower(id_borrower: number) {
@@ -228,7 +228,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="flex flex-col gap-5">
-    <h1 class="text-2xl flex text-gray-600">Lista prestatarios</h1>
+    <h1 class="text-2xl flex text-gray-600 dark:text-white">Lista prestatarios</h1>
     <div class="md:flex md:justify-between">
       <div class="md:grid md:place-content-center">
         <r-btn variant="primary" @click="saveBorrowerModal">Agregar</r-btn>
@@ -237,26 +237,14 @@ onBeforeUnmount(() => {
         <span class="absolute inset-y-0 left-0 flex items-center pl-2">
           <SearchIcon class="h-6 w-6 text-gray-500"></SearchIcon>
         </span>
-        <r-input
-          v-model="inputSearch"
-          class="pl-10"
-          type="search"
-          placeholder="busqueda"
-          @input="inputSearchDebounce"
-        ></r-input>
+        <r-input v-model="inputSearch" class="pl-10" type="search" placeholder="busqueda" @input="inputSearchDebounce">
+        </r-input>
       </div>
     </div>
-    <r-table
-      :fields="fields"
-      :items="borrowerStore.getBorrowers"
-      :hidden-footer="borrowerStore.getBorrowers.length == 0"
-    >
+    <r-table :fields="fields" :items="borrowerStore.getBorrowers"
+      :hidden-footer="borrowerStore.getBorrowers.length == 0">
       <template #cell(acciones)="{ data }">
-        <r-btn
-          variant="danger"
-          class="mr-3 px-1 py-2"
-          @click="deleteBorrower(data.id_borrower)"
-        >
+        <r-btn variant="danger" class="mr-3 px-1 py-2" @click="deleteBorrower(data.id_borrower)">
           <TrashIcon class="h-5 w-5 text-white"></TrashIcon>
         </r-btn>
         <r-btn variant="success" class="mr-3 px-1 py-2" @click="editBorrowerModal(data)">
@@ -264,24 +252,16 @@ onBeforeUnmount(() => {
         </r-btn>
       </template>
       <template #cell(name_file_ine_borrower_path)="{ data }">
-        <a
-          v-if="data.name_file_ine_borrower_path"
-          class="cursor-pointer hover:text-sky-800"
-          :href="data.name_file_ine_borrower_path"
-          target="_blank"
-        >
+        <a v-if="data.name_file_ine_borrower_path" class="cursor-pointer hover:text-sky-800"
+          :href="data.name_file_ine_borrower_path" target="_blank">
           <DocumentTextIcon class="w-8 h-8"></DocumentTextIcon>
         </a>
         <span v-else>No disponible</span>
       </template>
 
       <template #cell(name_file_proof_address_borrower_path)="{ data }">
-        <a
-          v-if="data.name_file_proof_address_borrower_path"
-          class="cursor-pointer hover:text-sky-800"
-          :href="data.name_file_proof_address_borrower_path"
-          target="_blank"
-        >
+        <a v-if="data.name_file_proof_address_borrower_path" class="cursor-pointer hover:text-sky-800"
+          :href="data.name_file_proof_address_borrower_path" target="_blank">
           <DocumentTextIcon class="w-8 h-8"></DocumentTextIcon>
         </a>
         <span v-else>No disponible</span>
@@ -290,110 +270,56 @@ onBeforeUnmount(() => {
       <template #footer>
         <div class="flex justify-end items-center h-full">
           <div>
-            <r-pagination
-              v-model="currentPage"
-              :total-pages="totalPages"
-              variant="dark"
-            ></r-pagination>
+            <r-pagination v-model="currentPage" :total-pages="totalPages" variant="dark"></r-pagination>
           </div>
         </div>
       </template>
     </r-table>
   </div>
-  <r-modal
-    v-model="modalAddBorrower"
-    size="sm"
-    :title="(modeEdit ? 'Editar' : 'Agregar') + ' prestatario'"
-    hidden-footer
-    :loading="loadingSave"
-  >
+  <r-modal v-model="modalAddBorrower" size="sm" :title="(modeEdit ? 'Editar' : 'Agregar') + ' prestatario'"
+    hidden-footer :loading="loadingSave">
     <template #content>
       <form @submit.prevent="submitForm">
         <r-form-group title="Nombre:" class="mb-6">
-          <r-input
-            v-model="newBorrower.name_borrower"
-            type="text"
-            placeholder="Yaretzin"
-            class="mt-2"
-            :stateError="
-              errorStore.errors && errorStore.errors.hasOwnProperty('name_borrower')
-            "
-            required
-          ></r-input>
-          <r-error-input
-            :errors="errorStore.errors"
-            field="name_borrower"
-          ></r-error-input>
+          <r-input v-model="newBorrower.name_borrower" type="text" placeholder="Yaretzin" class="mt-2" :stateError="
+            errorStore.errors && errorStore.errors.hasOwnProperty('name_borrower')
+          " required></r-input>
+          <r-error-input :errors="errorStore.errors" field="name_borrower"></r-error-input>
         </r-form-group>
         <r-form-group title="Apellidos:" class="mb-6">
-          <r-input
-            v-model="newBorrower.last_name_borrower"
-            type="text"
-            placeholder="Araujo Delgado"
-            class="mt-2"
+          <r-input v-model="newBorrower.last_name_borrower" type="text" placeholder="Araujo Delgado" class="mt-2"
             :stateError="
               errorStore.errors && errorStore.errors.hasOwnProperty('last_name_borrower')
-            "
-            required
-          ></r-input>
-          <r-error-input
-            :errors="errorStore.errors"
-            field="last_name_borrower"
-          ></r-error-input>
+            " required></r-input>
+          <r-error-input :errors="errorStore.errors" field="last_name_borrower"></r-error-input>
         </r-form-group>
         <div class="mb-6">
           <r-form-group title="INE:">
-            <r-input-file
-              v-model="newBorrower.name_file_ine_borrower"
-              class="mt-2 border border-red-500"
-              accept=".pdf, .png, .jpg"
-              :stateError="
+            <r-input-file v-model="newBorrower.name_file_ine_borrower" class="mt-2 border border-red-500"
+              accept=".pdf, .png, .jpg" :stateError="
                 errorStore.errors &&
                 errorStore.errors.hasOwnProperty('name_file_ine_borrower')
-              "
-              :disabled="newBorrower.remove_file_ine_borrower"
-            ></r-input-file>
-            <r-error-input
-              :errors="errorStore.errors"
-              field="name_file_ine_borrower"
-            ></r-error-input>
+              " :disabled="newBorrower.remove_file_ine_borrower"></r-input-file>
+            <r-error-input :errors="errorStore.errors" field="name_file_ine_borrower"></r-error-input>
           </r-form-group>
-          <r-checkbox
-            v-if="newBorrower.name_file_ine_borrower_path"
-            v-model="(newBorrower.remove_file_ine_borrower as boolean)"
-            id="checkbox_remove_ine"
-            name="checkbox_remove_ine"
-            variant="danger"
-            class="mt-2"
-            label="Eliminar el archivo cargado anteriormente"
-          ></r-checkbox>
+          <r-checkbox v-if="newBorrower.name_file_ine_borrower_path"
+            v-model="(newBorrower.remove_file_ine_borrower as boolean)" id="checkbox_remove_ine"
+            name="checkbox_remove_ine" variant="danger" class="mt-2" label="Eliminar el archivo cargado anteriormente">
+          </r-checkbox>
         </div>
         <div class="mb-6">
           <r-form-group title="Comprobante de domicilio:">
-            <r-input-file
-              v-model="newBorrower.name_file_proof_address_borrower"
-              class="mt-2"
-              accept=".pdf, .png, .jpg"
+            <r-input-file v-model="newBorrower.name_file_proof_address_borrower" class="mt-2" accept=".pdf, .png, .jpg"
               :stateError="
                 errorStore.errors &&
                 errorStore.errors.hasOwnProperty('name_file_proof_address_borrower')
-              "
-              :disabled="newBorrower.remove_file_proof_address_borrower"
-            ></r-input-file>
-            <r-error-input
-              :errors="errorStore.errors"
-              field="name_file_proof_address_borrower"
-            ></r-error-input>
+              " :disabled="newBorrower.remove_file_proof_address_borrower"></r-input-file>
+            <r-error-input :errors="errorStore.errors" field="name_file_proof_address_borrower"></r-error-input>
           </r-form-group>
-          <r-checkbox
-            v-if="newBorrower.name_file_proof_address_borrower_path"
-            v-model="(newBorrower.remove_file_proof_address_borrower as boolean)"
-            id="checkbox_remove_proof_address"
-            name="checkbox_remove_proof_address"
-            variant="danger"
-            class="mt-2"
-            label="Eliminar el archivo cargado anteriormente"
-          ></r-checkbox>
+          <r-checkbox v-if="newBorrower.name_file_proof_address_borrower_path"
+            v-model="(newBorrower.remove_file_proof_address_borrower as boolean)" id="checkbox_remove_proof_address"
+            name="checkbox_remove_proof_address" variant="danger" class="mt-2"
+            label="Eliminar el archivo cargado anteriormente"></r-checkbox>
         </div>
         <div class="flex justify-end">
           <r-btn :disabled="loadingSave">

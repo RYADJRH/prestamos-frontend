@@ -64,6 +64,6 @@ function isNumberKey(event: KeyboardEvent) {
 <template>
   <input v-model="value" :type="type" @blur="isFocusInput = false" @focus="isFocusInput = true"
     @keypress="isNumberKey($event)"
-    class="block w-full rounded-md shadow-sm border border-solid border-gray-600 focus:border-sky-800 focus:ring-offset-0  focus:ring-sky-800 disabled:cursor-not-allowed disabled:bg-gray-100"
-    :class="{ 'border-red-800': stateError }" />
+    class="block w-full rounded-md shadow-sm border border-solid border-gray-600 focus:border-sky-800 focus:ring-offset-0  focus:ring-sky-800 disabled:cursor-not-allowed disabled:bg-gray-100 dark:bg-gray-600 dark:disabled:bg-gray-500 dark:text-gray-100 dark:focus:border-gray-300 dark:focus:ring-gray-300"
+    :class="{ 'border-red-800 dark:border-red-400': stateError }" />
 </template>

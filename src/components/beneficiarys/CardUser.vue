@@ -17,16 +17,13 @@ withDefaults(
 <template>
   <div class="h-56 flex justify-center">
     <div
-      class="h-32 w-32 relative rounded-md bg-white border hover:bg-gray-100 hover:border-sky-800 flex justify-center items-center cursor-pointer"
-    >
-      <div
-        class="absolute top-0 bottom-0 left-0 right-0 bg-black bg-opacity-50 rounded-md grid place-content-center"
-        v-if="modeEdit"
-      >
-        <PencilAltIcon class="text-white h-10 w-10"></PencilAltIcon>
+      class="h-32 w-32 relative rounded-md bg-white border hover:bg-gray-100 hover:border-sky-800 flex justify-center items-center cursor-pointer dark:bg-gray-700 dark:hover:border-gray-800">
+      <div class="absolute top-0 bottom-0 left-0 right-0 bg-black bg-opacity-50 rounded-md grid place-content-center"
+        v-if="modeEdit">
+        <PencilAltIcon class="text-white h-10 w-10 "></PencilAltIcon>
       </div>
       <slot name="acronym">
-        <h1 class="text-6xl text-sky-800">{{ beneficiary.name_acronym }}</h1>
+        <h1 class="text-6xl text-sky-800 dark:text-white">{{ beneficiary.name_acronym }}</h1>
       </slot>
       <slot name="name-beneficiary">
         <p class="absolute top-full text-center text-white mt-2">

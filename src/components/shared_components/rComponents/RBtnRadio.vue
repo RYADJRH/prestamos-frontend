@@ -5,7 +5,7 @@ type Variant = "primary" | "danger";
 const props = defineProps<{
   modelValue: number | string;
   id: string;
-  value:number | string
+  value: number | string
   variant: Variant;
   name: string;
   label?: string;
@@ -26,19 +26,12 @@ const model = computed({
 </script>
 <template>
   <label class="inline-flex items-center" :for="id">
-    <input
-      v-model="model"
-      :id="id"
-      :value="value"
-      type="radio"
-      :name="name"
-      class="rounded-full  focus:ring-1 focus:ring-offset-2 disabled:cursor-not-allowed"
-      :class="{
-        'text-sky-800 focus:ring-sky-800': variant == 'primary',
+    <input v-model="model" :id="id" :value="value" type="radio" :name="name"
+      class="rounded-full focus:ring-1 focus:ring-offset-2 disabled:cursor-not-allowed" :class="{
+        'text-sky-800 focus:ring-sky-800 dark:text-gray-400 dark:focus:ring-gray-400': variant == 'primary',
         'text-red-800 focus:ring-red-800': variant == 'danger',
-
-      }"
-    />
-    <span class="ml-2 text-gray-500">{{ label }}</span>
+      
+      }" />
+    <span class="ml-2 text-gray-500 dark:text-white">{{ label }}</span>
   </label>
 </template>

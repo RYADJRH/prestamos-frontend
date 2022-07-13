@@ -12,12 +12,15 @@ import RInput from "@/components/shared_components/rComponents/RInput.vue";
 import RErrorInput from "@/components/shared_components/rComponents/RErrorInput.vue";
 import Isotipo from "@/components/logos/Isotipo.vue";
 
+import { isActiveDark } from '@/utils/darkMode';
+
 const router = useRouter();
 const authStore = useAuthStore();
 const errorStore = useErrorStore();
 
 
-const color = ref(colors.sky[900]);
+const color = isActiveDark() ? ref(colors.gray[400]) : ref(colors.sky[900]);
+
 const loading = ref(false);
 const nick_name_user = ref("");
 const password = ref("");
@@ -43,29 +46,18 @@ onBeforeMount(() => errorStore.$reset());
 
 <template>
   <div class="h-screen flex justify-center items-center px-3 md:px-0">
-    <form @submit.prevent="login" class="w-full px-3 py-7 bg-white border rounded-md md:max-w-sm">
+    <form @submit.prevent="login" class="w-full px-3 py-7 bg-white border rounded-md md:max-w-sm dark:bg-gray-700">
       <div class="mb-6 flex justify-center">
         <isotipo :color="color" class="h-32 w-32"></isotipo>
       </div>
       <r-form-group title="Nombre de usuario:" class="mb-6">
-        <r-input
-          v-model="nick_name_user"
-          type="text"
-          placeholder="ReboDev"
-          class="mt-2"
-          :stateError="errorStore.errors && errorStore.errors.hasOwnProperty('nick_name_user')"
-        ></r-input>
+        <r-input v-model="nick_name_user" type="text" placeholder="ReboDev" class="mt-2"
+          :stateError="errorStore.errors && errorStore.errors.hasOwnProperty('nick_name_user')"></r-input>
         <r-error-input :errors="errorStore.errors" field="nick_name_user"></r-error-input>
       </r-form-group>
 
       <r-form-group title="Contraseña:" class="mb-6">
-        <r-input
-          v-model="password"
-          type="password"
-          placeholder="**********"
-          autocomplete="on"
-          class="mt-2"
-        ></r-input>
+        <r-input v-model="password" type="password" placeholder="**********" autocomplete="on" class="mt-2"></r-input>
       </r-form-group>
       <div>
         <r-btn class="w-full" type="submit" :disabled="loading">

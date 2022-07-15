@@ -16,7 +16,7 @@ const paymentStore = usePaymentStore();
 const borrower = computed(() => paymentStore.getBorrower);
 
 async function fnPaymentsBorrower() {
-    await paymentStore.getApiPaymentsBorrowerPersonal(slug_borrower.value,id_borrow.value, 1)
+    await paymentStore.getApiPaymentsBorrowerPersonal(slug_borrower.value, id_borrow.value, 1)
         .catch(() => { });
 }
 
@@ -40,11 +40,11 @@ onBeforeUnmount(() => {
     <div>
         <div class="flex justify-between">
             <div class="flex items-center gap-2">
-                <a class="text-gray-600 hover:text-red-800 cursor-pointer"
+                <a class="text-gray-600 hover:text-red-800 cursor-pointer dark:text-white dark:hover:text-gray-300"
                     @click="router.push(`/prestamos-personales`)">
                     <ArrowSmLeftIcon class="w-8 h-8"></ArrowSmLeftIcon>
                 </a>
-                <h1 class="text-2xl text-gray-600">Pagos - {{ borrower.full_name }}</h1>
+                <h1 class="text-2xl text-gray-600 dark:text-white">Pagos - {{ borrower.full_name }}</h1>
             </div>
 
         </div>

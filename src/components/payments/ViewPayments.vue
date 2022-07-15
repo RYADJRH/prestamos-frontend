@@ -212,7 +212,7 @@ async function fnViewPdf() {
 </script>
 <template>
     <div>
-        <h1 class="text-gray-600 text-lg">Pagos</h1>
+        <h1 class="text-gray-600 text-lg dark:text-white">Pagos</h1>
         <div class="mt-4">
             <div class="flex flex-col md:flex-row justify-between">
                 <div>
@@ -250,7 +250,7 @@ async function fnViewPdf() {
 
                 <template #cell(state_payment)="{ data }">
                     <div @click="updateStatusPayment(!['borrower-payments', 'personal-loans'].includes(props.type) ? data.borrower.full_name : `No.pago ${data.num_payment}`, data.id_payment, data.state_payment)"
-                        class="px-3 py-1 rounded-md font-bold text-center hover:underline hover:underline-offset-4 hover:cursor-pointer"
+                        class="px-3 py-1 rounded-md font-bold text-center hover:underline hover:underline-offset-4 hover:cursor-pointer "
                         :class="{
                             'bg-emerald-100 text-emerald-800': data.state_payment == Payment.paid,
                             'bg-red-100 text-red-800': data.state_payment == Payment.unpaid,
@@ -278,8 +278,8 @@ async function fnViewPdf() {
         <r-modal v-model="modalUpdateStatePayment" :loading="loadingUpdateStatePayment" title="Editar status"
             hidden-footer>
             <template #content>
-                <div class="p-3 flex items-center justify-between rounded-md bg-gray-600/5 mb-3">
-                    <p class="font-bold"> {{ selectedPayment.full_name }}</p>
+                <div class="p-3 flex items-center justify-between rounded-md bg-gray-600/5 mb-3 ">
+                    <p class="font-bold dark:text-gray-300"> {{ selectedPayment.full_name }}</p>
                 </div>
                 <div v-for="item in Payment" @click="selectedPayment.state_payment = item"
                     class="mb-3 px-3 py-1 rounded-md font-bold text-center hover:cursor-pointer" :class="{

@@ -39,10 +39,11 @@ onBeforeUnmount(() => {
     <div>
         <div class="flex justify-between">
             <div class="flex items-center gap-2">
-                <a class="text-gray-600 hover:text-red-800 cursor-pointer" @click="router.push(`/grupo/${slug}`)">
+                <a class="text-gray-600 hover:text-red-800 cursor-pointer  dark:text-white dark:hover:text-gray-300"
+                    @click="router.push(`/grupo/${slug}`)">
                     <ArrowSmLeftIcon class="w-8 h-8"></ArrowSmLeftIcon>
                 </a>
-                <h1 class="text-2xl text-gray-600">Pagos siguientes - {{ group.name }}</h1>
+                <h1 class="text-2xl text-gray-600 dark:text-white">Pagos siguientes - {{ group.name }}</h1>
             </div>
 
         </div>

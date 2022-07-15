@@ -3,10 +3,14 @@ import { ref, inject } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth.store";
+import { useDarkModeStore } from '@/stores/darkMode.store';
+
 import { MenuIcon, UsersIcon, LogoutIcon } from "@heroicons/vue/outline";
+import { MoonIcon, SunIcon } from "@heroicons/vue/solid";
 import RMenu from "./rComponents/RMenu.vue";
 import RBtn from "./rComponents/RBtn.vue";
 
+const darkModeStore = useDarkModeStore();
 const authStore = useAuthStore();
 const router = useRouter();
 const setLoadingFull = inject("set-loading-full") as (value: boolean) => {};
@@ -20,6 +24,9 @@ onClickOutside(refMenuNavbar, (event) => {
 
 function openMenu() {
   menu.value = !menu.value;
+}
+function setModeDark() {
+  darkModeStore.setModeTheme(!darkModeStore.dark)
 }
 
 async function logout() {
@@ -39,37 +46,46 @@ async function logout() {
             <r-btn @click="$emit('toogleSidebar')" variant="outline-light">
               <MenuIcon class="h-4 w-4"></MenuIcon>
             </r-btn>
-
             <h1 class="text-xl text-white ml-2 hidden md:block">Prestamos RRR</h1>
           </div>
-          <div class="relative" ref="refMenuNavbar">
-            <button @click="openMenu" class="rounded-full h-10 w-10 bg-white text-sky-800 font-bold dark:text-gray-800">
-              {{ authStore.profileBeneficiary?.name_acronym }}
-            </button>
+          <div class="flex justify-center items-center gap-5">
+            <div>
+              <r-btn @click="setModeDark" variant="outline-light">
+                <MoonIcon v-if="!darkModeStore.dark" class="h-5 w-5 text-white"></MoonIcon>
+                <SunIcon v-if="darkModeStore.dark" class=" h-5 w-5 text-yellow-500">
+                </SunIcon>
+              </r-btn>
+            </div>
+            <div class="relative" ref="refMenuNavbar">
+              <button @click="openMenu"
+                class="rounded-full h-10 w-10 bg-white text-sky-800 font-bold dark:text-gray-800">
+                {{ authStore.profileBeneficiary?.name_acronym }}
+              </button>
 
-            <RMenu v-model="menu" align="bottom-right" class="mt-2">
-              <template #list>
-                <li>
-                  <h1 class="font-bold dark:text-white">
-                    {{ authStore.profileBeneficiary?.name_beneficiary }}
-                  </h1>
-                </li>
-                <li>
-                  <hr class="border-gray-400/15" />
-                </li>
-                <li>
-                  <router-link to="/seleccionar/beneficiario"
-                    class="flex gap-1 p-2 rounded-md text-gray-500 hover:bg-sky-800/10 hover:text-sky-800 dark:text-gray-400 dark:hover:bg-gray-400/10 dark:hover:text-white">
-                    <UsersIcon class="h-6 w-6"></UsersIcon>Cambiar beneficiario
-                  </router-link>
-                </li>
-                <li>
-                  <r-btn class="w-full" variant="danger" @click="logout">
-                    <LogoutIcon class="h-5 w-5 mr-3"></LogoutIcon>Cerrar sesión
-                  </r-btn>
-                </li>
-              </template>
-            </RMenu>
+              <RMenu v-model="menu" align="bottom-right" class="mt-2">
+                <template #list>
+                  <li>
+                    <h1 class="font-bold dark:text-white">
+                      {{ authStore.profileBeneficiary?.name_beneficiary }}
+                    </h1>
+                  </li>
+                  <li>
+                    <hr class="border-gray-400/15" />
+                  </li>
+                  <li>
+                    <router-link to="/seleccionar/beneficiario"
+                      class="flex gap-1 p-2 rounded-md text-gray-500 hover:bg-sky-800/10 hover:text-sky-800 dark:text-gray-400 dark:hover:bg-gray-400/10 dark:hover:text-white">
+                      <UsersIcon class="h-6 w-6"></UsersIcon>Cambiar beneficiario
+                    </router-link>
+                  </li>
+                  <li>
+                    <r-btn class="w-full" variant="danger" @click="logout">
+                      <LogoutIcon class="h-5 w-5 mr-3"></LogoutIcon>Cerrar sesión
+                    </r-btn>
+                  </li>
+                </template>
+              </RMenu>
+            </div>
           </div>
         </div>
       </div>

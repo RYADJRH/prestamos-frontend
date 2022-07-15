@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import RAlert from "@/components/shared_components/rComponents/RAlert.vue";
 import ROverlay from "@/components/shared_components/rComponents/ROverlay.vue";
+import { useStorage } from '@vueuse/core'
 import { onBeforeMount } from 'vue';
+import { useDarkModeStore } from '@/stores/darkMode.store';
+const darkModeStore = useDarkModeStore();
 
 onBeforeMount(() => {
-  document.querySelector('html')!.classList.add('dark')
-
+  darkModeStore.setModeTheme(useStorage('theme-dark', false).value)
 })
 
 </script>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onBeforeMount } from "vue";
+import { ref, onBeforeMount, computed } from "vue";
 import colors from "tailwindcss/colors";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth.store";
@@ -12,14 +12,14 @@ import RInput from "@/components/shared_components/rComponents/RInput.vue";
 import RErrorInput from "@/components/shared_components/rComponents/RErrorInput.vue";
 import Isotipo from "@/components/logos/Isotipo.vue";
 
-import { isActiveDark } from '@/utils/darkMode';
+
+import { useDarkModeStore } from '@/stores/darkMode.store';
+const darkModeStore = useDarkModeStore();
+const color = computed<string>(() => darkModeStore.dark ? colors.gray[400] : colors.sky[900])
 
 const router = useRouter();
 const authStore = useAuthStore();
 const errorStore = useErrorStore();
-
-
-const color = isActiveDark() ? ref(colors.gray[400]) : ref(colors.sky[900]);
 
 const loading = ref(false);
 const nick_name_user = ref("");

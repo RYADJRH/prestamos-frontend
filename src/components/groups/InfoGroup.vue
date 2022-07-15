@@ -23,7 +23,7 @@ const amounts = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-wrap bg-white rounded-md p-4 shadow-sm text-gray-600">
+  <div class="flex flex-wrap bg-white rounded-md p-4 shadow-sm text-gray-600 dark:bg-gray-700 dark:text-gray-300">
     <div class="w-full lg:w-1/3 flex gap-4 my-2">
       <CalendarIcon class="h-6 w-6"></CalendarIcon>
       Fecha : <strong>{{ formatDate(group.created_group, "LL") }}</strong>

@@ -41,7 +41,7 @@ onBeforeUnmount(() => {
     <div>
         <div class="flex justify-between">
             <div class="flex items-center gap-2">
-                <h1 class="text-2xl text-gray-600">Prestamos personales</h1>
+                <h1 class="text-2xl text-gray-600 dark:text-white">Prestamos personales</h1>
             </div>
 
         </div>

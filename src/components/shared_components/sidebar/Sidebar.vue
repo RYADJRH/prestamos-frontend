@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed } from 'vue';
 import colors from 'tailwindcss/colors';
 import { ItemSidebar } from '@/interfaces/sidebar.interface';
 import Navbar from '@/components/shared_components/Navbar.vue';
 import Isotipo from '@/components/logos/Isotipo.vue';
 import SidebarItem from './sidebarElements/SidebarItem.vue';
-import { isActiveDark } from '@/utils/darkMode';
 
-const color = isActiveDark() ? ref(colors.gray[400]) : ref(colors.sky[900]);
+import { useDarkModeStore } from '@/stores/darkMode.store';
+const darkModeStore = useDarkModeStore();
+const color = computed<string>(() => darkModeStore.dark ? colors.gray[400] : colors.sky[900])
 
 
 withDefaults(defineProps<{

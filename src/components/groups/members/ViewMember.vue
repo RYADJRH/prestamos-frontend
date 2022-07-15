@@ -150,7 +150,7 @@ function closeModal() {
 </script>
 <template>
   <div>
-    <h1 class="text-gray-600 text-lg">Miembros</h1>
+    <h1 class="text-gray-600 text-lg dark:text-white">Miembros</h1>
     <div class="mt-4">
       <div class="flex flex-col md:flex-row justify-between">
         <div>
@@ -167,7 +167,9 @@ function closeModal() {
       <div class="mt-4">
         <r-table :fields="fieldsMiembros" :items="borrowers" :hidden-footer="borrowers.length == 0">
           <template #cell(full_name)="{ data }">
-            <router-link :to="`/pagos/grupo/${group.slug}/prestatista/${data.slug_borrower}`" class="font-bold hover:underline hover:underline-offset-4 hover:cursor-pointer">{{ data.full_name }}</router-link>
+            <router-link :to="`/pagos/grupo/${group.slug}/prestatista/${data.slug_borrower}`"
+              class="font-bold hover:underline hover:underline-offset-4 hover:cursor-pointer">{{ data.full_name }}
+            </router-link>
           </template>
           <template #cell(amount_borrow)="{ data }">
             {{ moneyMxn(data.amount_borrow) }}
@@ -182,13 +184,11 @@ function closeModal() {
             {{ moneyMxn(data.amount_payment_total) }}
           </template>
           <template #cell(state_borrow)="{ data }">
-            <div
-              class="px-3 py-1 rounded-md font-bold text-center"
-              :class="{
-                'bg-emerald-100 text-emerald-800': data.state_borrow == Payment.paid,
-                'bg-red-100 text-red-800': data.state_borrow == Payment.unpaid,
-                'bg-yellow-100 text-yellow-800': data.state_borrow == Payment.inprocess,
-              }">
+            <div class="px-3 py-1 rounded-md font-bold text-center" :class="{
+              'bg-emerald-100 text-emerald-800': data.state_borrow == Payment.paid,
+              'bg-red-100 text-red-800': data.state_borrow == Payment.unpaid,
+              'bg-yellow-100 text-yellow-800': data.state_borrow == Payment.inprocess,
+            }">
               {{ getValuePayment(data.state_borrow) }}
             </div>
           </template>

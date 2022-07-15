@@ -61,10 +61,11 @@ onBeforeUnmount(() => {
   <div>
     <div class="flex justify-between">
       <div class="flex items-center gap-2">
-        <a class="text-gray-600 hover:text-red-800 cursor-pointer" @click="router.push('/grupos')">
+        <a class="text-gray-600 hover:text-red-800 cursor-pointer dark:text-white dark:hover:text-gray-300"
+          @click="router.push('/grupos')">
           <ArrowSmLeftIcon class="w-8 h-8"></ArrowSmLeftIcon>
         </a>
-        <h1 class="text-2xl text-gray-600">{{ group.name_group }}</h1>
+        <h1 class="text-2xl text-gray-600 dark:text-white">{{ group.name_group }}</h1>
       </div>
       <div class="relative" ref="settingsGroup">
         <r-btn variant="danger" @click="settingsMenu = !settingsMenu">
@@ -74,20 +75,21 @@ onBeforeUnmount(() => {
           <template #list>
             <li>
               <router-link :to="`/grupo/pagos-vencidos/${group.slug}`"
-                class="w-full flex gap-1 p-2 text-gray-500 hover:bg-sky-800/10 hover:text-sky-800 rounded-md">
+                class="w-full flex gap-1 p-2 text-gray-500 hover:bg-sky-800/10 hover:text-sky-800 rounded-md dark:hover:bg-gray-400 dark:hover:text-gray-800 dark:text-gray-300">
                 <CurrencyDollarIcon class="h-6 w-6 mr-2"></CurrencyDollarIcon>
                 Pagos vencidos
               </router-link>
             </li>
             <li>
               <router-link :to="`/grupo/pagos-siguientes/${group.slug}`"
-                class="w-full flex gap-1 p-2 text-gray-500 hover:bg-sky-800/10 hover:text-sky-800 rounded-md">
+                class="w-full flex gap-1 p-2 text-gray-500 hover:bg-sky-800/10 hover:text-sky-800 rounded-md dark:hover:bg-gray-400 dark:hover:text-gray-800 dark:text-gray-300">
                 <CurrencyDollarIcon class="h-6 w-6 mr-2"></CurrencyDollarIcon>
                 Pagos siguientes
               </router-link>
             </li>
             <li>
-              <button class="w-full flex gap-1 p-2 text-gray-500 hover:bg-sky-800/10 hover:text-sky-800 rounded-md"
+              <button
+                class="w-full flex gap-1 p-2 text-gray-500 hover:bg-sky-800/10 hover:text-sky-800 rounded-md dark:hover:bg-gray-400 dark:hover:text-gray-800 dark:text-gray-300"
                 @click="archivarDes">
                 <ArchiveIcon class="h-6 w-6 mr-2"></ArchiveIcon>
                 {{ group.state_archived_group ? "Marcar : En proceso" : "Marcar : Archivar" }}

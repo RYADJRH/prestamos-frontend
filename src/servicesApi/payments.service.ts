@@ -79,8 +79,9 @@ const apiReportePaymentsBorrowerPersonalLoan = async (slug_borrower: string, id_
     })
 }
 
-const apiReportePaymentsBeneficiaryPersonalLoan = async (beneficiary: number, date: string, status: Payment) => {
-    const url = `${PREFIX_API}reports/payments/personal-loans/beneficiary/${beneficiary}?date=${date}&status=${status}`
+const apiReportePaymentsBeneficiaryPersonalLoan = async (beneficiary: number, date: string, status: string) => {
+    const statusUri = status !== '' ? `&status=${status}` : '';
+    const url = `${PREFIX_API}reports/payments/personal-loans/beneficiary/${beneficiary}?date=${date}${statusUri}`
     return await axios({
         method: 'GET',
         url,

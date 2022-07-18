@@ -223,8 +223,11 @@ const usePaymentStore = defineStore('payments', {
                 })
         },
 
-        async reportePaymentsBeneficiaryPersonalLoan(beneficiary: number, date: string, status: Payment = Payment.inprocess) {
-            return await apiReportePaymentsBeneficiaryPersonalLoan(beneficiary, date, status)
+        async reportePaymentsBeneficiaryPersonalLoan(beneficiary: number, date: string, status: { type: string, typeName: string, selected: boolean }[]) {
+            const typesSelected = status.filter(item => item.selected).map(item => item.type)
+            const statusUri = typesSelected.join(",")
+
+            return await apiReportePaymentsBeneficiaryPersonalLoan(beneficiary, date, statusUri)
                 .then((response) => {
                     const pdf = response.data;
                     let blob = new Blob([pdf], {
@@ -236,6 +239,8 @@ const usePaymentStore = defineStore('payments', {
                 .catch((err) => {
                     return Promise.reject(err);
                 })
+
+
         },
 
 

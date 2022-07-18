@@ -22,6 +22,7 @@ import AddLoans from '@/components/personalLoans/AddLoans.vue';
 import RFormGroup from '@/components/shared_components/rComponents/RFormGroup.vue';
 import RSelect from '@/components/shared_components/rComponents/RSelect.vue';
 import RSpinner from '@/components/shared_components/rComponents/RSpinner.vue';
+import RCheckbox from '@/components/shared_components/rComponents/RCheckbox.vue';
 import ModalPdf from '@/components/shared_components/pdf/ModalPdf.vue';
 
 const paymentStore = usePaymentStore();
@@ -154,6 +155,9 @@ function detelePersonalLoans(id_borrow: number) {
 
 }
 
+const typePaymentsReports = Object.values(Payment).map((item) => { return { type: item, typeName: getValuePayment(item), selected: true } });
+
+
 const modalReport = ref(false);
 const loadingReport = ref(false);
 const dateReport = ref(new Date());
@@ -166,7 +170,7 @@ async function viewReport() {
     const date_payments = dateReport.value + "";
     const date_payments_format = formatDate(date_payments, 'YYYY-MM-DD');
 
-    await paymentStore.reportePaymentsBeneficiaryPersonalLoan(id_beneficiary, date_payments_format, filterPersonaLoans.value)
+    await paymentStore.reportePaymentsBeneficiaryPersonalLoan(id_beneficiary, date_payments_format, typePaymentsReports)
         .then((url_pdf) => {
             modalReport.value = false;
             dateReport.value = new Date();
@@ -275,16 +279,27 @@ onBeforeUnmount(() => {
         <r-modal v-model="modalReport" :loading="loadingReport" title="Parametros del reporte" size="sm" hidden-footer
             center-modal>
             <template #content>
-                <p v-if="filterPersonaLoans == Payment.unpaid" class="mb-4 text-red-800 font-bold">
-                    Nota: solo se mostraran
+                <p class="mb-4 text-red-800 font-bold dark:text-gray-300">
+                    Nota: Para pagos atrasados solo se mostraran
                     los pagos de 5
                     meses atras a partir de la
                     fecha
                     seleccionada</p>
                 <div class="w-full">
-                    <r-form-group title="Fecha del reporte:">
+                    <r-form-group title="Fecha del reporte:" class="mb-6">
                         <Datepicker v-model="dateReport" teleport="#app" altPosition position="left" locale="es"
                             autoApply :enableTimePicker="false" placeholder="selecciona una fecha" required />
+                    </r-form-group>
+
+                    <r-form-group title="Tipo de reporte:">
+                        <div class="flex flex-wrap gap-2 mt-2">
+
+                            <r-checkbox v-model="item.selected" v-for="(item, index) in typePaymentsReports"
+                                :key="index" :id="`checkbox_selected-${index}`" :name="`checkbox_selected-${index}`"
+                                variant="danger" class="mt-2" :label="item.typeName">
+                            </r-checkbox>
+
+                        </div>
                     </r-form-group>
                 </div>
                 <div class="pt-3 text-right">

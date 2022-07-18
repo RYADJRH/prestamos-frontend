@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onBeforeMount, computed } from 'vue';
 import { CashIcon, HomeIcon, UserGroupIcon, UserIcon } from "@heroicons/vue/outline";
 import Sidebar from "@/components/shared_components/sidebar/Sidebar.vue";
+import { useSidebar } from '@/stores/sidebar.store';
+const useSidebarStore = useSidebar();
 
-const collapse = ref(true);
+
+const collapse = computed(() => useSidebarStore.isCollapseSidebar);
 
 const menu = ref([
   {
@@ -27,9 +30,10 @@ const menu = ref([
     icon: CashIcon,
   },
 ]);
+
 </script>
 <template>
-  <sidebar :collapse="collapse" :menu="menu" @toogle-sidebar="collapse = !collapse">
+  <sidebar :collapse="collapse" :menu="menu">
     <template #content>
       <slot></slot>
     </template>

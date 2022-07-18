@@ -4,12 +4,14 @@ import { onClickOutside } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth.store";
 import { useDarkModeStore } from '@/stores/darkMode.store';
+import { useSidebar } from '@/stores/sidebar.store';
 
 import { MenuIcon, UsersIcon, LogoutIcon } from "@heroicons/vue/outline";
 import { MoonIcon, SunIcon } from "@heroicons/vue/solid";
 import RMenu from "./rComponents/RMenu.vue";
 import RBtn from "./rComponents/RBtn.vue";
 
+const useSidebarStore = useSidebar();
 const darkModeStore = useDarkModeStore();
 const authStore = useAuthStore();
 const router = useRouter();
@@ -43,7 +45,7 @@ async function logout() {
       <div class="max-w-7xl mx-auto px-4">
         <div class="flex items-center justify-between h-16">
           <div class="flex items-center">
-            <r-btn @click="$emit('toogleSidebar')" variant="outline-light">
+            <r-btn variant="outline-light" @click="useSidebarStore.toogleCollapseSidebar">
               <MenuIcon class="h-4 w-4"></MenuIcon>
             </r-btn>
             <h1 class="text-xl text-white ml-2 hidden md:block">Prestamos RRR</h1>

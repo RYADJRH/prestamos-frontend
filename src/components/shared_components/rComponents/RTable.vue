@@ -74,10 +74,14 @@ const fields_keys = computed<Field[]>(() => {
           </td>
         </tr>
       </tbody>
+      <tfoot v-if="!loading && !props.hiddenFooter">
+        <tr>
+          <td :colspan="fields_keys.length" class="w-full border-t h-12 px-4 dark:bg-gray-700">
+            <slot name="footer"></slot>
+          </td>
+        </tr>
+      </tfoot>
     </table>
-    <!-- props.items.length > 0 -->
-    <div class="bg-white w-full border-t h-12 px-4 dark:bg-gray-700 " v-if="!loading && !props.hiddenFooter">
-      <slot name="footer"></slot>
-    </div>
+
   </div>
 </template>

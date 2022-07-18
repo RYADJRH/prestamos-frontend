@@ -1,5 +1,7 @@
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.store';
+import { useSidebar } from '@/stores/sidebar.store';
+import { isMobile } from "@/utils/mobile";
 
 const routes: RouteRecordRaw[] = [
     {
@@ -124,6 +126,11 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
     const authStore = useAuthStore();
+    const useSidebarStore = useSidebar();
+
+    if (isMobile)
+        useSidebarStore.toogleCollapseSidebar();
+
     const reqAuth = to.matched.some((record) => record.meta.requiresAuth);
     const errorPage = to.matched.some((record) => record.meta.errorPage);
 

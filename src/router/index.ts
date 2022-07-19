@@ -128,7 +128,7 @@ router.beforeEach(async (to, from, next) => {
     const authStore = useAuthStore();
     const useSidebarStore = useSidebar();
 
-    if (isMobile)
+    if (isMobile && useSidebarStore.isCollapseSidebar)
         useSidebarStore.toogleCollapseSidebar();
 
     const reqAuth = to.matched.some((record) => record.meta.requiresAuth);

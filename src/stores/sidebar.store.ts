@@ -7,7 +7,7 @@ interface State {
 
 export const useSidebar = defineStore('sidebar', {
     state: (): State => ({
-        collapseSidebar: isMobile
+        collapseSidebar: false
     }),
     getters: {
         isCollapseSidebar: (state) => !state.collapseSidebar

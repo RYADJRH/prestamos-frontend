@@ -1,10 +1,15 @@
 <script setup lang="ts">
-import { ref, onBeforeMount, computed } from 'vue';
-import { CashIcon, HomeIcon, UserGroupIcon, UserIcon } from "@heroicons/vue/outline";
+import { ref, onBeforeMount, computed } from "vue";
+import {
+  CashIcon,
+  HomeIcon,
+  UserGroupIcon,
+  UserIcon,
+  ShoppingCartIcon,
+} from "@heroicons/vue/outline";
 import Sidebar from "@/components/shared_components/sidebar/Sidebar.vue";
-import { useSidebar } from '@/stores/sidebar.store';
+import { useSidebar } from "@/stores/sidebar.store";
 const useSidebarStore = useSidebar();
-
 
 const collapse = computed(() => useSidebarStore.isCollapseSidebar);
 
@@ -29,8 +34,12 @@ const menu = ref([
     title: "Prestamos personales",
     icon: CashIcon,
   },
+  {
+    link: "/compras",
+    title: "Compras",
+    icon: ShoppingCartIcon,
+  },
 ]);
-
 </script>
 <template>
   <sidebar :collapse="collapse" :menu="menu">

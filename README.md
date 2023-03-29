@@ -1,17 +1,20 @@
-## Frontend - Sistema de prestamos
+## PrestamosRRR - Frontend
 
-Sistema de prestamos para pequeñas empresas y prestadores individuales.
+### Getting started
 
-### Instalación
+1.- Install dependencies
 
-1.- Instalar dependencias
-
-```
-npm i
+```sh
+$ npm install
 ```
 
-2.- Levantar servicio
-
+2.- Run dev server
+```sh
+$ npm run dev
 ```
-npm run dev
+
+## Genrate build prod
+
+```sh
+$ npm run build
 ```

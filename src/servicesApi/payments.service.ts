@@ -95,6 +95,21 @@ const apiReportePaymentsBeneficiaryPersonalLoan = async (beneficiary: number, da
     })
 }
 
+const apiReportePaymentsBydateGroup = async (slug_group: string, date: string, status: string) => {
+    const statusUri = status !== '' ? `&status=${status}` : '';
+    const url = `${PREFIX_API}reports/payments/by-date/group/${slug_group}?date=${date}${statusUri}`
+    return await axios({
+        method: 'GET',
+        url,
+        responseType: 'blob',
+        headers: {
+            Accept: 'application/pdf',
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+        }
+    })
+}
 
 const apiUpdateStatePayment = async (type: string, id_payment: number, status: Payment) => {
     return await axios.post(`${PREFIX_API}payments/update-state`, { type, id_payment, status })
@@ -112,5 +127,6 @@ export {
     apiReportePaymentsBorrowerGroup,
     apiPaymentsBorrowerPersonalLoan,
     apiReportePaymentsBorrowerPersonalLoan,
-    apiReportePaymentsBeneficiaryPersonalLoan
+    apiReportePaymentsBeneficiaryPersonalLoan,
+    apiReportePaymentsBydateGroup
 }

@@ -9,7 +9,8 @@ import {
     apiReportePaymentsBorrowerGroup,
     apiPaymentsBorrowerPersonalLoan,
     apiReportePaymentsBorrowerPersonalLoan,
-    apiReportePaymentsBeneficiaryPersonalLoan
+    apiReportePaymentsBeneficiaryPersonalLoan,
+    apiReportePaymentsBydateGroup
 } from '@/servicesApi/payments.service';
 import { Payments } from '@/interfaces/payments.interface';
 import { Payment } from '@/interfaces/utils/Payment.interface';
@@ -239,8 +240,23 @@ const usePaymentStore = defineStore('payments', {
                 .catch((err) => {
                     return Promise.reject(err);
                 })
+        },
 
-
+        async reportePaymentsBydateGroup(slug_group: string, date: string, status: { type: string, typeName: string, selected: boolean }[],) {
+            const typesSelected = status.filter(item => item.selected).map(item => item.type)
+            const statusUri = typesSelected.join(",")
+            return await apiReportePaymentsBydateGroup(slug_group, date, statusUri)
+                .then((response) => {
+                    const pdf = response.data;
+                    let blob = new Blob([pdf], {
+                        type: 'application/pdf'
+                    });
+                    const url = window.URL.createObjectURL(blob);
+                    return Promise.resolve(url);
+                })
+                .catch((err) => {
+                    return Promise.reject(err);
+                })
         },
 
 

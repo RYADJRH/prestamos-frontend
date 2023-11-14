@@ -11,6 +11,7 @@ interface State {
         amount_borrow: number,
         amount_interest: number,
         amount_total: number
+        amount_diff_total_charged:number
     }
     borrowers: {
         data: BorrowerAmounts[],
@@ -29,7 +30,8 @@ const useIndividualGroupStore = defineStore('individual-group', {
             amount_charged: 0,
             amount_borrow: 0,
             amount_interest: 0,
-            amount_total: 0
+            amount_total: 0,
+            amount_diff_total_charged: 0,
         },
         borrowers: {
             data: [],
@@ -62,18 +64,19 @@ const useIndividualGroupStore = defineStore('individual-group', {
         /* members */
         setMember(borrower: any) {
             const newData: BorrowerAmounts = {
-                id_borrower: borrower.id_borrower,
-                id_group: borrower.group_borrower.id_group,
-                id_group_borrower: borrower.group_borrower.id_group_borrower,
-                full_name: borrower.full_name,
-                slug_borrower: borrower.slug,
-                amount_borrow: borrower.group_borrower.amount_borrow_decimal,
-                amount_interest: borrower.group_borrower.amount_interest_decimal,
-                amount_pay: borrower.group_borrower.amount_pay_decimal,
-                amount_payment_total: borrower.group_borrower.amount_payment_total_decimal,
-                number_payments: borrower.group_borrower.number_payments,
-                state_borrow: borrower.group_borrower.state_borrow,
-            }
+              id_borrower: borrower.id_borrower,
+              id_group: borrower.group_borrower.id_group,
+              id_group_borrower: borrower.group_borrower.id_group_borrower,
+              full_name: borrower.full_name,
+              slug_borrower: borrower.slug,
+              amount_borrow: borrower.group_borrower.amount_borrow_decimal,
+              amount_interest: borrower.group_borrower.amount_interest_decimal,
+              amount_pay: borrower.group_borrower.amount_pay_decimal,
+              amount_payment_total: borrower.group_borrower.amount_payment_total_decimal,
+              amount_diff_total_charged: borrower.group_borrower.amount_diff_total_charged_decimal,
+              number_payments: borrower.group_borrower.number_payments,
+              state_borrow: borrower.group_borrower.state_borrow,
+            };
             this.borrowers.totalBorrowers++;
             if (this.borrowers.data.length == 5) {
                 this.borrowers.data.pop();
@@ -98,7 +101,8 @@ const useIndividualGroupStore = defineStore('individual-group', {
                         amount_charged: data.amount_charged,
                         amount_borrow: data.amount_borrow,
                         amount_interest: data.amount_interest,
-                        amount_total: data.amount_total
+                        amount_total: data.amount_total,
+                        amount_diff_total_charged: data.amount_diff_total_charged
                     }
                     return Promise.resolve(response);
                 }).catch((err) => {
@@ -125,6 +129,7 @@ const useIndividualGroupStore = defineStore('individual-group', {
                             amount_interest: borrower.group_borrower.amount_interest_decimal,
                             amount_pay: borrower.group_borrower.amount_pay_decimal,
                             amount_payment_total: borrower.group_borrower.amount_payment_total_decimal,
+                            amount_diff_total_charged: borrower.group_borrower.amount_diff_total_charged_decimal,
                             number_payments: borrower.group_borrower.number_payments,
                             state_borrow: borrower.group_borrower.state_borrow,
                         }

@@ -31,5 +31,9 @@ const amounts = computed(() => individualLoansStore.getAmountsLoans);
             <CurrencyDollarIcon class="h-6 w-6"></CurrencyDollarIcon>
             Cobrado :<strong>{{ moneyMxn(amounts.amount_charged) }}</strong>
         </div>
+        <div class="w-full lg:w-1/3 flex gap-4 my-2">
+            <CurrencyDollarIcon class="h-6 w-6"></CurrencyDollarIcon>
+            Restante :<strong>{{ moneyMxn(amounts.amount_diff_total_charged) }}</strong>
+        </div>
     </div>
 </template>e

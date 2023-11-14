@@ -8,6 +8,7 @@ interface BorrowerAmounts {
     amount_interest: number,
     amount_pay: number,
     amount_payment_total: number,
+    amount_diff_total_charged: number,
     number_payments: string,
     state_borrow: string,
 }

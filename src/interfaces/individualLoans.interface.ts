@@ -34,24 +34,26 @@ interface AddLoans {
 }
 
 interface AmountsLoans {
-    number_loans: number,
-    amount_borrow: number,
-    amount_interest: number,
-    amount_pay: number,
-    amount_charged: number
+  number_loans: number;
+  amount_borrow: number;
+  amount_interest: number;
+  amount_pay: number;
+  amount_charged: number;
+  amount_diff_total_charged:number;
 }
 
 interface Loans {
-    id_borrow: number,
-    id_borrower: number,
-    full_name: string,
-    slug: string,
-    amount_borrow: number,
-    amount_interest: number,
-    amount_pay: number,
-    amount_payment_total: number,
-    number_payments: string,
-    state_borrow: string,
+  id_borrow: number;
+  id_borrower: number;
+  full_name: string;
+  slug: string;
+  amount_borrow: number;
+  amount_interest: number;
+  amount_pay: number;
+  amount_payment_total: number;
+  amount_diff_total_charged:number;
+  number_payments: string;
+  state_borrow: string;
 }
 
 

@@ -69,6 +69,7 @@ const fieldsLoans = [
     { key: "amount_interest", name: "Intereses" },
     { key: "amount_pay", name: "A pagar" },
     { key: "amount_payment_total", name: "Pagado" },
+    { key: "amount_diff_total_charged", name: "Restante" },
     { key: "number_payments", name: "Pagos" },
     { key: "state_borrow", name: "Status" },
     { key: "acciones", name: "Acciones" },
@@ -243,6 +244,9 @@ onBeforeUnmount(() => {
                 </template>
                 <template #cell(amount_payment_total)="{ data }">
                     {{ moneyMxn(data.amount_payment_total) }}
+                </template>
+                <template #cell(amount_diff_total_charged)="{ data }">
+                    {{ moneyMxn(data.amount_diff_total_charged) }}
                 </template>
                 <template #cell(state_borrow)="{ data }">
                     <div class="px-3 py-1 rounded-md font-bold text-center" :class="{

@@ -13,7 +13,9 @@ import { moneyMxn } from "@/utils/currency";
 import { formatDate } from "@/utils/dates";
 import { TrashIcon, PencilAltIcon } from "@heroicons/vue/solid";
 import { useDialogStore } from "@/stores/dialog.store";
+import { useToast } from "vue-toastification";
 
+const toast = useToast();
 const shoppingStore = useShoppingStore();
 const authStore = useAuthStore();
 const dialogStore = useDialogStore();
@@ -38,7 +40,7 @@ const fnGetShoppings = async (search = "") => {
       authStore.profileBeneficiary?.id_beneficiary as number,
       search
     )
-    .catch(() => {});
+    .catch(() => { });
 };
 
 const currentPage = computed({
@@ -78,11 +80,7 @@ const deleteShopping = (id: number) => {
             }
           })
           .catch(() => {
-            dialogStore.show({
-              variant: "error",
-              title: "Ha ocurrido un error",
-              description: "¡No se pudo completar el registro!",
-            });
+            toast.error("¡No se pudo completar el registro!")
           });
       }
     });
@@ -102,26 +100,18 @@ onBeforeUnmount(() => {
     <div class="md:flex md:justify-between">
       <div class="flex items-end">
         <div class="block">
-          <r-btn
-            class="mr-2"
-            @click="
-              () => {
-                shoppingEdit = null;
-                modalAddShopping = true;
-              }
-            "
-          >
+          <r-btn class="mr-2" @click="() => {
+            shoppingEdit = null;
+            modalAddShopping = true;
+          }
+            ">
             Nueva compra
           </r-btn>
         </div>
       </div>
     </div>
     <div class="mt-4">
-      <r-table
-        :fields="fieldShopping"
-        :items="shoppings"
-        :hidden-footer="shoppings.length == 0"
-      >
+      <r-table :fields="fieldShopping" :items="shoppings" :hidden-footer="shoppings.length == 0">
         <template #cell(producto_price)="{ data }">
           {{ moneyMxn(+data.producto_price) }}
         </template>
@@ -129,18 +119,10 @@ onBeforeUnmount(() => {
           {{ formatDate(data.date_shopping, "LL") }}
         </template>
         <template #cell(acciones)="{ data }">
-          <r-btn
-            variant="danger"
-            class="mr-3 px-1 py-2"
-            @click="deleteShopping(data.id_shopping)"
-          >
+          <r-btn variant="danger" class="mr-3 px-1 py-2" @click="deleteShopping(data.id_shopping)">
             <TrashIcon class="h-5 w-5 text-white"></TrashIcon>
           </r-btn>
-          <r-btn
-            variant="success"
-            class="mr-3 px-1 py-2"
-            @click="editShoppingModal(data)"
-          >
+          <r-btn variant="success" class="mr-3 px-1 py-2" @click="editShoppingModal(data)">
             <PencilAltIcon class="h-5 w-5 text-white"></PencilAltIcon>
           </r-btn>
         </template>
@@ -148,34 +130,19 @@ onBeforeUnmount(() => {
         <template #footer>
           <div class="flex justify-end items-center h-full">
             <div>
-              <r-pagination
-                v-model="currentPage"
-                :total-pages="totalPages"
-                variant="dark"
-              ></r-pagination>
+              <r-pagination v-model="currentPage" :total-pages="totalPages" variant="dark"></r-pagination>
             </div>
           </div>
         </template>
       </r-table>
     </div>
-    <r-modal
-      v-model="modalAddShopping"
-      :loading="loadingShopping"
-      :title="modeEdit ? 'Editar compra' : 'Nueva compra'"
-      size="sm"
-      hidden-footer
-    >
+    <r-modal v-model="modalAddShopping" :loading="loadingShopping" :title="modeEdit ? 'Editar compra' : 'Nueva compra'"
+      size="sm" hidden-footer>
       <template #content>
-        <new-update-shopping
-          :loading-save="loadingShopping"
-          :shopping="shoppingEdit"
-          @update:loading-save="
-            (value) => {
-              loadingShopping = value;
-            }
-          "
-          @close:modal="modalAddShopping = false"
-        />
+        <new-update-shopping :loading-save="loadingShopping" :shopping="shoppingEdit" @update:loading-save="(value) => {
+          loadingShopping = value;
+        }
+          " @close:modal="modalAddShopping = false" />
       </template>
     </r-modal>
   </div>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, markRaw, reactive, onBeforeUnmount, watch } from 'vue';
 import { useDebounceFn } from '@vueuse/core';
+import { useToast } from 'vue-toastification';
 import { XCircleIcon } from '@heroicons/vue/solid';
 
 import ItemListCardBorrowers from '@/components/groups/members/ItemListCardBorrowers.vue';
@@ -24,6 +25,7 @@ import RTable from '@/components/shared_components/rComponents/RTable.vue';
 import RSpinner from '@/components/shared_components/rComponents/RSpinner.vue';
 import RErrorInput from '@/components/shared_components/rComponents/RErrorInput.vue';
 
+const toast = useToast()
 const individualLoansStore = useInvidualLoansStore();
 const dialogStore = useDialogStore();
 const authStore = useAuthStore();
@@ -133,7 +135,7 @@ async function fnTablaAmortization() {
         type_period,
         payment_every_n,
       })
-      .catch(() => {});
+      .catch(() => { });
   }
 }
 
@@ -178,11 +180,7 @@ async function saveLoans() {
         });
     })
     .catch((err) => {
-      dialogStore.show({
-        variant: 'error',
-        title: 'Registro Fallo',
-        description: '¡No se pudo completar el registro!',
-      });
+      toast.error('¡No se pudo completar el registro!');
     });
   emits('update:loadingSave', false);
 }
@@ -190,7 +188,7 @@ async function saveLoans() {
 async function fnAmountsLoans() {
   await individualLoansStore
     .getApiAmountsLoans(authStore.profileBeneficiary?.id_beneficiary as number)
-    .catch(() => {});
+    .catch(() => { });
 }
 
 const validatorAmountPeriod = ref(false);
@@ -211,25 +209,14 @@ onBeforeUnmount(() => {
     <div class="w-full md:mb-4 mb-0">
       <div class="flex flex-wrap -mx-2">
         <div class="w-full md:w-1/3 px-2 flex items-center">
-          <r-form-group
-            title="Busca y selecciona un prestatario:"
-            class="mb-3 w-full"
-            v-if="!selectedBorrower"
-          >
-            <r-select-list
-              v-model="searchBorrower"
-              @input="inputSearchDebounce"
-              :data="dataSyncSearch"
-              :item-layout="itemList"
-              @click:item="selectBorrower"
-              :loading="loadingDataBorrower"
-            >
+          <r-form-group title="Busca y selecciona un prestatario:" class="mb-3 w-full" v-if="!selectedBorrower">
+            <r-select-list v-model="searchBorrower" @input="inputSearchDebounce" :data="dataSyncSearch"
+              :item-layout="itemList" @click:item="selectBorrower" :loading="loadingDataBorrower">
             </r-select-list>
           </r-form-group>
           <div
             class="w-full p-3 flex items-center justify-between rounded-md bg-gray-600/5 mb-3 dark:bg-gray-800 dark:text-white"
-            v-else
-          >
+            v-else>
             <p class="w-80 font-bold">{{ selectedBorrower?.full_name }}</p>
             <div class="w-20 flex justify-end" v-if="selectedBorrower && !loadingSave">
               <XCircleIcon class="h-8 w-8 text-red-800 cursor-pointer" @click="removeSelectedBorrower">
@@ -239,46 +226,24 @@ onBeforeUnmount(() => {
         </div>
         <div class="w-full md:w-1/3 px-2">
           <r-form-group title="Fecha del primer pago:" class="mb-3">
-            <Datepicker
-              v-model="borrower.date_init_payment"
-              @update:modelValue="fnTablaAmortization"
-              locale="es"
-              autoApply
-              :enableTimePicker="false"
-              position="center"
-              teleport="#app"
-              placeholder="selecciona una fecha"
-              :disabled="!selectedBorrower"
-              required
-            />
+            <Datepicker v-model="borrower.date_init_payment" @update:modelValue="fnTablaAmortization" locale="es"
+              autoApply :enableTimePicker="false" position="center" teleport="#app" placeholder="selecciona una fecha"
+              :disabled="!selectedBorrower" required />
           </r-form-group>
         </div>
         <div class="w-full md:w-1/3 px-2">
           <div class="flex flex-wrap -mx-2">
             <div class="w-full md:w-2/3 px-2">
               <r-form-group title="Tipo de periodo:" class="mb-3">
-                <r-select
-                  v-model="borrower.type_period"
-                  :items="itemsTypePeriod"
-                  :disabled="!selectedBorrower"
-                  @change="fnTablaAmortization"
-                  required
-                ></r-select>
+                <r-select v-model="borrower.type_period" :items="itemsTypePeriod" :disabled="!selectedBorrower"
+                  @change="fnTablaAmortization" required></r-select>
               </r-form-group>
             </div>
             <div class="w-full md:w-1/3 px-2">
               <r-form-group title="Periodo:" class="mb-3">
-                <r-input
-                  v-model="borrower.payment_every_n"
-                  @input="inputAmortionCalculedDebounce"
-                  type="text"
-                  class="text-right"
-                  :disabled="!selectedBorrower"
-                  currency
-                  :prependCurrency="''"
-                  :min-currency="1"
-                  required
-                >
+                <r-input v-model="borrower.payment_every_n" @input="inputAmortionCalculedDebounce" type="text"
+                  class="text-right" :disabled="!selectedBorrower" currency :prependCurrency="''" :min-currency="1"
+                  required>
                 </r-input>
               </r-form-group>
             </div>
@@ -290,50 +255,25 @@ onBeforeUnmount(() => {
       <div class="flex flex-wrap -mx-2">
         <div class="w-full md:w-1/3 px-2">
           <r-form-group title="Monto prestado:" class="mb-3">
-            <r-input
-              v-model="borrower.amount_borrow"
-              @input="inputAmortionCalculedDebounce"
-              type="text"
-              class="text-right"
-              :disabled="!selectedBorrower"
-              currency
-              required
-            ></r-input>
+            <r-input v-model="borrower.amount_borrow" @input="inputAmortionCalculedDebounce" type="text"
+              class="text-right" :disabled="!selectedBorrower" currency required></r-input>
           </r-form-group>
         </div>
         <div class="w-full md:w-1/3 px-2">
           <r-form-group title="Monto interes:" class="mb-3">
-            <r-input
-              v-model="borrower.amount_interest"
-              @input="inputAmortionCalculedDebounce"
-              type="text"
-              class="text-right"
-              :disabled="!selectedBorrower"
-              currency
-              required
-            ></r-input>
+            <r-input v-model="borrower.amount_interest" @input="inputAmortionCalculedDebounce" type="text"
+              class="text-right" :disabled="!selectedBorrower" currency required></r-input>
           </r-form-group>
         </div>
 
         <div class="w-full md:w-1/3 px-2">
           <r-form-group title="Monto de abono:" class="mb-3">
-            <r-input
-              v-model="borrower.amount_payment_period"
-              @input="inputAmortionCalculedDebounce"
-              type="text"
-              class="text-right"
-              :disabled="!selectedBorrower"
-              :stateError="validatorAmountPeriod"
-              currency
-              required
-            >
+            <r-input v-model="borrower.amount_payment_period" @input="inputAmortionCalculedDebounce" type="text"
+              class="text-right" :disabled="!selectedBorrower" :stateError="validatorAmountPeriod" currency required>
             </r-input>
 
-            <r-error-input
-              :show="validatorAmountPeriod"
-              :errors="{ total_amount: ['El monto del abono debe ser menor'] }"
-              field="total_amount"
-            >
+            <r-error-input :show="validatorAmountPeriod" :errors="{ total_amount: ['El monto del abono debe ser menor'] }"
+              field="total_amount">
             </r-error-input>
           </r-form-group>
         </div>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useDebounceFn } from '@vueuse/core';
+import { useToast } from 'vue-toastification';
 
 import { moneyMxn } from '@/utils/currency';
 import { formatDate } from '@/utils/dates';
@@ -23,6 +24,7 @@ import RCheckbox from '@/components/shared_components/rComponents/RCheckbox.vue'
 import RFormGroup from '@/components/shared_components/rComponents/RFormGroup.vue';
 import RSpinner from '@/components/shared_components/rComponents/RSpinner.vue';
 
+const toast = useToast();
 const paymentStore = usePaymentStore();
 const dialogStore = useDialogStore();
 const individualGroupStore = useIndividualGroupStore();
@@ -75,7 +77,7 @@ const borrowers = computed(() => individualGroupStore.getBorrowersAmount);
 async function fnBorrowerGroup() {
   await individualGroupStore
     .getApiBorrowersGroup(group.value.slug as string, currentPage.value, inputSearchMembers.value)
-    .catch(() => {});
+    .catch(() => { });
 }
 
 const modalAddUpdateMember = ref(false);
@@ -99,7 +101,7 @@ function updateLoadingAddMember(value: boolean) {
 }
 
 async function fnApiGroup() {
-  await individualGroupStore.getApiGroup(group.value.slug as string).catch(() => {});
+  await individualGroupStore.getApiGroup(group.value.slug as string).catch(() => { });
 }
 
 function deleteMember(id_group_borrower: number) {
@@ -117,28 +119,16 @@ function deleteMember(id_group_borrower: number) {
           .then((isDeleted) => {
             if (isDeleted) {
               fnApiGroup();
-              dialogStore.show({
-                variant: 'success',
-                title: 'Elimanación exitosa',
-                description: '¡El miembro ha sido eliminado!',
-              });
+              toast.success('¡El miembro ha sido eliminado!');
               if (borrowers.value.length == 0 && totalPages.value > 1) {
                 fnBorrowerGroup();
               }
             } else {
-              dialogStore.show({
-                variant: 'error',
-                title: 'Ocurrio un error',
-                description: '¡No se pudo eliminar el miembro!',
-              });
+              toast.error('¡No se pudo eliminar el miembro!');
             }
           })
           .catch(() => {
-            dialogStore.show({
-              variant: 'error',
-              title: 'Ha ocurrido un error',
-              description: '¡No se pudo completar el registro!',
-            });
+            toast.error('¡No se pudo completar el registro!');
           });
       }
     });
@@ -172,11 +162,7 @@ async function viewReport() {
       viewPdf.value = true;
     })
     .catch(() => {
-      dialogStore.show({
-        variant: 'error',
-        title: 'Ha ocurrido un error',
-        description: '¡No se pudo visualizar el reporte!',
-      });
+      toast.error('¡No se pudo visualizar el reporte!')
     });
 
   loadingReport.value = false;
@@ -195,22 +181,15 @@ async function viewReport() {
           <span class="absolute inset-y-0 left-0 flex items-center pl-2">
             <SearchIcon class="h-6 w-6 text-gray-500"></SearchIcon>
           </span>
-          <r-input
-            v-model="inputSearchMembers"
-            class="pl-10"
-            @input="inputSearchDebounce"
-            type="search"
-            placeholder="busqueda"
-          ></r-input>
+          <r-input v-model="inputSearchMembers" class="pl-10" @input="inputSearchDebounce" type="search"
+            placeholder="busqueda"></r-input>
         </div>
       </div>
       <div class="mt-4">
         <r-table :fields="fieldsMiembros" :items="borrowers" :hidden-footer="borrowers.length == 0">
           <template #cell(full_name)="{ data }">
-            <router-link
-              :to="`/pagos/grupo/${group.slug}/prestatista/${data.slug_borrower}`"
-              class="font-bold hover:underline hover:underline-offset-4 hover:cursor-pointer"
-              >{{ data.full_name }}
+            <router-link :to="`/pagos/grupo/${group.slug}/prestatista/${data.slug_borrower}`"
+              class="font-bold hover:underline hover:underline-offset-4 hover:cursor-pointer">{{ data.full_name }}
             </router-link>
           </template>
           <template #cell(amount_borrow)="{ data }">
@@ -229,14 +208,11 @@ async function viewReport() {
             {{ moneyMxn(data.amount_diff_total_charged) }}
           </template>
           <template #cell(state_borrow)="{ data }">
-            <div
-              class="px-3 py-1 rounded-md font-bold text-center"
-              :class="{
-                'bg-emerald-100 text-emerald-800': data.state_borrow == Payment.paid,
-                'bg-red-100 text-red-800': data.state_borrow == Payment.unpaid,
-                'bg-yellow-100 text-yellow-800': data.state_borrow == Payment.inprocess,
-              }"
-            >
+            <div class="px-3 py-1 rounded-md font-bold text-center" :class="{
+              'bg-emerald-100 text-emerald-800': data.state_borrow == Payment.paid,
+              'bg-red-100 text-red-800': data.state_borrow == Payment.unpaid,
+              'bg-yellow-100 text-yellow-800': data.state_borrow == Payment.inprocess,
+            }">
               {{ getValuePayment(data.state_borrow) }}
             </div>
           </template>
@@ -255,57 +231,27 @@ async function viewReport() {
         </r-table>
       </div>
     </div>
-    <r-modal
-      v-model="modalAddUpdateMember"
-      :loading="loadingAddEditMember"
-      title="Agregar miembro"
-      size="lg"
-      hidden-footer
-    >
+    <r-modal v-model="modalAddUpdateMember" :loading="loadingAddEditMember" title="Agregar miembro" size="lg"
+      hidden-footer>
       <template #content>
-        <add-member-group
-          :loading-save="loadingAddEditMember"
-          @update:loading-save="updateLoadingAddMember"
-          @close:modal="closeModal"
-        ></add-member-group>
+        <add-member-group :loading-save="loadingAddEditMember" @update:loading-save="updateLoadingAddMember"
+          @close:modal="closeModal"></add-member-group>
       </template>
     </r-modal>
-    <r-modal
-      v-model="modalReport"
-      :loading="loadingReport"
-      title="Parametros del reporte"
-      size="sm"
-      hidden-footer
-      center-modal
-    >
+    <r-modal v-model="modalReport" :loading="loadingReport" title="Parametros del reporte" size="sm" hidden-footer
+      center-modal>
       <template #content>
         <div class="w-full">
           <r-form-group title="Fecha del reporte:" class="mb-6">
-            <Datepicker
-              v-model="dateReport"
-              teleport="#app"
-              altPosition
-              position="left"
-              locale="es"
-              autoApply
-              :enableTimePicker="false"
-              placeholder="selecciona una fecha"
-              required
-            />
+            <Datepicker v-model="dateReport" teleport="#app" altPosition position="left" locale="es" autoApply
+              :enableTimePicker="false" placeholder="selecciona una fecha" required />
           </r-form-group>
 
           <r-form-group title="Tipo de reporte:">
             <div class="flex flex-wrap gap-2 mt-2">
-              <r-checkbox
-                v-model="item.selected"
-                v-for="(item, index) in typePaymentsReports"
-                :key="index"
-                :id="`checkbox_selected-${index}`"
-                :name="`checkbox_selected-${index}`"
-                variant="danger"
-                class="mt-2"
-                :label="item.typeName"
-              >
+              <r-checkbox v-model="item.selected" v-for="(item, index) in typePaymentsReports" :key="index"
+                :id="`checkbox_selected-${index}`" :name="`checkbox_selected-${index}`" variant="danger" class="mt-2"
+                :label="item.typeName">
               </r-checkbox>
             </div>
           </r-form-group>

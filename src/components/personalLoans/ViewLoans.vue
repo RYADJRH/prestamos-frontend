@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeUnmount } from 'vue';
 import { useDebounceFn } from '@vueuse/core';
+import { useToast } from 'vue-toastification';
 
 import { usePaymentStore } from '@/stores/payments.store';
 import { useAuthStore } from '@/stores/auth.store';
@@ -25,6 +26,7 @@ import RSpinner from '@/components/shared_components/rComponents/RSpinner.vue';
 import RCheckbox from '@/components/shared_components/rComponents/RCheckbox.vue';
 import ModalPdf from '@/components/shared_components/pdf/ModalPdf.vue';
 
+const toast = useToast()
 const paymentStore = usePaymentStore();
 const authStore = useAuthStore();
 const individualLoansStore = useInvidualLoansStore();
@@ -128,28 +130,16 @@ function detelePersonalLoans(id_borrow: number) {
                     .then(async (isDeleted) => {
                         if (isDeleted) {
                             await fnAmountsLoans();
-                            dialogStore.show({
-                                variant: "success",
-                                title: "Elimanación exitosa",
-                                description: "¡El prestamo ha sido eliminado!",
-                            });
+                            toast.success("¡El prestamo ha sido eliminado!")
                             if (loans.value.length == 0 && totalPages.value > 1) {
                                 await fnGetLoans();
                             }
                         } else {
-                            dialogStore.show({
-                                variant: "error",
-                                title: "Ocurrio un error",
-                                description: "¡No se pudo eliminar el prestamo!",
-                            });
+                            toast.error("¡No se pudo eliminar el prestamo!")
                         }
                     })
                     .catch(() => {
-                        dialogStore.show({
-                            variant: "error",
-                            title: "Ha ocurrido un error",
-                            description: "¡No se pudo completar el registro!",
-                        });
+                        toast.error("¡No se pudo completar el registro!")
                     });
             }
         })
@@ -179,11 +169,7 @@ async function viewReport() {
             viewPdf.value = true;
         })
         .catch(() => {
-            dialogStore.show({
-                variant: "error",
-                title: "Ha ocurrido un error",
-                description: "¡No se pudo visualizar el reporte!",
-            });
+            toast.error("¡No se pudo visualizar el reporte!")
         })
 
     loadingReport.value = false;
@@ -230,7 +216,7 @@ onBeforeUnmount(() => {
                 <template #cell(full_name)="{ data }">
                     <router-link :to="`/prestamos-personales/pagos/${data.slug}/${data.id_borrow}`"
                         class="font-bold hover:underline hover:underline-offset-4 hover:cursor-pointer">{{
-                                data.full_name
+                            data.full_name
                         }}</router-link>
                 </template>
                 <template #cell(amount_borrow)="{ data }">
@@ -272,8 +258,7 @@ onBeforeUnmount(() => {
                 </template>
             </r-table>
         </div>
-        <r-modal v-model="modalAddLoans" :loading="loadingAddLoans" title="Nuevo prestamo personal" size="lg"
-            hidden-footer>
+        <r-modal v-model="modalAddLoans" :loading="loadingAddLoans" title="Nuevo prestamo personal" size="lg" hidden-footer>
             <template #content>
                 <add-loans :loading-save="loadingAddLoans" @update:loading-save="updateLoadingAddLoans"
                     @close:modal="closeModal"></add-loans>
@@ -291,16 +276,16 @@ onBeforeUnmount(() => {
                     seleccionada</p>
                 <div class="w-full">
                     <r-form-group title="Fecha del reporte:" class="mb-6">
-                        <Datepicker v-model="dateReport" teleport="#app" altPosition position="left" locale="es"
-                            autoApply :enableTimePicker="false" placeholder="selecciona una fecha" required />
+                        <Datepicker v-model="dateReport" teleport="#app" altPosition position="left" locale="es" autoApply
+                            :enableTimePicker="false" placeholder="selecciona una fecha" required />
                     </r-form-group>
 
                     <r-form-group title="Tipo de reporte:">
                         <div class="flex flex-wrap gap-2 mt-2">
 
-                            <r-checkbox v-model="item.selected" v-for="(item, index) in typePaymentsReports"
-                                :key="index" :id="`checkbox_selected-${index}`" :name="`checkbox_selected-${index}`"
-                                variant="danger" class="mt-2" :label="item.typeName">
+                            <r-checkbox v-model="item.selected" v-for="(item, index) in typePaymentsReports" :key="index"
+                                :id="`checkbox_selected-${index}`" :name="`checkbox_selected-${index}`" variant="danger"
+                                class="mt-2" :label="item.typeName">
                             </r-checkbox>
 
                         </div>

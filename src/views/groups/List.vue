@@ -8,6 +8,8 @@ import {
   reactive,
   inject,
 } from "vue";
+import { useToast } from "vue-toastification";
+
 import { useRouter } from "vue-router";
 import { useDebounceFn } from "@vueuse/core";
 import { useGroupStore } from "@/stores/group.store";
@@ -32,6 +34,7 @@ import RErrorInput from "@/components/shared_components/rComponents/RErrorInput.
 import CardGroup from "@/components/groups/CardGroup.vue";
 const setLoadingFull = inject("set-loading-full") as (value: boolean) => {};
 
+const toast = useToast();
 const router = useRouter();
 const groupStore = useGroupStore();
 const authStore = useAuthStore();
@@ -95,18 +98,10 @@ function deleteGroup(id_group: number) {
         groupStore
           .deleteGroup(id_group)
           .then(() => {
-            dialogStore.show({
-              variant: "success",
-              title: "Eliminación exitosa",
-              description: "¡El grupo ha sido eliminado!",
-            });
+            toast.success("¡El grupo ha sido eliminado!");
           })
           .catch(() => {
-            dialogStore.show({
-              variant: "error",
-              title: "Eliminación fallo",
-              description: "¡No se pudo completar el registro!",
-            });
+            toast.error("¡No se pudo completar el registro!");
           });
         setLoadingFull(false);
       }
@@ -168,19 +163,11 @@ async function sendFormGroup(event: Event) {
       .editGroup(newGroup)
       .then(() => {
         modalAddEditGroup.value = false;
-        dialogStore.show({
-          variant: "success",
-          title: "Registro exitoso",
-          description: "¡El grupo ha sido actualizado!",
-        });
+        toast.success("¡El grupo ha sido actualizado!");
       })
       .catch((err) => {
         if (err.response.status !== 422) {
-          dialogStore.show({
-            variant: "error",
-            title: "Registro fallo",
-            description: "¡No se pudo completar la actualización!",
-          });
+          toast.error("¡No se pudo completar la actualización!");
         }
       });
   } else {
@@ -188,19 +175,11 @@ async function sendFormGroup(event: Event) {
       .saveGroup(newGroup)
       .then(() => {
         Object.assign(newGroup, { ...initGroup });
-        dialogStore.show({
-          variant: "success",
-          title: "Registro exitoso",
-          description: "¡El grupo ha sido guardado!",
-        });
+        toast.success("¡El grupo ha sido guardado!");
       })
       .catch((err) => {
         if (err.response.status !== 422) {
-          dialogStore.show({
-            variant: "error",
-            title: "Registro fallo",
-            description: "¡No se pudo completar el registro!",
-          });
+          toast.error("¡No se pudo completar el registro!");
         }
       });
   }
@@ -272,15 +251,13 @@ onBeforeUnmount(() => {
     <template #content>
       <form @submit.prevent="sendFormGroup">
         <r-form-group title="Nombre del grupo" class="mb-6">
-          <r-input v-model="newGroup.name_group" type="text" placeholder="Grupo el suchil" :state-error="
-            errorStore.errors && errorStore.errors.hasOwnProperty('name_group')
-          " required></r-input>
+          <r-input v-model="newGroup.name_group" type="text" placeholder="Grupo el suchil" :state-error="errorStore.errors && errorStore.errors.hasOwnProperty('name_group')
+            " required></r-input>
           <r-error-input :errors="errorStore.errors" field="name_group"></r-error-input>
         </r-form-group>
         <r-form-group title="Fecha de inicio:" class="mb-6">
-          <r-input v-model="newGroup.created_group" type="date" :state-error="
-            errorStore.errors && errorStore.errors.hasOwnProperty('created_group')
-          " required></r-input>
+          <r-input v-model="newGroup.created_group" type="date" :state-error="errorStore.errors && errorStore.errors.hasOwnProperty('created_group')
+            " required></r-input>
           <r-error-input :errors="errorStore.errors" field="created_group"></r-error-input>
         </r-form-group>
         <r-form-group title="Dia de pago:" class="mb-6">

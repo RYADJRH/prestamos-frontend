@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
+import { useToast } from 'vue-toastification';
 import { SearchIcon, CheckCircleIcon } from '@heroicons/vue/solid';
 import { formatDate } from "@/utils/dates";
 import { moneyMxn } from "@/utils/currency";
@@ -24,6 +25,7 @@ const props = defineProps<{
     type: Type
 }>();
 
+const toast = useToast()
 const paymentStore = usePaymentStore();
 const dialogStore = useDialogStore();
 const group = computed(() => paymentStore.getGroup);
@@ -117,20 +119,11 @@ async function saveStatePayment() {
     loadingUpdateStatePayment.value = true;
     await paymentStore.updateStatePayment(props.type, selectedPayment.value.id_payment, selectedPayment.value.state_payment)
         .then(() => {
-            dialogStore.show({
-                variant: "success",
-                title: "actualización exitosa",
-                description: "¡El status del pago ha sido actualizado!",
-            }).then(() => {
-                modalUpdateStatePayment.value = false;
-            })
+            toast.success("¡El status del pago ha sido actualizado!")
+            modalUpdateStatePayment.value = false;
         })
         .catch(() => {
-            dialogStore.show({
-                variant: "error",
-                title: "Ha ocurrido un error",
-                description: "¡No se pudo completar el registro!",
-            });
+            toast.error("¡No se pudo completar el registro!")
         })
     loadingUpdateStatePayment.value = false;
 }
@@ -157,11 +150,7 @@ async function fnViewPdf() {
                 viewPdf.value = true;
             })
             .catch(() => {
-                dialogStore.show({
-                    variant: "error",
-                    title: "Ha ocurrido un error",
-                    description: "¡No se pudo visualizar el reporte!",
-                });
+                toast.error("¡No se pudo visualizar el reporte!")
             })
     }
     if (props.type == 'next-due-group') {
@@ -171,11 +160,7 @@ async function fnViewPdf() {
                 viewPdf.value = true;
             })
             .catch(() => {
-                dialogStore.show({
-                    variant: "error",
-                    title: "Ha ocurrido un error",
-                    description: "¡No se pudo visualizar el reporte!",
-                });
+                toast.error("¡No se pudo visualizar el reporte!");
             })
     }
     if (props.type == 'borrower-payments') {
@@ -185,11 +170,7 @@ async function fnViewPdf() {
                 viewPdf.value = true;
             })
             .catch(() => {
-                dialogStore.show({
-                    variant: "error",
-                    title: "Ha ocurrido un error",
-                    description: "¡No se pudo visualizar el reporte!",
-                });
+                toast.error("¡No se pudo visualizar el reporte!")
             })
     }
     if (props.type == 'personal-loans') {
@@ -199,11 +180,7 @@ async function fnViewPdf() {
                 viewPdf.value = true;
             })
             .catch(() => {
-                dialogStore.show({
-                    variant: "error",
-                    title: "Ha ocurrido un error",
-                    description: "¡No se pudo visualizar el reporte!",
-                });
+                toast.error("¡No se pudo visualizar el reporte!")
             })
     }
     loadingPdf.value = false;
@@ -234,8 +211,7 @@ async function fnViewPdf() {
         <div class="mt-4">
             <r-table :fields="fieldsPayments" :items="payments" :hidden-footer="payments.length == 0">
 
-                <template #cell(full_name)="{ data }"
-                    v-if="!['borrower-payments', 'personal-loans'].includes(props.type)">
+                <template #cell(full_name)="{ data }" v-if="!['borrower-payments', 'personal-loans'].includes(props.type)">
                     <span class="font-bold">{{ data.borrower.full_name }}</span>
                 </template>
                 <template #cell(date_payment)="{ data }">
@@ -275,8 +251,7 @@ async function fnViewPdf() {
         </div>
 
 
-        <r-modal v-model="modalUpdateStatePayment" :loading="loadingUpdateStatePayment" title="Editar status"
-            hidden-footer>
+        <r-modal v-model="modalUpdateStatePayment" :loading="loadingUpdateStatePayment" title="Editar status" hidden-footer>
             <template #content>
                 <div class="p-3 flex items-center justify-between rounded-md bg-gray-600/5 mb-3 ">
                     <p class="font-bold dark:text-gray-300"> {{ selectedPayment.full_name }}</p>

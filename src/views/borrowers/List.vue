@@ -7,6 +7,7 @@ import {
   SearchIcon,
   DocumentTextIcon,
 } from "@heroicons/vue/solid";
+import { useToast } from "vue-toastification";
 import { UseBorrowerStore } from "@/stores/borrower.store";
 import { useAuthStore } from "@/stores/auth.store";
 import { useErrorStore } from "@/stores/error.store";
@@ -24,6 +25,7 @@ import RSpinner from "@/components/shared_components/rComponents/RSpinner.vue";
 import RErrorInput from "@/components/shared_components/rComponents/RErrorInput.vue";
 import { Borrower, BorrrowerRequest } from "@/interfaces/borrower.interface";
 
+const toast = useToast();
 const borrowerStore = UseBorrowerStore();
 const authStore = useAuthStore();
 const errorStore = useErrorStore();
@@ -61,19 +63,11 @@ async function saveBorrower(target: HTMLFormElement) {
     .then(() => {
       Object.assign(newBorrower, { ...initStateNewBorrower });
       target.reset();
-      dialogStore.show({
-        variant: "success",
-        title: "Registro exitoso",
-        description: "¡El prestatista ha sido guardado!",
-      });
+      toast.success("¡El prestatista ha sido guardado!")
     })
     .catch((err) => {
       if (err.response.status !== 422) {
-        dialogStore.show({
-          variant: "error",
-          title: "Registro fallo",
-          description: "¡No se pudo completar el registro!",
-        });
+        toast.error("¡No se pudo completar el registro!")
       }
     });
   loadingSave.value = false;
@@ -134,18 +128,10 @@ function deleteBorrower(id_borrower: number) {
         borrowerStore
           .deleteBorrower(id_borrower)
           .then(() => {
-            dialogStore.show({
-              variant: "success",
-              title: "Registro exitoso",
-              description: "¡El registro se ha eliminado!",
-            });
+            toast.success("¡El registro se ha eliminado!")
           })
           .catch(() => {
-            dialogStore.show({
-              variant: "error",
-              title: "Eliminación fallo",
-              description: "¡No se pudo eliminar el registro!",
-            });
+            toast.error("¡No se pudo eliminar el registro!")
           });
       }
     });
@@ -177,19 +163,11 @@ async function editBorrower(target: HTMLFormElement) {
     .then(() => {
       target.reset();
       modalAddBorrower.value = false;
-      dialogStore.show({
-        variant: "success",
-        title: "Actualización exitosa",
-        description: "¡El prestatista ha sido actualizado!",
-      });
+      toast.success("¡El prestatista ha sido actualizado!")
     })
     .catch((err) => {
       if (err.response.status !== 422) {
-        dialogStore.show({
-          variant: "error",
-          title: "Registro fallo",
-          description: "¡No se pudo completar el registro!",
-        });
+        toast.error("¡No se pudo completar el registro!")
       }
     });
 
@@ -241,8 +219,7 @@ onBeforeUnmount(() => {
         </r-input>
       </div>
     </div>
-    <r-table :fields="fields" :items="borrowerStore.getBorrowers"
-      :hidden-footer="borrowerStore.getBorrowers.length == 0">
+    <r-table :fields="fields" :items="borrowerStore.getBorrowers" :hidden-footer="borrowerStore.getBorrowers.length == 0">
       <template #cell(acciones)="{ data }">
         <r-btn variant="danger" class="mr-3 px-1 py-2" @click="deleteBorrower(data.id_borrower)">
           <TrashIcon class="h-5 w-5 text-white"></TrashIcon>
@@ -276,30 +253,27 @@ onBeforeUnmount(() => {
       </template>
     </r-table>
   </div>
-  <r-modal v-model="modalAddBorrower" size="sm" :title="(modeEdit ? 'Editar' : 'Agregar') + ' prestatario'"
-    hidden-footer :loading="loadingSave">
+  <r-modal v-model="modalAddBorrower" size="sm" :title="(modeEdit ? 'Editar' : 'Agregar') + ' prestatario'" hidden-footer
+    :loading="loadingSave">
     <template #content>
       <form @submit.prevent="submitForm">
         <r-form-group title="Nombre:" class="mb-6">
-          <r-input v-model="newBorrower.name_borrower" type="text" placeholder="Yaretzin" class="mt-2" :stateError="
-            errorStore.errors && errorStore.errors.hasOwnProperty('name_borrower')
-          " required></r-input>
+          <r-input v-model="newBorrower.name_borrower" type="text" placeholder="Yaretzin" class="mt-2" :stateError="errorStore.errors && errorStore.errors.hasOwnProperty('name_borrower')
+            " required></r-input>
           <r-error-input :errors="errorStore.errors" field="name_borrower"></r-error-input>
         </r-form-group>
         <r-form-group title="Apellidos:" class="mb-6">
           <r-input v-model="newBorrower.last_name_borrower" type="text" placeholder="Araujo Delgado" class="mt-2"
-            :stateError="
-              errorStore.errors && errorStore.errors.hasOwnProperty('last_name_borrower')
-            " required></r-input>
+            :stateError="errorStore.errors && errorStore.errors.hasOwnProperty('last_name_borrower')
+              " required></r-input>
           <r-error-input :errors="errorStore.errors" field="last_name_borrower"></r-error-input>
         </r-form-group>
         <div class="mb-6">
           <r-form-group title="INE:">
             <r-input-file v-model="newBorrower.name_file_ine_borrower" class="mt-2 border border-red-500"
-              accept=".pdf, .png, .jpg" :stateError="
-                errorStore.errors &&
+              accept=".pdf, .png, .jpg" :stateError="errorStore.errors &&
                 errorStore.errors.hasOwnProperty('name_file_ine_borrower')
-              " :disabled="newBorrower.remove_file_ine_borrower"></r-input-file>
+                " :disabled="newBorrower.remove_file_ine_borrower"></r-input-file>
             <r-error-input :errors="errorStore.errors" field="name_file_ine_borrower"></r-error-input>
           </r-form-group>
           <r-checkbox v-if="newBorrower.name_file_ine_borrower_path"
@@ -310,10 +284,9 @@ onBeforeUnmount(() => {
         <div class="mb-6">
           <r-form-group title="Comprobante de domicilio:">
             <r-input-file v-model="newBorrower.name_file_proof_address_borrower" class="mt-2" accept=".pdf, .png, .jpg"
-              :stateError="
-                errorStore.errors &&
+              :stateError="errorStore.errors &&
                 errorStore.errors.hasOwnProperty('name_file_proof_address_borrower')
-              " :disabled="newBorrower.remove_file_proof_address_borrower"></r-input-file>
+                " :disabled="newBorrower.remove_file_proof_address_borrower"></r-input-file>
             <r-error-input :errors="errorStore.errors" field="name_file_proof_address_borrower"></r-error-input>
           </r-form-group>
           <r-checkbox v-if="newBorrower.name_file_proof_address_borrower_path"

@@ -7,16 +7,19 @@ withDefaults(
   defineProps<{
     modelValue: boolean;
     size?: string;
-    title: string;
+    title?: string;
+    hiddenHeader?: boolean;
     hiddenFooter?: boolean;
     loading?: boolean;
     centerModal?: boolean
   }>(),
   {
     size: "sm",
+    hiddenHeader: false,
     hiddenFooter: false,
     loading: false,
-    centerModal: false
+    centerModal: false,
+    title: ""
   }
 );
 const emits = defineEmits<{
@@ -42,7 +45,7 @@ const emits = defineEmits<{
             'md:w-full': size == 'xl',
           }">
             <!-- modal header -->
-            <div
+            <div v-if="!hiddenHeader"
               class="modal-header h-14 flex items-center justify-between px-4 rounded-t-md border dark:border-gray-400">
               <h1 class="text-black font-bold text-xl dark:text-white">{{ title }}</h1>
               <r-btn variant="outline-light"

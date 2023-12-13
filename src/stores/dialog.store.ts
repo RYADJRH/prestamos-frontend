@@ -8,21 +8,21 @@ import {
     QuestionMarkCircleIcon,
 } from "@heroicons/vue/solid";
 
-type Variant = 'success' | 'error' | 'warning' | 'info' | 'question';
+export type VariantAlert = 'success' | 'error' | 'warning' | 'info' | 'question';
 
-const icons: Record<Variant, FunctionalComponent<HTMLAttributes & VNodeProps, {}>> = {
-    success: CheckCircleIcon,
-    error: XCircleIcon,
-    warning: ExclamationCircleIcon,
-    info: InformationCircleIcon,
-    question: QuestionMarkCircleIcon,
+const icons: Record<VariantAlert, FunctionalComponent<HTMLAttributes & VNodeProps, {}>> = {
+  success: CheckCircleIcon,
+  error: XCircleIcon,
+  warning: ExclamationCircleIcon,
+  info: InformationCircleIcon,
+  question: QuestionMarkCircleIcon,
 };
 
 interface OptionsDefault {
-    title?: string,
-    description?: string,
-    variant: Variant,
-    confirm?: boolean,
+  title?: string;
+  description?: string;
+  variant: VariantAlert;
+  confirm?: boolean;
 }
 
 interface State {

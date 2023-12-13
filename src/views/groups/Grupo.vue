@@ -92,7 +92,7 @@ onBeforeUnmount(() => {
                 class="w-full flex gap-1 p-2 text-gray-500 hover:bg-sky-800/10 hover:text-sky-800 rounded-md dark:hover:bg-gray-400 dark:hover:text-gray-800 dark:text-gray-300"
                 @click="archivarDes">
                 <ArchiveIcon class="h-6 w-6 mr-2"></ArchiveIcon>
-                {{ group.state_archived_group ? "Marcar : En proceso" : "Marcar : Archivar" }}
+                {{ group.state_archived_group ? "En proceso" : "Archivar" }}
               </button>
             </li>
           </template>

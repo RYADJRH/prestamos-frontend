@@ -6,6 +6,7 @@ import { XMarkIcon } from "@heroicons/vue/24/outline";
 withDefaults(
   defineProps<{
     modelValue: boolean;
+    wrapperClass?: string;
     size?: string;
     title?: string;
     hiddenHeader?: boolean;
@@ -19,7 +20,8 @@ withDefaults(
     hiddenFooter: false,
     loading: false,
     centerModal: false,
-    title: ""
+    title: "",
+    wrapperClass: ""
   }
 );
 const emits = defineEmits<{
@@ -31,7 +33,8 @@ const emits = defineEmits<{
   <Teleport to="body">
     <div class="modal" v-if="modelValue">
       <r-backdrop></r-backdrop>
-      <div class="fixed inset-0 z-[70] overflow-y-auto overflow-x-hidden transition-all duration-300 ease-in-out">
+      <div class="fixed inset-0 z-[70] overflow-y-auto overflow-x-hidden transition-all duration-300 ease-in-out"
+        :class="[wrapperClass]">
 
         <div class="flex justify-center  px-4 pb-10" :class="{
           'items-center min-h-screen pt-4': !centerModal,

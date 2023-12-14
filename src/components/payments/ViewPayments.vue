@@ -9,7 +9,6 @@ import { getValuePayment, Payment } from '@/interfaces/utils/Payment.interface';
 
 import { useDebounceFn } from '@vueuse/core';
 import { usePaymentStore } from '@/stores/payments.store';
-import { useDialogStore } from '@/stores/dialog.store';
 
 import ModalPdf from '@/components/shared_components/pdf/ModalPdf.vue';
 import RInput from '@/components/shared_components/rComponents/RInput.vue';
@@ -27,7 +26,6 @@ const props = defineProps<{
 
 const toast = useToast()
 const paymentStore = usePaymentStore();
-const dialogStore = useDialogStore();
 const group = computed(() => paymentStore.getGroup);
 const borrower = computed(() => paymentStore.getBorrower);
 

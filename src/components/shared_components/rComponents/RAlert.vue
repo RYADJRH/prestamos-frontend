@@ -16,7 +16,7 @@ const variantThemeIcon = {
 </script>
 
 <template>
-  <r-modal v-model="dialogStore.open" size="sm" hidden-footer hidden-header>
+  <r-modal wrapper-class="z-[75]"  v-model="dialogStore.open" size="sm" hidden-footer hidden-header>
     <template #content>
       <div class="flex justify-center flex-col items-center gap-2">
         <component :is="dialogStore.icon" class="h-12 w-12" :class="variantThemeIcon[dialogStore.optionsDefault.variant]">

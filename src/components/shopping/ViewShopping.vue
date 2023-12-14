@@ -78,6 +78,7 @@ const deleteShopping = (id: number) => {
             if (shoppings.value.length == 0 && totalPages.value > 1) {
               await fnGetShoppings();
             }
+            toast.success("¡La comprar ha sido eliminada con exito!")
           })
           .catch(() => {
             toast.error("¡No se pudo completar el registro!")

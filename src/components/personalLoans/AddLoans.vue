@@ -13,7 +13,6 @@ import { BorrowerAddLoans } from '@/interfaces/individualLoans.interface';
 import { Payment } from '@/interfaces/utils/Payment.interface';
 
 import { useInvidualLoansStore } from '@/stores/individualLoans.store';
-import { useDialogStore } from '@/stores/dialog.store';
 import { useAddLoansStore } from '@/stores/addLoans.store';
 import { useAuthStore } from '@/stores/auth.store';
 import RFormGroup from '@/components/shared_components/rComponents/RFormGroup.vue';
@@ -27,7 +26,6 @@ import RErrorInput from '@/components/shared_components/rComponents/RErrorInput.
 
 const toast = useToast()
 const individualLoansStore = useInvidualLoansStore();
-const dialogStore = useDialogStore();
 const authStore = useAuthStore();
 const addLoansStore = useAddLoansStore();
 const itemList = markRaw(ItemListCardBorrowers);
@@ -166,20 +164,13 @@ async function saveLoans() {
       if (individualLoansStore.getStatusLoans == Payment.inprocess) {
         individualLoansStore.setLoan(loan);
       }
-      dialogStore
-        .show({
-          variant: 'success',
-          title: 'Registro exitoso',
-          description: '¡El nuevo prestamo ha sido agregado!',
-        })
-        .then(() => {
-          addLoansStore.$reset();
-          searchBorrower.value = '';
-          selectedBorrower.value = null;
-          Object.assign(borrower, { ...initBorrower });
-        });
+      toast.success('¡El nuevo prestamo ha sido agregado!')
+      addLoansStore.$reset();
+      searchBorrower.value = '';
+      selectedBorrower.value = null;
+      Object.assign(borrower, { ...initBorrower });
     })
-    .catch((err) => {
+    .catch(() => {
       toast.error('¡No se pudo completar el registro!');
     });
   emits('update:loadingSave', false);
@@ -199,7 +190,6 @@ watch(borrower, (value) => {
 
 onBeforeUnmount(() => {
   emits('update:loadingSave', false);
-  dialogStore.$reset();
   addLoansStore.$reset();
 });
 </script>

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, markRaw, reactive, onBeforeUnmount, watch } from 'vue';
 import { useDebounceFn } from '@vueuse/core';
+import { useToast } from 'vue-toastification';
+
 import { XCircleIcon } from '@heroicons/vue/24/solid';
 import { lockDays } from '@/interfaces/utils/DayWeek.interface';
 
@@ -8,7 +10,6 @@ import { moneyMxn } from "@/utils/currency";
 import { formatDate } from '@/utils/dates';
 import { useAddMemberGroup } from '@/stores/addMemberGroup.store';
 import { useIndividualGroupStore } from '@/stores/individualGroup.store';
-import { useDialogStore } from "@/stores/dialog.store";
 
 import { Group } from '@/interfaces/group.interface';
 import { BorrowerGroupResponse } from '@/interfaces/borrower.interface';
@@ -25,9 +26,9 @@ import RErrorInput from '@/components/shared_components/rComponents/RErrorInput.
 
 const itemList = markRaw(ItemListCardBorrowers);
 
+const toast = useToast();
 const addMemberGroupStore = useAddMemberGroup();
 const individualGroupStore = useIndividualGroupStore();
-const dialogStore = useDialogStore();
 
 const loadingDataBorrower = ref(false);
 const searchBorrower = ref("");
@@ -162,31 +163,16 @@ async function saveBorrower() {
         .then(async (member) => {
             individualGroupStore.setMember(member);
             await individualGroupStore.getApiGroup(group.value.slug as string).catch(() => { });
-
-            dialogStore
-                .show({
-                    variant: "success",
-                    title: "Registro exitoso",
-                    description: "¡El nuevo miembro ha sido agregado!",
-                })
-                .then(() => {
-                    addMemberGroupStore.$reset();
-                    searchBorrower.value = "";
-                    selectedBorrower.value = null;
-                    Object.assign(borrower, { ...initBorrower });
-                });
+            toast.success("¡El nuevo miembro ha sido agregado!");
+            addMemberGroupStore.$reset();
+            searchBorrower.value = "";
+            selectedBorrower.value = null;
+            Object.assign(borrower, { ...initBorrower });
         })
         .catch((err) => {
             if (err.response.status == 302) {
-                dialogStore
-                    .show({
-                        variant: "error",
-                        title: "Registro duplicado",
-                        description: "¡No se pudo completar el registro!",
-                    })
-                    .then(() => {
-                        emits("close:modal");
-                    });
+                toast.success("¡No se pudo completar el registro!");
+                emits("close:modal");
             }
         })
     emits('update:loadingSave', false);
@@ -200,7 +186,6 @@ watch(borrower, (value) => {
 
 onBeforeUnmount(() => {
     emits('update:loadingSave', false);
-    dialogStore.$reset();
     addMemberGroupStore.$reset();
 })
 
@@ -286,7 +271,8 @@ onBeforeUnmount(() => {
             </r-table>
         </div>
         <div class="flex justify-end mt-3">
-            <r-btn type="submit" class="flex justify-center items-center" :disabled="itemsAmortization.length == 0 || loadingSave">
+            <r-btn type="submit" class="flex justify-center items-center"
+                :disabled="itemsAmortization.length == 0 || loadingSave">
                 <r-spinner class="mr-2" v-if="loadingSave" size="btn"></r-spinner>
                 Guardar
             </r-btn>

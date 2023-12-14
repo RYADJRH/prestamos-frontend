@@ -28,10 +28,10 @@ const emits = defineEmits<{
       </span>
     </div>
     <div class="flex justify-end" v-if="!group.state_archived_group">
-      <r-btn variant="danger" class="mr-3" @click="emits('delete:group', group.id_group as number)">
+      <r-btn variant="danger" class="mr-2 w-8 grid place-content-center" @click="emits('delete:group', group.id_group as number)">
         <TrashIcon class="h-4 w-4"></TrashIcon>
       </r-btn>
-      <r-btn variant="success" @click="emits('update:group', group)">
+      <r-btn variant="success" class="w-8 grid place-content-center" @click="emits('update:group', group)">
         <PencilSquareIcon class="h-4 w-4"></PencilSquareIcon>
       </r-btn>
     </div>

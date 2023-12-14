@@ -45,14 +45,15 @@ async function logout() {
       <div class="max-w-7xl mx-auto px-4">
         <div class="flex items-center justify-between h-16">
           <div class="flex items-center">
-            <r-btn variant="outline-light" @click="useSidebarStore.toogleCollapseSidebar">
+            <r-btn variant="outline-light" class="w-8 grid place-content-center"
+              @click="useSidebarStore.toogleCollapseSidebar">
               <Bars3Icon class="h-4 w-4"></Bars3Icon>
             </r-btn>
             <h1 class="text-xl text-white ml-2 hidden md:block">Prestamos RRR</h1>
           </div>
           <div class="flex justify-center items-center gap-5">
             <div>
-              <r-btn @click="setModeDark" variant="outline-light">
+              <r-btn @click="setModeDark" class="w-8 grid place-content-center" variant="outline-light">
                 <MoonIcon v-if="!darkModeStore.dark" class="h-4 w-4 text-white"></MoonIcon>
                 <SunIcon v-if="darkModeStore.dark" class=" h-4 w-4 text-yellow-500">
                 </SunIcon>

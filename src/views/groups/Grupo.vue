@@ -2,7 +2,7 @@
 import { computed, ref, onBeforeMount, onBeforeUnmount, inject } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { onClickOutside } from "@vueuse/core";
-import { ArchiveBoxIcon, ArrowSmallLeftIcon, CogIcon, CurrencyDollarIcon } from "@heroicons/vue/24/solid";
+import { ArchiveBoxIcon, ArrowSmallLeftIcon, Cog6ToothIcon, CurrencyDollarIcon } from "@heroicons/vue/24/solid";
 import { useIndividualGroupStore } from "@/stores/individualGroup.store";
 import RMenu from "@/components/shared_components/rComponents/RMenu.vue";
 import RBtn from "@/components/shared_components/rComponents/RBtn.vue";
@@ -68,8 +68,8 @@ onBeforeUnmount(() => {
         <h1 class="text-2xl text-gray-600 dark:text-white">{{ group.name_group }}</h1>
       </div>
       <div class="relative" ref="settingsGroup">
-        <r-btn variant="danger" @click="settingsMenu = !settingsMenu">
-          <CogIcon class="h-4 w-4"></CogIcon>
+        <r-btn variant="danger" class="w-8 grid place-content-center" @click="settingsMenu = !settingsMenu">
+          <Cog6ToothIcon class="h-4 w-4"></Cog6ToothIcon>
         </r-btn>
         <r-menu v-model="settingsMenu" align="bottom-right">
           <template #list>

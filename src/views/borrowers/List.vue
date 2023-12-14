@@ -221,12 +221,14 @@ onBeforeUnmount(() => {
     </div>
     <r-table :fields="fields" :items="borrowerStore.getBorrowers" :hidden-footer="borrowerStore.getBorrowers.length == 0">
       <template #cell(acciones)="{ data }">
-        <r-btn variant="danger" class="mr-3" @click="deleteBorrower(data.id_borrower)">
-          <TrashIcon class="h-4 w-4 text-white"></TrashIcon>
-        </r-btn>
-        <r-btn variant="success" class="mr-3" @click="editBorrowerModal(data)">
-          <PencilSquareIcon class="h-4 w-4 text-white"></PencilSquareIcon>
-        </r-btn>
+        <div class="flex">
+          <r-btn variant="danger" class="mr-2 w-8 grid place-content-center" @click="deleteBorrower(data.id_borrower)">
+            <TrashIcon class="h-4 w-4 text-white"></TrashIcon>
+          </r-btn>
+          <r-btn variant="success" class="w-8 grid place-content-center" @click="editBorrowerModal(data)">
+            <PencilSquareIcon class="h-4 w-4 text-white"></PencilSquareIcon>
+          </r-btn>
+        </div>
       </template>
       <template #cell(name_file_ine_borrower_path)="{ data }">
         <a v-if="data.name_file_ine_borrower_path" class="cursor-pointer hover:text-sky-800"
@@ -270,10 +272,9 @@ onBeforeUnmount(() => {
         </r-form-group>
         <div class="mb-6">
           <r-form-group title="INE:">
-            <r-input-file v-model="newBorrower.name_file_ine_borrower" class="mt-2"
-              accept=".pdf, .png, .jpg" :stateError="errorStore.errors &&
-                errorStore.errors.hasOwnProperty('name_file_ine_borrower')
-                " :disabled="newBorrower.remove_file_ine_borrower"></r-input-file>
+            <r-input-file v-model="newBorrower.name_file_ine_borrower" class="mt-2" accept=".pdf, .png, .jpg" :stateError="errorStore.errors &&
+              errorStore.errors.hasOwnProperty('name_file_ine_borrower')
+              " :disabled="newBorrower.remove_file_ine_borrower"></r-input-file>
             <r-error-input :errors="errorStore.errors" field="name_file_ine_borrower"></r-error-input>
           </r-form-group>
           <r-checkbox v-if="newBorrower.name_file_ine_borrower_path"

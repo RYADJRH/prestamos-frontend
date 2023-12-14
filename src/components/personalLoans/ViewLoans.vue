@@ -244,7 +244,7 @@ onBeforeUnmount(() => {
                     </div>
                 </template>
                 <template #cell(acciones)="{ data }">
-                    <r-btn variant="danger" class="mr-3" @click="detelePersonalLoans(data.id_borrow)">
+                    <r-btn variant="danger" class="mr-2 w-8 grid place-content-center" @click="detelePersonalLoans(data.id_borrow)">
                         <TrashIcon class="h-4 w-4 text-white"></TrashIcon>
                     </r-btn>
 
@@ -276,7 +276,7 @@ onBeforeUnmount(() => {
                     seleccionada</p>
                 <div class="w-full">
                     <r-form-group title="Fecha del reporte:" class="mb-6">
-                        <Datepicker v-model="dateReport" teleport="#app" altPosition position="left" locale="es" autoApply
+                        <Datepicker v-model="dateReport" teleport="#app" position="left" locale="es" autoApply
                             :enableTimePicker="false" placeholder="selecciona una fecha" required />
                     </r-form-group>
 

@@ -120,12 +120,14 @@ onBeforeUnmount(() => {
           {{ formatDate(data.date_shopping, "LL") }}
         </template>
         <template #cell(acciones)="{ data }">
-          <r-btn variant="danger" class="mr-3" @click="deleteShopping(data.id_shopping)">
-            <TrashIcon class="h-4 w-4 text-white"></TrashIcon>
-          </r-btn>
-          <r-btn variant="success" class="mr-3" @click="editShoppingModal(data)">
-            <PencilSquareIcon class="h-4 w-4 text-white"></PencilSquareIcon>
-          </r-btn>
+          <div class="flex">
+            <r-btn variant="danger" class="mr-2 w-8 grid place-content-center" @click="deleteShopping(data.id_shopping)">
+              <TrashIcon class="h-4 w-4 text-white"></TrashIcon>
+            </r-btn>
+            <r-btn variant="success" class="w-8 grid place-content-center" @click="editShoppingModal(data)">
+              <PencilSquareIcon class="h-4 w-4 text-white"></PencilSquareIcon>
+            </r-btn>
+          </div>
         </template>
 
         <template #footer>

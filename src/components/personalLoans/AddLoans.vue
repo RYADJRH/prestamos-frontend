@@ -2,7 +2,7 @@
 import { computed, ref, markRaw, reactive, onBeforeUnmount, watch } from 'vue';
 import { useDebounceFn } from '@vueuse/core';
 import { useToast } from 'vue-toastification';
-import { XCircleIcon } from '@heroicons/vue/solid';
+import { XCircleIcon } from '@heroicons/vue/24/solid';
 
 import ItemListCardBorrowers from '@/components/groups/members/ItemListCardBorrowers.vue';
 import { formatDate } from '@/utils/dates';
@@ -295,8 +295,9 @@ onBeforeUnmount(() => {
       </r-table>
     </div>
     <div class="flex justify-end mt-3">
-      <r-btn type="submit" :disabled="itemsAmortization.length == 0 || loadingSave">
-        <r-spinner class="mr-2" v-if="loadingSave"></r-spinner>
+      <r-btn type="submit" class="flex justify-center items-center"
+        :disabled="itemsAmortization.length == 0 || loadingSave">
+        <r-spinner class="mr-2" v-if="loadingSave" size="btn"></r-spinner>
         Guardar
       </r-btn>
     </div>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import {
     ChevronRightIcon,
     ChevronLeftIcon,
-} from "@heroicons/vue/solid";
+} from "@heroicons/vue/24/solid";
 
 type Variant = 'dark';
 

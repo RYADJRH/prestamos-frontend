@@ -3,10 +3,10 @@ import { computed } from "vue";
 
 import {
   CalendarIcon,
-  ArchiveIcon,
+  ArchiveBoxIcon,
   UserGroupIcon,
   CurrencyDollarIcon,
-} from "@heroicons/vue/solid";
+} from "@heroicons/vue/24/solid";
 import { formatDate } from "@/utils/dates";
 import { moneyMxn } from "@/utils/currency";
 import { useIndividualGroupStore } from "@/stores/individualGroup.store";
@@ -33,7 +33,7 @@ const amounts = computed(() => {
       Dia de pago :<strong>{{ group.day_payment_name }}</strong>
     </div>
     <div class="w-full lg:w-1/3 flex gap-4 my-2">
-      <ArchiveIcon class="h-6 w-6"></ArchiveIcon>
+      <ArchiveBoxIcon class="h-6 w-6"></ArchiveBoxIcon>
       Status :
       <strong> {{ group.state_archived_group ? "Archivado" : "En proceso" }}</strong>
     </div>

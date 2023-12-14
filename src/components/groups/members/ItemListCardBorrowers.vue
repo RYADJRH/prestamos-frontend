@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UserCircleIcon } from "@heroicons/vue/solid";
+import { UserCircleIcon } from "@heroicons/vue/24/solid";
 import { BorrowerGroupResponse } from "@/interfaces/borrower.interface";
 
 defineProps<{

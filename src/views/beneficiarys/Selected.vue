@@ -173,6 +173,7 @@ watch(modalBeneficiary, (value) => {
           </r-btn>
           <r-btn
             type="button"
+            class="flex items-center justify-center"
             @click="saveUpdateBeneficiary"
             :disabled="loadingSaveUpdateBeneficiary"
           >

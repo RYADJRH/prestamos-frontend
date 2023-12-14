@@ -2,8 +2,7 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import Application from './App.vue';
 import router from './router';
-/* @ts-ignore */
-import Particles from 'particles.vue3';
+import Particles from 'vue3-particles';
 import ResolveLayout from '@/layouts/ResolveLayout.vue';
 import axios from './plugins/axios';
 import VueAxios from 'vue-axios';

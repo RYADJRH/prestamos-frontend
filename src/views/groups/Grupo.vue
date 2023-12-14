@@ -2,7 +2,7 @@
 import { computed, ref, onBeforeMount, onBeforeUnmount, inject } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { onClickOutside } from "@vueuse/core";
-import { ArchiveIcon, ArrowSmLeftIcon, CogIcon, CurrencyDollarIcon } from "@heroicons/vue/solid";
+import { ArchiveBoxIcon, ArrowSmallLeftIcon, CogIcon, CurrencyDollarIcon } from "@heroicons/vue/24/solid";
 import { useIndividualGroupStore } from "@/stores/individualGroup.store";
 import RMenu from "@/components/shared_components/rComponents/RMenu.vue";
 import RBtn from "@/components/shared_components/rComponents/RBtn.vue";
@@ -63,7 +63,7 @@ onBeforeUnmount(() => {
       <div class="flex items-center gap-2">
         <a class="text-gray-600 hover:text-red-800 cursor-pointer dark:text-white dark:hover:text-gray-300"
           @click="router.push('/grupos')">
-          <ArrowSmLeftIcon class="w-8 h-8"></ArrowSmLeftIcon>
+          <ArrowSmallLeftIcon class="w-8 h-8"></ArrowSmallLeftIcon>
         </a>
         <h1 class="text-2xl text-gray-600 dark:text-white">{{ group.name_group }}</h1>
       </div>
@@ -91,7 +91,7 @@ onBeforeUnmount(() => {
               <button
                 class="w-full flex gap-1 p-2 text-gray-500 hover:bg-sky-800/10 hover:text-sky-800 rounded-md dark:hover:bg-gray-400 dark:hover:text-gray-800 dark:text-gray-300"
                 @click="archivarDes">
-                <ArchiveIcon class="h-6 w-6 mr-2"></ArchiveIcon>
+                <ArchiveBoxIcon class="h-6 w-6 mr-2"></ArchiveBoxIcon>
                 {{ group.state_archived_group ? "En proceso" : "Archivar" }}
               </button>
             </li>

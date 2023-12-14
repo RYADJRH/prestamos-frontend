@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import RBtn from "@/components/shared_components/rComponents/RBtn.vue";
 import RBackdrop from "@/components/shared_components/rComponents/RBackdrop.vue";
-import { XIcon } from "@heroicons/vue/outline";
+import { XMarkIcon } from "@heroicons/vue/24/outline";
 
 withDefaults(
   defineProps<{
@@ -51,7 +51,7 @@ const emits = defineEmits<{
               <r-btn variant="outline-light"
                 class="focus:ring-black hover:bg-gray-900 dark:focus:ring-gray-400 dark:hover:bg-gray-400"
                 @click="emits('update:modelValue', false)" :disabled="loading">
-                <XIcon class="h-4 w-4 text-gray-600 dark:text-white"></XIcon>
+                <XMarkIcon class="h-4 w-4 text-gray-600 dark:text-white"></XMarkIcon>
               </r-btn>
             </div>
             <!-- modal content -->

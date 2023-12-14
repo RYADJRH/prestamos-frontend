@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ItemSidebar } from "@/interfaces/sidebar.interface";
-import { ArrowCircleDownIcon } from "@heroicons/vue/outline";
+import { ArrowDownCircleIcon } from "@heroicons/vue/24/outline";
 import { ref } from "vue";
 
 defineProps<{
@@ -15,7 +15,7 @@ const openDropdown = ref(false);
       class="w-full mb-2 flex items-center p-2 rounded-md text-gray-500 hover:bg-sky-800/10 hover:text-sky-800 active:text-sky-800 ">
       <component v-if="item.icon" :is="item.icon" class="h-6 w-6"></component>
       <span :class="{ 'ml-5': item.icon, 'ml-11': !item.icon }">{{ item.title }}</span>
-      <ArrowCircleDownIcon class="h-6 w-6 ml-auto"></ArrowCircleDownIcon>
+      <ArrowDownCircleIcon class="h-6 w-6 ml-auto"></ArrowDownCircleIcon>
     </button>
     <transition enter-active-class="transition ease-out duration-100" enter-from-class="opacity-0 scale-95"
       enter-to-class="opacity-100 scale-100" leave-active-class="transition ease-in duration-100"

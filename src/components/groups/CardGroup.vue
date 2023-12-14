@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Group } from "@/interfaces/group.interface";
-import { TrashIcon, PencilAltIcon } from "@heroicons/vue/solid";
+import { TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/solid";
 import RBtn from "@/components/shared_components/rComponents/RBtn.vue";
 import { formatDate } from "@/utils/dates";
 
@@ -28,11 +28,11 @@ const emits = defineEmits<{
       </span>
     </div>
     <div class="flex justify-end" v-if="!group.state_archived_group">
-      <r-btn variant="danger" class="px-1 py-2 mr-3" @click="emits('delete:group', group.id_group as number)">
-        <TrashIcon class="h-5 w-5"></TrashIcon>
+      <r-btn variant="danger" class="mr-3" @click="emits('delete:group', group.id_group as number)">
+        <TrashIcon class="h-4 w-4"></TrashIcon>
       </r-btn>
-      <r-btn variant="success" class="px-1 py-2" @click="emits('update:group', group)">
-        <PencilAltIcon class="h-5 w-5"></PencilAltIcon>
+      <r-btn variant="success" @click="emits('update:group', group)">
+        <PencilSquareIcon class="h-4 w-4"></PencilSquareIcon>
       </r-btn>
     </div>
   </div>

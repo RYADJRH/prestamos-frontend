@@ -12,7 +12,7 @@ import { useIndividualGroupStore } from '@/stores/individualGroup.store';
 import { Group } from '@/interfaces/group.interface';
 import { getValuePayment, Payment } from '@/interfaces/utils/Payment.interface';
 
-import { SearchIcon, TrashIcon } from '@heroicons/vue/solid';
+import { MagnifyingGlassIcon, TrashIcon } from '@heroicons/vue/24/solid';
 import RInput from '@/components/shared_components/rComponents/RInput.vue';
 import RBtn from '@/components/shared_components/rComponents/RBtn.vue';
 import RModal from '@/components/shared_components/rComponents/RModal.vue';
@@ -179,7 +179,7 @@ async function viewReport() {
         </div>
         <div class="block relative md:w-64 w-full mt-2 md:mt-0">
           <span class="absolute inset-y-0 left-0 flex items-center pl-2">
-            <SearchIcon class="h-6 w-6 text-gray-500"></SearchIcon>
+            <MagnifyingGlassIcon class="h-6 w-6 text-gray-500"></MagnifyingGlassIcon>
           </span>
           <r-input v-model="inputSearchMembers" class="pl-10" @input="inputSearchDebounce" type="search"
             placeholder="busqueda"></r-input>
@@ -217,7 +217,7 @@ async function viewReport() {
             </div>
           </template>
           <template #cell(acciones)="{ data }">
-            <r-btn variant="danger" class="mr-3 px-1 py-2" @click="deleteMember(data.id_group_borrower)">
+            <r-btn variant="danger" class="mr-3" @click="deleteMember(data.id_group_borrower)">
               <TrashIcon class="h-5 w-5 text-white"></TrashIcon>
             </r-btn>
           </template>
@@ -256,9 +256,9 @@ async function viewReport() {
             </div>
           </r-form-group>
         </div>
-        <div class="pt-3 text-right">
-          <r-btn :disabled="!dateReport || loadingReport" @click="viewReport">
-            <r-spinner class="mr-2" v-if="loadingReport"></r-spinner>
+        <div class="pt-3 flex justify-end">
+          <r-btn class="flex justify-center items-center" :disabled="!dateReport || loadingReport" @click="viewReport">
+            <r-spinner class="mr-2" v-if="loadingReport" size="btn"></r-spinner>
             Visualizar
           </r-btn>
         </div>

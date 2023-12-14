@@ -37,7 +37,8 @@ async function login() {
     .then(() => {
       router.replace({ name: "seleccionarBeneficiario" });
     })
-    .catch(() => { });
+    .catch(() => {
+    });
   loading.value = false;
 }
 
@@ -60,7 +61,7 @@ onBeforeMount(() => errorStore.$reset());
         <r-input v-model="password" type="password" placeholder="**********" autocomplete="on" class="mt-2"></r-input>
       </r-form-group>
       <div>
-        <r-btn class="w-full" type="submit" :disabled="loading">
+        <r-btn class="w-full flex items-center justify-center" type="submit" :disabled="loading">
           <r-spinner class="mr-2" v-if="loading" size="btn"></r-spinner>Iniciar sesión
         </r-btn>
       </div>

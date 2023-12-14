@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, onBeforeMount, computed } from "vue";
 import {
-  CashIcon,
+  BanknotesIcon,
   HomeIcon,
   UserGroupIcon,
   UserIcon,
   ShoppingCartIcon,
-} from "@heroicons/vue/outline";
+} from "@heroicons/vue/24/outline";
 import Sidebar from "@/components/shared_components/sidebar/Sidebar.vue";
 import { useSidebar } from "@/stores/sidebar.store";
 const useSidebarStore = useSidebar();
@@ -32,7 +32,7 @@ const menu = ref([
   {
     link: "/prestamos-personales",
     title: "Prestamos personales",
-    icon: CashIcon,
+    icon: BanknotesIcon,
   },
   {
     link: "/compras",

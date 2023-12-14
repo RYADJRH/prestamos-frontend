@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watchEffect, watch } from 'vue';
 import { onClickOutside } from "@vueuse/core";
-import { SearchIcon } from "@heroicons/vue/solid";
+import { MagnifyingGlassIcon } from "@heroicons/vue/24/solid";
 import RSpinner from "@/components/shared_components/rComponents/RSpinner.vue";
 import RInput from "./RInput.vue";
 
@@ -49,14 +49,13 @@ watch(() => props.modelValue, (value) => {
 
 </script>
 <template>
-  <div class="relative z-[60]" :ref="
-    (el) => {
+  <div class="relative z-[60]" :ref="(el) => {
       target = el;
     }
-  ">
+    ">
     <div class="block relative w-full" @click="showOptions = true">
       <span class="absolute inset-y-0 left-0 flex items-center pl-2">
-        <SearchIcon class="h-6 w-6 text-gray-500"></SearchIcon>
+        <MagnifyingGlassIcon class="h-6 w-6 text-gray-500"></MagnifyingGlassIcon>
       </span>
       <r-input v-model="inputValue" @input="handleInput" type="search" placeholder="busqueda" class="pl-10" v-focus>
       </r-input>

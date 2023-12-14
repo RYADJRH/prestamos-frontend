@@ -3,10 +3,10 @@ import { ref, reactive, onBeforeMount, onBeforeUnmount, computed, watch } from "
 import { useDebounceFn } from "@vueuse/core";
 import {
   TrashIcon,
-  PencilAltIcon,
-  SearchIcon,
+  PencilSquareIcon,
+  MagnifyingGlassIcon,
   DocumentTextIcon,
-} from "@heroicons/vue/solid";
+} from "@heroicons/vue/24/solid";
 import { useToast } from "vue-toastification";
 import { UseBorrowerStore } from "@/stores/borrower.store";
 import { useAuthStore } from "@/stores/auth.store";
@@ -213,7 +213,7 @@ onBeforeUnmount(() => {
       </div>
       <div class="relative md:w-64 w-full mt-2 md:mt-0">
         <span class="absolute inset-y-0 left-0 flex items-center pl-2">
-          <SearchIcon class="h-6 w-6 text-gray-500"></SearchIcon>
+          <MagnifyingGlassIcon class="h-6 w-6 text-gray-500"></MagnifyingGlassIcon>
         </span>
         <r-input v-model="inputSearch" class="pl-10" type="search" placeholder="busqueda" @input="inputSearchDebounce">
         </r-input>
@@ -221,11 +221,11 @@ onBeforeUnmount(() => {
     </div>
     <r-table :fields="fields" :items="borrowerStore.getBorrowers" :hidden-footer="borrowerStore.getBorrowers.length == 0">
       <template #cell(acciones)="{ data }">
-        <r-btn variant="danger" class="mr-3 px-1 py-2" @click="deleteBorrower(data.id_borrower)">
-          <TrashIcon class="h-5 w-5 text-white"></TrashIcon>
+        <r-btn variant="danger" class="mr-3" @click="deleteBorrower(data.id_borrower)">
+          <TrashIcon class="h-4 w-4 text-white"></TrashIcon>
         </r-btn>
-        <r-btn variant="success" class="mr-3 px-1 py-2" @click="editBorrowerModal(data)">
-          <PencilAltIcon class="h-5 w-5 text-white"></PencilAltIcon>
+        <r-btn variant="success" class="mr-3" @click="editBorrowerModal(data)">
+          <PencilSquareIcon class="h-4 w-4 text-white"></PencilSquareIcon>
         </r-btn>
       </template>
       <template #cell(name_file_ine_borrower_path)="{ data }">
@@ -270,7 +270,7 @@ onBeforeUnmount(() => {
         </r-form-group>
         <div class="mb-6">
           <r-form-group title="INE:">
-            <r-input-file v-model="newBorrower.name_file_ine_borrower" class="mt-2 border border-red-500"
+            <r-input-file v-model="newBorrower.name_file_ine_borrower" class="mt-2"
               accept=".pdf, .png, .jpg" :stateError="errorStore.errors &&
                 errorStore.errors.hasOwnProperty('name_file_ine_borrower')
                 " :disabled="newBorrower.remove_file_ine_borrower"></r-input-file>
@@ -295,7 +295,7 @@ onBeforeUnmount(() => {
             label="Eliminar el archivo cargado anteriormente"></r-checkbox>
         </div>
         <div class="flex justify-end">
-          <r-btn :disabled="loadingSave">
+          <r-btn :disabled="loadingSave" class="flex items-center justify-center">
             <r-spinner v-if="loadingSave" class="mr-3" size="btn"></r-spinner>guardar
           </r-btn>
         </div>

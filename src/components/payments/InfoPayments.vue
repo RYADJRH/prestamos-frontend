@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { usePaymentStore } from '@/stores/payments.store';
-import { CalculatorIcon, CurrencyDollarIcon } from '@heroicons/vue/solid';
+import { CalculatorIcon, CurrencyDollarIcon } from '@heroicons/vue/24/solid';
 import { moneyMxn } from "@/utils/currency";
 
 const paymentStore = usePaymentStore();

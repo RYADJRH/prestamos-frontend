@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import { inject, onBeforeMount, ref, onBeforeUnmount, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { ArrowSmLeftIcon } from '@heroicons/vue/solid';
+import { ArrowSmallLeftIcon } from '@heroicons/vue/24/solid';
 import { usePaymentStore } from '@/stores/payments.store';
 import InfoPayments from '@/components/payments/InfoPayments.vue';
 import ViewPayments from '@/components/payments/ViewPayments.vue';
@@ -42,7 +42,7 @@ onBeforeUnmount(() => {
             <div class="flex items-center gap-2">
                 <a class="text-gray-600 hover:text-red-800 cursor-pointer dark:text-white dark:hover:text-gray-300"
                     @click="router.push(`/prestamos-personales`)">
-                    <ArrowSmLeftIcon class="w-8 h-8"></ArrowSmLeftIcon>
+                    <ArrowSmallLeftIcon class="w-8 h-8"></ArrowSmallLeftIcon>
                 </a>
                 <h1 class="text-2xl text-gray-600 dark:text-white">Pagos - {{ borrower.full_name }}</h1>
             </div>

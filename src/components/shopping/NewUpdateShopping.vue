@@ -142,7 +142,7 @@ onBeforeMount(() => {
       ></r-error-input>
     </r-form-group>
     <div class="flex justify-end">
-      <r-btn :disabled="loadingSave || newShopping.date_shopping == null">
+      <r-btn class="flex items-center justify-center" :disabled="loadingSave || newShopping.date_shopping == null">
         <r-spinner v-if="loadingSave" class="mr-3" size="btn" />guardar
       </r-btn>
     </div>

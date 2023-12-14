@@ -6,8 +6,8 @@ import { useAuthStore } from "@/stores/auth.store";
 import { useDarkModeStore } from '@/stores/darkMode.store';
 import { useSidebar } from '@/stores/sidebar.store';
 
-import { MenuIcon, UsersIcon, LogoutIcon } from "@heroicons/vue/outline";
-import { MoonIcon, SunIcon } from "@heroicons/vue/solid";
+import { Bars3Icon, UsersIcon, ArrowRightOnRectangleIcon } from "@heroicons/vue/24/outline";
+import { MoonIcon, SunIcon } from "@heroicons/vue/24/solid";
 import RMenu from "./rComponents/RMenu.vue";
 import RBtn from "./rComponents/RBtn.vue";
 
@@ -46,21 +46,20 @@ async function logout() {
         <div class="flex items-center justify-between h-16">
           <div class="flex items-center">
             <r-btn variant="outline-light" @click="useSidebarStore.toogleCollapseSidebar">
-              <MenuIcon class="h-4 w-4"></MenuIcon>
+              <Bars3Icon class="h-4 w-4"></Bars3Icon>
             </r-btn>
             <h1 class="text-xl text-white ml-2 hidden md:block">Prestamos RRR</h1>
           </div>
           <div class="flex justify-center items-center gap-5">
             <div>
               <r-btn @click="setModeDark" variant="outline-light">
-                <MoonIcon v-if="!darkModeStore.dark" class="h-5 w-5 text-white"></MoonIcon>
-                <SunIcon v-if="darkModeStore.dark" class=" h-5 w-5 text-yellow-500">
+                <MoonIcon v-if="!darkModeStore.dark" class="h-4 w-4 text-white"></MoonIcon>
+                <SunIcon v-if="darkModeStore.dark" class=" h-4 w-4 text-yellow-500">
                 </SunIcon>
               </r-btn>
             </div>
             <div class="relative" ref="refMenuNavbar">
-              <button @click="openMenu"
-                class="rounded-full h-10 w-10 bg-white text-sky-800 font-bold dark:text-gray-800">
+              <button @click="openMenu" class="rounded-full h-10 w-10 bg-white text-sky-800 font-bold dark:text-gray-800">
                 {{ authStore.profileBeneficiary?.name_acronym }}
               </button>
 
@@ -81,8 +80,8 @@ async function logout() {
                     </router-link>
                   </li>
                   <li>
-                    <r-btn class="w-full" variant="danger" @click="logout">
-                      <LogoutIcon class="h-5 w-5 mr-3"></LogoutIcon>Cerrar sesión
+                    <r-btn class="w-full flex items-center justify-center" variant="danger" @click="logout">
+                      <ArrowRightOnRectangleIcon class="h-4 w-4 mr-3"></ArrowRightOnRectangleIcon>Cerrar sesión
                     </r-btn>
                   </li>
                 </template>

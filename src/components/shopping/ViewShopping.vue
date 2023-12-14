@@ -11,7 +11,7 @@ import { useShoppingStore } from "@/stores/shopping.store";
 import { useAuthStore } from "@/stores/auth.store";
 import { moneyMxn } from "@/utils/currency";
 import { formatDate } from "@/utils/dates";
-import { TrashIcon, PencilAltIcon } from "@heroicons/vue/solid";
+import { TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/solid";
 import { useDialogStore } from "@/stores/dialog.store";
 import { useToast } from "vue-toastification";
 
@@ -119,11 +119,11 @@ onBeforeUnmount(() => {
           {{ formatDate(data.date_shopping, "LL") }}
         </template>
         <template #cell(acciones)="{ data }">
-          <r-btn variant="danger" class="mr-3 px-1 py-2" @click="deleteShopping(data.id_shopping)">
-            <TrashIcon class="h-5 w-5 text-white"></TrashIcon>
+          <r-btn variant="danger" class="mr-3" @click="deleteShopping(data.id_shopping)">
+            <TrashIcon class="h-4 w-4 text-white"></TrashIcon>
           </r-btn>
-          <r-btn variant="success" class="mr-3 px-1 py-2" @click="editShoppingModal(data)">
-            <PencilAltIcon class="h-5 w-5 text-white"></PencilAltIcon>
+          <r-btn variant="success" class="mr-3" @click="editShoppingModal(data)">
+            <PencilSquareIcon class="h-4 w-4 text-white"></PencilSquareIcon>
           </r-btn>
         </template>
 

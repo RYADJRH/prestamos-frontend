@@ -16,7 +16,7 @@ import { useGroupStore } from "@/stores/group.store";
 import { useAuthStore } from "@/stores/auth.store";
 import { useErrorStore } from "@/stores/error.store";
 import { useDialogStore } from "@/stores/dialog.store";
-import { SearchIcon } from "@heroicons/vue/solid";
+import { MagnifyingGlassIcon } from "@heroicons/vue/24/solid";
 
 import { Group } from "@/interfaces/group.interface";
 import { DayWeek, DaysNames } from "@/interfaces/utils/DayWeek.interface";
@@ -213,7 +213,7 @@ onBeforeUnmount(() => {
         <div class="flex items-end">
           <div class="block relative md:mr-3 md:w-64 w-full mt-2 md:mt-0">
             <span class="absolute inset-y-0 left-0 flex items-center pl-2">
-              <SearchIcon class="h-6 w-6 text-gray-500"></SearchIcon>
+              <MagnifyingGlassIcon class="h-6 w-6 text-gray-500"></MagnifyingGlassIcon>
             </span>
             <r-input v-model="inputSearch" @input="inputSearchDebounce" class="pl-10" type="search"
               placeholder="busqueda"></r-input>
@@ -270,7 +270,7 @@ onBeforeUnmount(() => {
         </r-form-group>
 
         <div class="flex justify-end">
-          <r-btn type="submit" :disabled="loading">
+          <r-btn type="submit" :disabled="loading" class="flex items-center justify-center">
             <r-spinner class="mr-2" size="btn" v-if="loading"></r-spinner>
             Guardar
           </r-btn>

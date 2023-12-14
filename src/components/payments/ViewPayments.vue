@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { useToast } from 'vue-toastification';
-import { SearchIcon, CheckCircleIcon } from '@heroicons/vue/solid';
+import { MagnifyingGlassIcon, CheckCircleIcon } from '@heroicons/vue/24/solid';
 import { formatDate } from "@/utils/dates";
 import { moneyMxn } from "@/utils/currency";
 import { getValuePayment, Payment } from '@/interfaces/utils/Payment.interface';
@@ -200,7 +200,7 @@ async function fnViewPdf() {
                 <div class="block relative md:w-64 w-full mt-2 md:mt-0"
                     v-if="!['borrower-payments', 'personal-loans'].includes(props.type)">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-2">
-                        <SearchIcon class="h-6 w-6 text-gray-500"></SearchIcon>
+                        <MagnifyingGlassIcon class="h-6 w-6 text-gray-500"></MagnifyingGlassIcon>
                     </span>
                     <r-input v-model="inputSearchPayments" class="pl-10" @input="inputSearchDebounce" type="search"
                         placeholder="busqueda"></r-input>
@@ -268,8 +268,8 @@ async function fnViewPdf() {
                 </div>
 
                 <div class="mt-3 flex justify-end">
-                    <r-btn :disabled="loadingUpdateStatePayment" @click="saveStatePayment">
-                        <r-spinner v-if="loadingUpdateStatePayment" class="mr-3"></r-spinner>
+                    <r-btn class="flex justify-center items-center" :disabled="loadingUpdateStatePayment" @click="saveStatePayment">
+                        <r-spinner v-if="loadingUpdateStatePayment" size="btn" class="mr-3"></r-spinner>
                         Guardar
                     </r-btn>
                 </div>

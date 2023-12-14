@@ -1,12 +1,12 @@
-import { FunctionalComponent, HTMLAttributes, VNodeProps } from "vue";
+import { FunctionalComponent, HTMLAttributes, VNodeProps } from 'vue';
 import { defineStore } from 'pinia';
 import {
-    CheckCircleIcon,
-    XCircleIcon,
-    ExclamationCircleIcon,
-    InformationCircleIcon,
-    QuestionMarkCircleIcon,
-} from "@heroicons/vue/solid";
+  CheckCircleIcon,
+  XCircleIcon,
+  ExclamationCircleIcon,
+  InformationCircleIcon,
+  QuestionMarkCircleIcon,
+} from '@heroicons/vue/24/solid';
 
 export type VariantAlert = 'success' | 'error' | 'warning' | 'info' | 'question';
 
@@ -26,47 +26,44 @@ interface OptionsDefault {
 }
 
 interface State {
-    open: boolean,
-    resolve: (value: boolean | PromiseLike<boolean>) => void,
-    optionsDefault: OptionsDefault
+  open: boolean;
+  resolve: (value: boolean | PromiseLike<boolean>) => void;
+  optionsDefault: OptionsDefault;
 }
 
 const useDialogStore = defineStore('dialog', {
-    state: (): State => ({
-        open: false,
-        resolve: () => { },
-        optionsDefault: {
-            title: '',
-            description: '',
-            variant: 'success',
-            confirm: false
-        }
-    }),
-    getters: {
-        icon(state) {
-            return icons[state.optionsDefault.variant];
-        }
+  state: (): State => ({
+    open: false,
+    resolve: () => {},
+    optionsDefault: {
+      title: '',
+      description: '',
+      variant: 'success',
+      confirm: false,
     },
-    actions: {
-        show(options?: OptionsDefault) {
-            if (options)
-                this.optionsDefault = options;
-            this.open = true;
-            return new Promise<boolean>((resolve, reject) => {
-                this.resolve = resolve;
-            })
-        },
-        confirm() {
-            this.resolve(true);
-            this.$reset();
-        },
-        cancel() {
-            this.resolve(false);
-            this.$reset();
-        }
-    }
+  }),
+  getters: {
+    icon(state) {
+      return icons[state.optionsDefault.variant];
+    },
+  },
+  actions: {
+    show(options?: OptionsDefault) {
+      if (options) this.optionsDefault = options;
+      this.open = true;
+      return new Promise<boolean>((resolve, reject) => {
+        this.resolve = resolve;
+      });
+    },
+    confirm() {
+      this.resolve(true);
+      this.$reset();
+    },
+    cancel() {
+      this.resolve(false);
+      this.$reset();
+    },
+  },
 });
 
-export {
-    useDialogStore,
-}
+export { useDialogStore };

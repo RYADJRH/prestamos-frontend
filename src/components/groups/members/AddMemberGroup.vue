@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, markRaw, reactive, onBeforeUnmount, watch } from 'vue';
 import { useDebounceFn } from '@vueuse/core';
-import { XCircleIcon } from '@heroicons/vue/solid';
+import { XCircleIcon } from '@heroicons/vue/24/solid';
 import { lockDays } from '@/interfaces/utils/DayWeek.interface';
 
 import { moneyMxn } from "@/utils/currency";
@@ -211,8 +211,7 @@ onBeforeUnmount(() => {
         <div class="w-full md:mb-4 mb-0">
             <div class="flex flex-wrap -mx-2">
                 <div class="w-full md:w-1/3 px-2 flex items-center">
-                    <r-form-group title="Busca y selecciona un prestatario:" class="mb-3 w-full"
-                        v-if="!selectedBorrower">
+                    <r-form-group title="Busca y selecciona un prestatario:" class="mb-3 w-full" v-if="!selectedBorrower">
                         <r-select-list v-model="searchBorrower" @input="inputSearchDebounce" :data="dataSyncSearch"
                             :item-layout="itemList" @click:item="selectBorrower" :loading="loadingDataBorrower">
                         </r-select-list>
@@ -229,9 +228,9 @@ onBeforeUnmount(() => {
                 <div class="w-full md:w-1/3 px-2">
                     <r-form-group title="Fecha del primer pago:" class="mb-3">
                         <Datepicker v-model="borrower.date_init_payment" @update:modelValue="fnTablaAmortization"
-                            :disabledWeekDays="lockDays(group.day_payment)" locale="es" autoApply
-                            :enableTimePicker="false" position="center" teleport="#app"
-                            placeholder="selecciona una fecha" :disabled="!selectedBorrower" required />
+                            :disabledWeekDays="lockDays(group.day_payment)" locale="es" autoApply :enableTimePicker="false"
+                            position="center" teleport="#app" placeholder="selecciona una fecha"
+                            :disabled="!selectedBorrower" required />
                     </r-form-group>
                 </div>
                 <div class="w-full md:w-1/3 px-2">
@@ -259,9 +258,9 @@ onBeforeUnmount(() => {
 
                 <div class="w-full md:w-1/3 px-2">
                     <r-form-group title="Monto de abono:" class="mb-3">
-                        <r-input v-model="borrower.amount_payment_period" @input="inputAmortionCalculedDebounce"
-                            type="text" class="text-right" :disabled="!selectedBorrower"
-                            :stateError="validatorAmountPeriod" currency required></r-input>
+                        <r-input v-model="borrower.amount_payment_period" @input="inputAmortionCalculedDebounce" type="text"
+                            class="text-right" :disabled="!selectedBorrower" :stateError="validatorAmountPeriod" currency
+                            required></r-input>
 
                         <r-error-input :show="validatorAmountPeriod"
                             :errors="{ total_amount: ['El monto del abono debe ser menor'] }" field="total_amount">
@@ -287,8 +286,8 @@ onBeforeUnmount(() => {
             </r-table>
         </div>
         <div class="flex justify-end mt-3">
-            <r-btn type="submit" :disabled="itemsAmortization.length == 0 || loadingSave">
-                <r-spinner class="mr-2" v-if="loadingSave"></r-spinner>
+            <r-btn type="submit" class="flex justify-center items-center" :disabled="itemsAmortization.length == 0 || loadingSave">
+                <r-spinner class="mr-2" v-if="loadingSave" size="btn"></r-spinner>
                 Guardar
             </r-btn>
         </div>

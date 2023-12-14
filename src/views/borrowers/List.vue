@@ -225,7 +225,7 @@ onBeforeUnmount(() => {
           <r-btn variant="danger" class="mr-2 w-8 grid place-content-center" @click="deleteBorrower(data.id_borrower)">
             <TrashIcon class="h-4 w-4 text-white"></TrashIcon>
           </r-btn>
-          <r-btn variant="success" class="w-8 grid place-content-center" @click="editBorrowerModal(data)">
+          <r-btn variant="success" class="w-8 grid place-content-center" @click="editBorrowerModal(data as BorrrowerRequest)">
             <PencilSquareIcon class="h-4 w-4 text-white"></PencilSquareIcon>
           </r-btn>
         </div>

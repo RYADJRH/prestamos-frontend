@@ -36,8 +36,8 @@ withDefaults(defineProps<{
                 </div>
                 <div class="border-t border-gray-300 dark:border-gray-800"></div>
                 <h5 class="p-2 mb-2 text-red-800 font-bold dark:text-white dark:font-normal">Menu</h5>
-                <ul>
-                    <sidebar-item v-for="item in menu" :item="item" class="mb-1"></sidebar-item>
+                <ul class="space-y-1">
+                    <sidebar-item v-for="item in menu" :item="item"></sidebar-item>
                 </ul>
             </div>
         </div>

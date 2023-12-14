@@ -17,6 +17,7 @@ import '@/style/index.css';
 const options: PluginOptions = {
   transition: 'Vue-Toastification__fade',
   newestOnTop: true,
+  timeout: 1500,
 };
 
 const app = createApp(Application);

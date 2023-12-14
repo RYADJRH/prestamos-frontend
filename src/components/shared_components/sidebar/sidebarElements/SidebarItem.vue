@@ -10,9 +10,9 @@ defineProps<{
 const openDropdown = ref(false);
 </script>
 <template>
-  <li v-if="item.subMenu" class="mb-2">
+  <li v-if="item.subMenu">
     <button @click="openDropdown = !openDropdown"
-      class="w-full mb-2 flex items-center p-2 rounded-md text-gray-500 hover:bg-sky-800/10 hover:text-sky-800 active:text-sky-800 ">
+      class="w-full flex items-center p-2 rounded-md text-gray-500 hover:bg-sky-800/10 hover:text-sky-800 active:text-sky-800 ">
       <component v-if="item.icon" :is="item.icon" class="h-6 w-6"></component>
       <span :class="{ 'ml-5': item.icon, 'ml-11': !item.icon }">{{ item.title }}</span>
       <ArrowDownCircleIcon class="h-6 w-6 ml-auto"></ArrowDownCircleIcon>
@@ -33,7 +33,7 @@ const openDropdown = ref(false);
       </ul>
     </transition>
   </li>
-  <li v-else class="mb-2">
+  <li v-else>
     <router-link :to="item.link" v-slot="{ isExactActive }">
       <div
         class="flex items-center p-2 rounded-md text-gray-500 hover:bg-sky-800/10 hover:text-sky-800 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800"

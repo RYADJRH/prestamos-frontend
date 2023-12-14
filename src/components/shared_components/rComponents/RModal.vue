@@ -52,7 +52,7 @@ const emits = defineEmits<{
               class="modal-header h-14 flex items-center justify-between px-4 rounded-t-md border dark:border-gray-400">
               <h1 class="text-black font-bold text-xl dark:text-white">{{ title }}</h1>
               <r-btn variant="outline-light"
-                class="focus:ring-black hover:bg-gray-900 dark:focus:ring-gray-400 dark:hover:bg-gray-400"
+                class="focus:ring-black hover:bg-gray-900 dark:focus:ring-gray-400 dark:hover:bg-gray-400 w-8 grid place-content-center"
                 @click="emits('update:modelValue', false)" :disabled="loading">
                 <XMarkIcon class="h-4 w-4 text-gray-600 dark:text-white"></XMarkIcon>
               </r-btn>

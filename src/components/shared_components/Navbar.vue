@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, inject } from "vue";
+import { ref, inject, computed } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth.store";
@@ -38,10 +38,16 @@ async function logout() {
   });
   setLoadingFull(false);
 }
+
+const bgColor = computed<string>(() =>
+  !darkModeStore.dark ?
+    'bg-gradient-to-t from-sky-700 via-sky-700 to-sky-900' : 'dark:bg-gray-800')
+
+
 </script>
 <template>
   <nav class="sticky top-0 z-30">
-    <div class="bg-sky-800 dark:bg-gray-800">
+    <div :class="[bgColor]">
       <div class="max-w-7xl mx-auto px-4">
         <div class="flex items-center justify-between h-16">
           <div class="flex items-center">

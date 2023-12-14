@@ -33,8 +33,8 @@ const OUTLINE_LIGHT_CLASSES = 'border border-white text-white hover:bg-white hov
 </script>
 <template>
   <button class="px-4
-          h-9
-          max-h-9
+          h-8
+          max-h-8
           inline-block
           font-medium
           rounded-md

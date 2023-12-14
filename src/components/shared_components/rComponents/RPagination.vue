@@ -51,6 +51,10 @@ function selectedPage(page: number) {
     emits('update:modelValue', page);
 }
 
+
+const SELECTED_CLASSES = {
+    dark: 'bg-black text-white'
+}
 </script>
 
 <template>
@@ -62,10 +66,10 @@ function selectedPage(page: number) {
         </button>
 
         <button v-for="page in pages" @click="selectedPage(page)"
-            class="min-w-[1.5rem] max-w-[3rem] flex items-center justify-center rounded-md bg-white border shadow-md cursor-pointer disabled:cursor-not-allowed disabled:border disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-500  dark:text-gray-700"
+            class="min-w-[1.5rem] max-w-[3rem] flex items-center justify-center rounded-md border shadow-md cursor-pointer disabled:cursor-not-allowed disabled:border disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-500  dark:text-gray-700"
             :class="{
-                'bg-black text-white dark:bg-gray-800 dark:text-gray-200': modelValue == page && variant == 'dark',
-                'hover:bg-black hover:text-white dark:hover:bg-gray-800 dark:hover:text-gray-200': variant == 'dark'
+                'hover:bg-black hover:text-white dark:hover:bg-gray-800 dark:hover:text-gray-200': variant === 'dark',
+                [SELECTED_CLASSES[variant]]: modelValue === page,
             }">{{ page }}</button>
 
         <button @click="emits('update:modelValue', modelValue + 1)" :disabled="!isNext"

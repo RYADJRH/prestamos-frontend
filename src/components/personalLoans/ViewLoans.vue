@@ -245,7 +245,7 @@ onBeforeUnmount(() => {
                 </template>
                 <template #cell(acciones)="{ data }">
                     <r-btn variant="danger" class="mr-3" @click="detelePersonalLoans(data.id_borrow)">
-                        <TrashIcon class="h-5 w-5 text-white"></TrashIcon>
+                        <TrashIcon class="h-4 w-4 text-white"></TrashIcon>
                     </r-btn>
 
                 </template>

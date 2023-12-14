@@ -218,7 +218,7 @@ async function viewReport() {
           </template>
           <template #cell(acciones)="{ data }">
             <r-btn variant="danger" class="mr-3" @click="deleteMember(data.id_group_borrower)">
-              <TrashIcon class="h-5 w-5 text-white"></TrashIcon>
+              <TrashIcon class="h-4 w-4 text-white"></TrashIcon>
             </r-btn>
           </template>
           <template #footer>

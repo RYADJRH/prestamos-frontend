@@ -10,7 +10,7 @@ const bgColor = computed<string>(() =>
 
 </script>
 <template>
-    <div class="bg-gradient-to-t h-screen w-full" :class="[bgColor]">
+    <div class="bg-gradient-to-t min-h-screen w-full" :class="[bgColor]">
         <slot />
     </div>
 </template>

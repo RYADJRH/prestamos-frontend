@@ -28,6 +28,6 @@ function selectedFile(event: Event) {
 
 <template>
     <input @change="selectedFile"
-        class="py-1.5 block w-full border border-gray-600 rounded-md file:border-none file:py-2 file:bg-sky-800/10 focus:outline-sky-800 cursor-pointer disabled:cursor-not-allowed disabled:bg-gray-100 dark:focus:outline-none dark:file:bg-gray-400 dark:file:text-gray-800 dark:bg-gray-600 dark:disabled:bg-gray-500 dark:text-gray-100 dark:focus:border-gray-300 dark:focus:ring-gray-300"
+        class="block w-full border border-gray-600 rounded-md file:border-none file:py-1.5 file:bg-sky-800/10 focus:outline-sky-800 cursor-pointer disabled:cursor-not-allowed disabled:bg-gray-100 dark:focus:outline-none dark:file:bg-gray-400 dark:file:text-gray-800 dark:bg-gray-600 dark:disabled:bg-gray-500 dark:text-gray-100 dark:focus:border-gray-300 dark:focus:ring-gray-300"
         :class="{ 'border-red-800': stateError }" type="file" :accept="accept" />
 </template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, reactive, onBeforeUnmount } from 'vue';
 import { useToast } from 'vue-toastification';
-import { MagnifyingGlassIcon, CheckCircleIcon } from '@heroicons/vue/24/solid';
+import { MagnifyingGlassIcon, CheckCircleIcon, CalculatorIcon } from '@heroicons/vue/24/solid';
 import { formatDate } from "@/utils/dates";
 import { moneyMxn } from "@/utils/currency";
 import { getValuePayment, Payment } from '@/interfaces/utils/Payment.interface';
@@ -9,6 +9,7 @@ import { getValuePayment, Payment } from '@/interfaces/utils/Payment.interface';
 
 import { useDebounceFn } from '@vueuse/core';
 import { usePaymentStore } from '@/stores/payments.store';
+import { useErrorStore } from '@/stores/error.store';
 
 import ModalPdf from '@/components/shared_components/pdf/ModalPdf.vue';
 import RInput from '@/components/shared_components/rComponents/RInput.vue';
@@ -17,6 +18,10 @@ import RPagination from '@/components/shared_components/rComponents/RPagination.
 import RModal from '@/components/shared_components/rComponents/RModal.vue';
 import RBtn from '@/components/shared_components/rComponents/RBtn.vue';
 import RSpinner from '@/components/shared_components/rComponents/RSpinner.vue';
+import RFormGroup from '@/components/shared_components/rComponents/RFormGroup.vue';
+import RErrorInput from '@/components/shared_components/rComponents/RErrorInput.vue';
+import AdjustPayments from '@/components/payments/AdjustPayments.vue';
+import { Payments } from '@/interfaces/payments.interface';
 
 type Type = 'past-due-group' | 'next-due-group' | 'borrower-payments' | 'personal-loans';
 
@@ -25,9 +30,18 @@ const props = defineProps<{
 }>();
 
 const toast = useToast()
+const errorStore = useErrorStore();
 const paymentStore = usePaymentStore();
 const group = computed(() => paymentStore.getGroup);
 const borrower = computed(() => paymentStore.getBorrower);
+
+
+const modalAdjustment = reactive<{ modal: boolean, loading: boolean, value: number, payment: Payments | null }>({
+    modal: false,
+    loading: false,
+    value: 0,
+    payment: null
+});
 
 
 async function fnPayments() {
@@ -81,7 +95,7 @@ const totalPages = computed({
         paymentStore.setTotalPagePayments(pages);
     },
 });
-
+const fullAdjusment = computed(() => paymentStore.getFullAdjusment);
 
 const fieldsPayments = [
     { key: "num_payment", name: "No.pago" },
@@ -89,12 +103,13 @@ const fieldsPayments = [
     { key: "amount_payment_period_decimal", name: "Monto abono" },
     { key: "remaining_balance_decimal", name: "Saldo restante" },
     { key: "state_payment", name: "Status" },
+    { key: "options", name: "Opciones" },
 ]
 
 if (!['borrower-payments', 'personal-loans'].includes(props.type)) {
     fieldsPayments.unshift({ key: "full_name", name: "Nombre" });
+    fieldsPayments.pop();
 }
-
 
 const payments = computed(() => paymentStore.getPayments);
 
@@ -184,6 +199,36 @@ async function fnViewPdf() {
     loadingPdf.value = false;
 }
 
+function openAdjustment(payment: Payments) {
+    Object.assign(modalAdjustment, {
+        modal: true,
+        loading: false,
+        value: payment.amount_payment_period_decimal,
+        payment,
+    });
+}
+
+async function saveAdjust() {
+    modalAdjustment.loading = true;
+    await paymentStore.adjustPayment(modalAdjustment.payment?.id_payment || -1, modalAdjustment.value, props.type === 'borrower-payments')
+        .then(() => {
+            toast.success('!El monto se ajusto con exito')
+            fnPayments()
+            modalAdjustment.modal = false
+        })
+        .catch((err) => {
+            if (err.response.status !== 422) {
+                toast.error('!El monto no se pudo ajustar!');
+            }
+        })
+        .finally(() => {
+            modalAdjustment.loading = false
+        });
+}
+
+onBeforeUnmount(() => {
+    errorStore.$reset()
+})
 </script>
 <template>
     <div>
@@ -207,8 +252,10 @@ async function fnViewPdf() {
 
         </div>
         <div class="mt-4">
+            <h5 v-if="!fullAdjusment" class="text-red-900 px-2 pb-1 text-sm dark:text-gray-300 font-medium">
+                Debes ajustar el ultimo pago para conseguir el monto total de la deuda.
+            </h5>
             <r-table :fields="fieldsPayments" :items="payments" :hidden-footer="payments.length == 0">
-
                 <template #cell(full_name)="{ data }" v-if="!['borrower-payments', 'personal-loans'].includes(props.type)">
                     <span class="font-bold">{{ data.borrower.full_name }}</span>
                 </template>
@@ -221,7 +268,6 @@ async function fnViewPdf() {
                 <template #cell(remaining_balance_decimal)="{ data }">
                     {{ moneyMxn(data.remaining_balance_decimal) }}
                 </template>
-
                 <template #cell(state_payment)="{ data }">
                     <div @click="updateStatusPayment(!['borrower-payments', 'personal-loans'].includes(props.type) ? data.borrower.full_name : `No.pago ${data.num_payment}`, data.id_payment, data.state_payment)"
                         class="px-3 py-1 rounded-md font-bold text-center hover:underline hover:underline-offset-4 hover:cursor-pointer "
@@ -233,11 +279,22 @@ async function fnViewPdf() {
                         {{ getValuePayment(data.state_payment) }}
                     </div>
                 </template>
+                <template #cell(options)="{ data }">
+                    <div class="flex gap-2">
+                        <r-btn @click="openAdjustment(data as Payments)">Ajustar</r-btn>
+                        <r-btn @click="data.toogle()" type="button" v-if="data.adjust_payment.length > 0">Historial</r-btn>
+                    </div>
+                </template>
+                <template #row-details="{ data }">
+                    <div class="p-4">
+                        <div class="w-full px-3 py-2 bg-gray-100 rounded-md dark:bg-gray-800">
+                            <adjust-payments :adjust="data.adjust_payment" />
+                        </div>
+                    </div>
+                </template>
                 <template #label-empty>
                     Sin pagos
                 </template>
-
-
                 <template #footer>
                     <div class="flex justify-end items-center h-full">
                         <div>
@@ -247,8 +304,6 @@ async function fnViewPdf() {
                 </template>
             </r-table>
         </div>
-
-
         <r-modal v-model="modalUpdateStatePayment" :loading="loadingUpdateStatePayment" title="Editar status" hidden-footer>
             <template #content>
                 <div class="p-3 flex items-center justify-between rounded-md bg-gray-600/5 mb-3 ">
@@ -266,11 +321,34 @@ async function fnViewPdf() {
                 </div>
 
                 <div class="mt-3 flex justify-end">
-                    <r-btn class="flex justify-center items-center" :disabled="loadingUpdateStatePayment" @click="saveStatePayment">
+                    <r-btn class="flex justify-center items-center" :disabled="loadingUpdateStatePayment"
+                        @click="saveStatePayment">
                         <r-spinner v-if="loadingUpdateStatePayment" size="btn" class="mr-3"></r-spinner>
                         Guardar
                     </r-btn>
                 </div>
+            </template>
+        </r-modal>
+        <r-modal v-model="modalAdjustment.modal" title="Ajustar pago" :loading="modalAdjustment.loading" hidden-footer>
+            <template #content>
+                <div class="p-3 flex items-center justify-between rounded-md bg-gray-600/5 mb-3 ">
+                    <p class="font-bold dark:text-gray-300"> No.pago {{ modalAdjustment.payment?.num_payment }}</p>
+                </div>
+                <form @submit.prevent="saveAdjust">
+                    <r-form-group title="Monto de ajuste:">
+                        <r-input v-model="modalAdjustment.value" :disabled="modalAdjustment.loading" type="text"
+                            class="text-right" currency required></r-input>
+                        <r-error-input :errors="errorStore.errors" field="amount_payment">
+                        </r-error-input>
+                    </r-form-group>
+
+                    <div class="flex justify-end mt-3">
+                        <r-btn type="submit" class="flex justify-center items-center" :disabled="modalAdjustment.loading">
+                            <r-spinner class="mr-2" v-if="modalAdjustment.loading" size="btn"></r-spinner>
+                            Guardar
+                        </r-btn>
+                    </div>
+                </form>
             </template>
         </r-modal>
         <modal-pdf v-model="viewPdf" title="Reporte de pagos" :pdf="pdf" :loading="loadingPdf"></modal-pdf>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, watch, ref } from 'vue';
 import RSpinner from "@/components/shared_components/rComponents/RSpinner.vue";
 
 interface Field {
@@ -17,6 +17,8 @@ const props = withDefaults(
   }>(),
   { loading: false, hiddenFooter: false, shadowNone: false }
 );
+
+const itemsRef = ref<Record<string, any>[]>([]);
 
 function fieldType(fields: Field | string): fields is Field {
   return (fields as Field).key === undefined;
@@ -37,6 +39,19 @@ const fields_keys = computed<Field[]>(() => {
   }
   return fields_aux;
 });
+
+watch(() => props.items, (items) => {
+  itemsRef.value = [...items].map((item) =>
+  ({
+    ...item,
+    collapse: false,
+    toogle: function () {
+      this.collapse = !this.collapse;
+    }
+  }));
+}, { deep: true });
+
+
 </script>
 
 <template>
@@ -51,12 +66,22 @@ const fields_keys = computed<Field[]>(() => {
         </tr>
       </thead>
       <tbody class="divide-y-2 divide-dashed divide">
-        <tr v-for="item in items" v-if="!loading">
-          <td v-for="field in fields_keys" class="px-6 py-3">
-            <slot :name="`cell(${field.key})`" :data="item">{{ item[field.key] }}</slot>
-          </td>
-        </tr>
-        <tr v-if="!loading && items.length == 0">
+        <template v-for="item in itemsRef" v-if="!loading">
+          <tr>
+            <td v-for="field in fields_keys" class="px-6 py-3">
+              <slot :name="`cell(${field.key})`" :data="item">{{ item[field.key] }}</slot>
+            </td>
+          </tr>
+
+          <tr v-if="item.collapse">
+            <td :colspan="fields_keys.length" class="w-full">
+              <slot name="row-details" :data="item"></slot>
+            </td>
+          </tr>
+
+        </template>
+
+        <tr v-if="!loading && itemsRef.length == 0">
           <td :colspan="fields_keys.length">
             <div class="inline-flex w-full justify-center p-6 ">
               <h1 class="text-xl text-sky-800 dark:text-gray-400">
@@ -73,6 +98,8 @@ const fields_keys = computed<Field[]>(() => {
             </div>
           </td>
         </tr>
+
+
       </tbody>
       <tfoot v-if="!loading && !props.hiddenFooter">
         <tr>

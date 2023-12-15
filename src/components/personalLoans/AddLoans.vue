@@ -161,7 +161,7 @@ async function saveLoans() {
     })
     .then(async (loan) => {
       await fnAmountsLoans();
-      if (individualLoansStore.getStatusLoans == Payment.inprocess) {
+      if (individualLoansStore.getStatusLoans === Payment.inprocess) {
         individualLoansStore.setLoan(loan);
       }
       toast.success('¡El nuevo prestamo ha sido agregado!')

@@ -66,7 +66,7 @@ const SELECTED_CLASSES = {
         </button>
 
         <button v-for="page in pages" @click="selectedPage(page)"
-            class="min-w-[1.5rem] max-w-[3rem] flex items-center justify-center rounded-md border shadow-md cursor-pointer disabled:cursor-not-allowed disabled:border disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-500  dark:text-gray-700"
+            class="min-w-[1.5rem] max-w-[3rem] flex items-center justify-center rounded-md border shadow-md cursor-pointer disabled:cursor-not-allowed disabled:border disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-500  dark:text-gray-200"
             :class="{
                 'hover:bg-black hover:text-white dark:hover:bg-gray-800 dark:hover:text-gray-200': variant === 'dark',
                 [SELECTED_CLASSES[variant]]: modelValue === page,

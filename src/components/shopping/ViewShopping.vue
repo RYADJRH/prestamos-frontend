@@ -124,7 +124,7 @@ onBeforeUnmount(() => {
             <r-btn variant="danger" class="mr-2 w-8 grid place-content-center" @click="deleteShopping(data.id_shopping)">
               <TrashIcon class="h-4 w-4 text-white"></TrashIcon>
             </r-btn>
-            <r-btn variant="success" class="w-8 grid place-content-center" @click="editShoppingModal(data as ShoppingRequest)">
+            <r-btn variant="success" class="w-8 grid place-content-center" @click="editShoppingModal(data)">
               <PencilSquareIcon class="h-4 w-4 text-white"></PencilSquareIcon>
             </r-btn>
           </div>

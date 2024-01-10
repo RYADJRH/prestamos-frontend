@@ -277,11 +277,12 @@ onBeforeUnmount(() => {
                             'bg-yellow-100 text-yellow-800': data.state_payment == Payment.inprocess,
                         }">
                         {{ getValuePayment(data.state_payment) }}
+
                     </div>
                 </template>
                 <template #cell(options)="{ data }">
                     <div class="flex gap-2">
-                        <r-btn @click="openAdjustment(data as Payments)">Ajustar</r-btn>
+                        <r-btn @click="openAdjustment(data)">Ajustar</r-btn>
                         <r-btn @click="data.toogle()" type="button" v-if="data.adjust_payment.length > 0">Historial</r-btn>
                     </div>
                 </template>

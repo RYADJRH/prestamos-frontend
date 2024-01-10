@@ -1,16 +1,24 @@
-<script setup lang="ts">
-import { computed, watch, ref } from 'vue';
+<script setup lang="ts" generic="T extends Record<string, any>">
+import { computed, watch, ref, Ref } from 'vue';
 import RSpinner from "@/components/shared_components/rComponents/RSpinner.vue";
+
 
 interface Field {
   key: string;
   name: string;
 }
 
+type Expanded = T & {
+  collapse: boolean;
+  toogle: () => void
+};
+
+
+
 const props = withDefaults(
   defineProps<{
     fields?: Field[] | string[];
-    items: Record<string, any>[];
+    items: T[];
     loading?: boolean;
     shadowNone?: boolean;
     hiddenFooter?: boolean;
@@ -18,7 +26,7 @@ const props = withDefaults(
   { loading: false, hiddenFooter: false, shadowNone: false }
 );
 
-const itemsRef = ref<Record<string, any>[]>([]);
+const itemsRef = ref<Expanded[]>([]) as Ref<Expanded[]>;
 
 function fieldType(fields: Field | string): fields is Field {
   return (fields as Field).key === undefined;
@@ -44,9 +52,9 @@ watch(() => props.items, (items) => {
   itemsRef.value = [...items].map((item) =>
   ({
     ...item,
-    collapse: false,
+    collapse: false as boolean,
     toogle: function () {
-      this.collapse = !this.collapse;
+        this.collapse = !this.collapse;
     }
   }));
 }, { deep: true });

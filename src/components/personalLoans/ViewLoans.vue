@@ -26,6 +26,7 @@ import RSpinner from '@/components/shared_components/rComponents/RSpinner.vue';
 import RCheckbox from '@/components/shared_components/rComponents/RCheckbox.vue';
 import ModalPdf from '@/components/shared_components/pdf/ModalPdf.vue';
 
+const loading = ref(false);
 const toast = useToast()
 const paymentStore = usePaymentStore();
 const authStore = useAuthStore();
@@ -111,8 +112,10 @@ async function changeFilterPersonalLoans() {
 }
 
 async function fnAmountsLoans() {
+    loading.value = true
     await individualLoansStore.getApiAmountsLoans(authStore.profileBeneficiary?.id_beneficiary as number)
-        .catch(() => { });
+        .catch(() => { })
+        .finally(() => { loading.value = false });
 }
 
 function detelePersonalLoans(id_borrow: number) {
@@ -212,7 +215,7 @@ onBeforeUnmount(() => {
 
         </div>
         <div class="mt-4">
-            <r-table :fields="fieldsLoans" :items="loans" :hidden-footer="loans.length == 0">
+            <r-table :fields="fieldsLoans" :items="loans" :hidden-footer="loans.length == 0" :loading="loading">
                 <template #cell(full_name)="{ data }">
                     <router-link :to="`/prestamos-personales/pagos/${data.slug}/${data.id_borrow}`"
                         class="font-bold hover:underline hover:underline-offset-4 hover:cursor-pointer">{{
@@ -244,7 +247,8 @@ onBeforeUnmount(() => {
                     </div>
                 </template>
                 <template #cell(acciones)="{ data }">
-                    <r-btn variant="danger" class="mr-2 w-8 grid place-content-center" @click="detelePersonalLoans(data.id_borrow)">
+                    <r-btn variant="danger" class="mr-2 w-8 grid place-content-center"
+                        @click="detelePersonalLoans(data.id_borrow)">
                         <TrashIcon class="h-4 w-4 text-white"></TrashIcon>
                     </r-btn>
 

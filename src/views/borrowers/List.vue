@@ -25,6 +25,7 @@ import RSpinner from "@/components/shared_components/rComponents/RSpinner.vue";
 import RErrorInput from "@/components/shared_components/rComponents/RErrorInput.vue";
 import { Borrower, BorrrowerRequest } from "@/interfaces/borrower.interface";
 
+const loading = ref(false);
 const toast = useToast();
 const borrowerStore = UseBorrowerStore();
 const authStore = useAuthStore();
@@ -110,9 +111,11 @@ const fields = reactive([
 ]);
 
 async function fnGetBorrowers() {
+  loading.value = true
   await borrowerStore
     .listBorrowers(authStore.profileId as number, inputSearch.value)
-    .catch(() => { });
+    .catch(() => { })
+    .finally(() => loading.value = false);
 }
 
 function deleteBorrower(id_borrower: number) {
@@ -219,7 +222,8 @@ onBeforeUnmount(() => {
         </r-input>
       </div>
     </div>
-    <r-table :fields="fields" :items="borrowerStore.getBorrowers" :hidden-footer="borrowerStore.getBorrowers.length == 0">
+    <r-table :fields="fields" :items="borrowerStore.getBorrowers" :hidden-footer="borrowerStore.getBorrowers.length == 0"
+      :loading="loading">
       <template #cell(acciones)="{ data }">
         <div class="flex">
           <r-btn variant="danger" class="mr-2 w-8 grid place-content-center" @click="deleteBorrower(data.id_borrower)">

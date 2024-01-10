@@ -25,6 +25,7 @@ import RSpinner from '@/components/shared_components/rComponents/RSpinner.vue';
 import RErrorInput from '@/components/shared_components/rComponents/RErrorInput.vue';
 
 const toast = useToast()
+const loading = ref(false);
 const individualLoansStore = useInvidualLoansStore();
 const authStore = useAuthStore();
 const addLoansStore = useAddLoansStore();
@@ -124,6 +125,7 @@ async function fnTablaAmortization() {
     date_init_payment != null
   ) {
     const date_init_payment_format = formatDate(date_init_payment, 'YYYY-MM-DD');
+    loading.value = true;
     await addLoansStore
       .calculatedAmortizationLoans({
         amount_borrow,
@@ -133,7 +135,10 @@ async function fnTablaAmortization() {
         type_period,
         payment_every_n,
       })
-      .catch(() => { });
+      .catch(() => { })
+      .finally(() => {
+        loading.value = false
+      });
   }
 }
 
@@ -270,7 +275,7 @@ onBeforeUnmount(() => {
       </div>
     </div>
     <div class="w-full">
-      <r-table :fields="fieldsAmortization" :items="itemsAmortization" hidden-footer shadow-none>
+      <r-table :fields="fieldsAmortization" :items="itemsAmortization" hidden-footer shadow-none :loading="loading">
         <template #cell(date_payment)="{ data }">
           {{ formatDate(data.date_payment, 'LL') }}
         </template>

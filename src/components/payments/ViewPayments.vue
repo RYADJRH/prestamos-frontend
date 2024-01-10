@@ -29,6 +29,7 @@ const props = defineProps<{
     type: Type
 }>();
 
+const loading = ref(false);
 const toast = useToast()
 const errorStore = useErrorStore();
 const paymentStore = usePaymentStore();
@@ -45,6 +46,7 @@ const modalAdjustment = reactive<{ modal: boolean, loading: boolean, value: numb
 
 
 async function fnPayments() {
+    loading.value = true
     if (props.type == 'past-due-group') {
         await paymentStore.getApiPaymentsPastDue(group.value.slug, currentPage.value, inputSearchPayments.value)
             .catch(() => { });
@@ -61,8 +63,8 @@ async function fnPayments() {
     if (props.type == 'personal-loans') {
         await paymentStore.getApiPaymentsBorrowerPersonal(borrower.value.slug, borrower.value.id_borrow as number, currentPage.value)
             .catch(() => { });
-
     }
+    loading.value = false;
 }
 
 const loadingDataPayments = ref(false);
@@ -255,7 +257,7 @@ onBeforeUnmount(() => {
             <h5 v-if="!fullAdjusment" class="text-red-900 px-2 pb-1 text-sm dark:text-gray-300 font-medium">
                 Debes ajustar el ultimo pago para conseguir el monto total de la deuda.
             </h5>
-            <r-table :fields="fieldsPayments" :items="payments" :hidden-footer="payments.length == 0">
+            <r-table :fields="fieldsPayments" :items="payments" :hidden-footer="payments.length == 0" :loading="loading">
                 <template #cell(full_name)="{ data }" v-if="!['borrower-payments', 'personal-loans'].includes(props.type)">
                     <span class="font-bold">{{ data.borrower.full_name }}</span>
                 </template>
@@ -277,7 +279,6 @@ onBeforeUnmount(() => {
                             'bg-yellow-100 text-yellow-800': data.state_payment == Payment.inprocess,
                         }">
                         {{ getValuePayment(data.state_payment) }}
-
                     </div>
                 </template>
                 <template #cell(options)="{ data }">

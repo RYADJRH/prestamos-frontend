@@ -101,8 +101,8 @@ watch(() => props.items, (items) => {
         <tr v-if="loading">
           <td :colspan="fields_keys.length">
             <div class="inline-flex w-full justify-center p-6">
-              <r-spinner variant="danger" class="mr-3"></r-spinner>
-              <h1 class="text-xl text-red-800">Cargando...</h1>
+              <r-spinner variant="primary" class="mr-3"></r-spinner>
+              <h1 class="text-xl text-sky-800 dark:text-gray-200">Cargando...</h1>
             </div>
           </td>
         </tr>

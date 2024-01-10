@@ -25,6 +25,7 @@ import RFormGroup from '@/components/shared_components/rComponents/RFormGroup.vu
 import RSpinner from '@/components/shared_components/rComponents/RSpinner.vue';
 
 const toast = useToast();
+const loading = ref(false);
 const paymentStore = usePaymentStore();
 const dialogStore = useDialogStore();
 const individualGroupStore = useIndividualGroupStore();
@@ -75,9 +76,11 @@ const fieldsMiembros = [
 const borrowers = computed(() => individualGroupStore.getBorrowersAmount);
 
 async function fnBorrowerGroup() {
+  loading.value = true;
   await individualGroupStore
     .getApiBorrowersGroup(group.value.slug as string, currentPage.value, inputSearchMembers.value)
-    .catch(() => { });
+    .catch(() => { })
+    .finally(() => loading.value = false);
 }
 
 const modalAddUpdateMember = ref(false);
@@ -186,7 +189,7 @@ async function viewReport() {
         </div>
       </div>
       <div class="mt-4">
-        <r-table :fields="fieldsMiembros" :items="borrowers" :hidden-footer="borrowers.length == 0">
+        <r-table :fields="fieldsMiembros" :items="borrowers" :hidden-footer="borrowers.length === 0" :loading="loading">
           <template #cell(full_name)="{ data }">
             <router-link :to="`/pagos/grupo/${group.slug}/prestatista/${data.slug_borrower}`"
               class="font-bold hover:underline hover:underline-offset-4 hover:cursor-pointer">{{ data.full_name }}

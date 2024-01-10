@@ -15,6 +15,7 @@ import { TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/solid";
 import { useDialogStore } from "@/stores/dialog.store";
 import { useToast } from "vue-toastification";
 
+const loading = ref(false);
 const toast = useToast();
 const shoppingStore = useShoppingStore();
 const authStore = useAuthStore();
@@ -35,12 +36,14 @@ const fieldShopping = [
 const shoppings = computed(() => shoppingStore.getShoppings);
 
 const fnGetShoppings = async (search = "") => {
+  loading.value = true
   await shoppingStore
     .getApiShopping(
       authStore.profileBeneficiary?.id_beneficiary as number,
       search
     )
-    .catch(() => { });
+    .catch(() => { })
+    .finally(() => loading.value = false);
 };
 
 const currentPage = computed({
@@ -112,7 +115,7 @@ onBeforeUnmount(() => {
       </div>
     </div>
     <div class="mt-4">
-      <r-table :fields="fieldShopping" :items="shoppings" :hidden-footer="shoppings.length == 0">
+      <r-table :fields="fieldShopping" :items="shoppings" :hidden-footer="shoppings.length == 0" :loading="loading">
         <template #cell(producto_price)="{ data }">
           {{ moneyMxn(+data.producto_price) }}
         </template>

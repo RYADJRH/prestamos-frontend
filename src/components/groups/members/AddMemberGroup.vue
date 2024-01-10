@@ -26,6 +26,7 @@ import RErrorInput from '@/components/shared_components/rComponents/RErrorInput.
 
 const itemList = markRaw(ItemListCardBorrowers);
 
+const loading = ref(false);
 const toast = useToast();
 const addMemberGroupStore = useAddMemberGroup();
 const individualGroupStore = useIndividualGroupStore();
@@ -119,6 +120,7 @@ async function fnTablaAmortization() {
 
     if ((amount_pay > 0 && amount_payment_period > 0) && (amount_pay >= amount_payment_period) && date_init_payment != null) {
         const date_init_payment_format = formatDate(date_init_payment, 'YYYY-MM-DD');
+        loading.value = true;
         await addMemberGroupStore.calculatedAmortization(
             {
                 amount_borrow,
@@ -128,6 +130,7 @@ async function fnTablaAmortization() {
                 payment_every_n_weeks
             }
         ).catch(() => { })
+            .finally(() => { loading.value = false })
     }
 
 }

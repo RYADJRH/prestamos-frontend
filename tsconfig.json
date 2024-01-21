@@ -10,21 +10,13 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"]
     },
-    "lib": [
-      "esnext",
-      "dom"
-    ],
+    "lib": ["esnext", "dom"],
+    "types": ["vitest/globals"]
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue"
-  ],
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "src/**/*.d.ts", "test"],
+  "exclude": ["src/**/__tests__/*"],
   "references": [
     {
       "path": "./tsconfig.node.json"

@@ -4,5 +4,11 @@
     "module": "esnext",
     "moduleResolution": "node"
   },
-  "include": ["vite.config.mts"]
+  "include": [
+    "vite.config.*",
+    "vitest.config.*",
+    "cypress.config.*",
+    "nightwatch.conf.*",
+    "playwright.config.*"
+  ]
 }
